@@ -1,0 +1,7 @@
+{
+  "name": "wiiir-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
