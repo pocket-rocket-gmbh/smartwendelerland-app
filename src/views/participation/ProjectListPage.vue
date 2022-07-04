@@ -10,7 +10,7 @@
       </div>
       <ion-list v-else>
         <ion-item v-for="project in projects" :router-link="`projects/${project.id}`" :key="project.id">
-          <ion-label>{{ project.id }}</ion-label> <ion-label>{{ project.name }}</ion-label>
+          <ParticipationProjectListPanel :project="project"/>
         </ion-item>
       </ion-list>
 
@@ -24,14 +24,15 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { IonContent, IonRefresher, IonRefresherContent, IonList, IonItem, IonLabel, IonLoading, onIonViewWillEnter, RefresherCustomEvent } from '@ionic/vue'
+import { IonContent, IonRefresher, IonRefresherContent, IonList, IonItem, IonLoading, onIonViewWillEnter, RefresherCustomEvent } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
+import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonList, IonItem, IonLabel, IonLoading },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonList, IonItem, ParticipationProjectListPanel, IonLoading },
   setup() {
 
     const publicApi = usePublicApi()
