@@ -9,7 +9,7 @@
         Keine Projekte gefunden
       </div>
       <ion-list v-else>
-        <ion-item v-for="project in projects" :router-link="`project/${project.id}`" :key="project.id">
+        <ion-item v-for="project in projects" :router-link="`projects/${project.id}`" :key="project.id">
           <ion-label>{{ project.id }}</ion-label> <ion-label>{{ project.name }}</ion-label>
         </ion-item>
       </ion-list>
@@ -30,7 +30,7 @@ import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 
 export default defineComponent({
-  name: 'ParticipationProjectsPage',
+  name: 'ParticipationProjectListPage',
   components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonList, IonItem, IonLabel, IonLoading },
   setup() {
 

@@ -19,9 +19,14 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/participation/projects',
-    component: () => import('@/views/participation/ProjectsPage.vue'),
+    component: () => import('@/views/participation/ProjectListPage.vue'),
     meta: { requiresAuthentication: false }
-  }  
+  },
+  {
+    path: '/participation/projects/:id',
+    component: () => import('@/views/participation/ProjectPage.vue'),
+    meta: { requiresAuthentication: false }
+  }
 ]
 
 const router = createRouter({
