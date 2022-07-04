@@ -2,8 +2,8 @@
     <ion-page>
         <ion-content>
             <ion-item>
-                <ion-label position="stacked">Benutzername</ion-label>
-                <ion-input v-model="login" type="text" />
+                <ion-label position="stacked">E-Mail</ion-label>
+                <ion-input v-model="email" type="text" />
             </ion-item>
             <ion-item>
                 <ion-label position="stacked">Passwort</ion-label>
@@ -23,8 +23,8 @@
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonButton, IonLoading, toastController } from '@ionic/vue'
-import { useLoginApi } from '@/composables/api/loginApi'
-import { ResultStatus } from '@/types/apiCallResult'
+import { usePrivateApi } from '@/composables/api/private'
+import { useUserStore } from '@/stores/user'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -32,25 +32,35 @@ export default defineComponent({
   setup() {
 
     const router = useRouter()
-    const loginApi = useLoginApi()
+    const privateApi = usePrivateApi()
+    const userStore = useUserStore()
 
-    const login = ref(null)
+    const email = ref(null)
     const password = ref(null)
     const loginInProgress = ref(false)
 
-    const doLogin = function () {
+    const doLogin = async () => {
       loginInProgress.value = true
-      loginApi.performLogin(login.value, password.value).then((result) => {
+      const data = { email: email.value, password: password.value }
 
-        loginInProgress.value = false
+      try {
+        await privateApi.call('post', '/auth', data).then(res => {
 
-        if (result.status === ResultStatus.SUCCESSFUL) {
-          router.replace({ path: '/main' })          
-        }
-        else {
-          showLoginFailed()
-        }
-      })
+          const jwt = res.data.jwt_token
+          localStorage.setItem('auth._token.jwt', jwt)
+
+          userStore.user = res.data.user
+
+          if (userStore.user) {
+            // move to dashboard
+            router.push({ path: '/admin' })
+          }
+
+          loginInProgress.value = true
+        })
+      } catch (error) {
+        showLoginFailed()
+      }
     }
 
     async function showLoginFailed() {
@@ -59,11 +69,12 @@ export default defineComponent({
           message: 'Anmeldung fehlgeschlagen',
           duration: 2000
         })
-      return toast.present();
+      loginInProgress.value = true
+      return toast.present()
     }
 
     return {
-      login,
+      email,
       password,
       loginInProgress,
       doLogin

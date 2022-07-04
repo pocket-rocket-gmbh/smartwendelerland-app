@@ -15,11 +15,12 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/participation',
-    redirect: '/participation/projects',    
+    redirect: '/participation/projects'
   },
   {
     path: '/participation/projects',
-    component: () => import('@/views/participation/ProjectsPage.vue')
+    component: () => import('@/views/participation/ProjectsPage.vue'),
+    meta: { requiresAuthentication: false }
   }  
 ]
 
@@ -29,7 +30,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  if (to.meta.requiresAuthentication && useUserStore().current === null) {
+  if (to.meta.requiresAuthentication && useUserStore().user === null) {
       return '/login'
   }  
 })
