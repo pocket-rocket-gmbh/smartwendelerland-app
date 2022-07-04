@@ -3,7 +3,7 @@
     <ion-grid>
       <ion-row>
         <ion-col><ion-button router-link="/participation"><ion-icon :ios="accessibilityOutline" :md="accessibilitySharp"/></ion-button></ion-col>
-        <ion-col><ion-button><ion-icon :ios="constructOutline" :md="constructSharp"/></ion-button></ion-col>
+        <ion-col><ion-button router-link="/login"><ion-icon :ios="logInOutline" :md="logInSharp"/></ion-button></ion-col>
         <ion-col><ion-button><ion-icon :ios="constructOutline" :md="constructSharp"/></ion-button></ion-col>
       </ion-row>
       <ion-row>
@@ -23,7 +23,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
 import { IonGrid, IonRow, IonCol, IonButton, IonIcon, onIonViewDidEnter } from '@ionic/vue'
-import { accessibilityOutline, accessibilitySharp, constructOutline, constructSharp } from 'ionicons/icons'
+import { accessibilityOutline, accessibilitySharp, logInOutline, logInSharp, constructOutline, constructSharp } from 'ionicons/icons'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 
 export default defineComponent({
@@ -54,6 +54,8 @@ export default defineComponent({
     return {
       accessibilityOutline,
       accessibilitySharp,
+      logInOutline,
+      logInSharp,
       constructOutline,
       constructSharp,
       padding,

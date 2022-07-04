@@ -21,10 +21,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonButton, IonLoading, toastController } from '@ionic/vue'
+import { useRouter, onBeforeRouteUpdate } from 'vue-router'
+import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonButton, IonLoading, toastController, onIonViewWillEnter } from '@ionic/vue'
 import { usePrivateApi } from '@/composables/api/private'
 import { useUserStore } from '@/stores/user'
+import { ServerCallResult, ResultStatus } from '@/types/serverCallResult'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -43,24 +44,20 @@ export default defineComponent({
       loginInProgress.value = true
       const data = { email: email.value, password: password.value }
 
-      try {
-        await privateApi.call('post', '/auth', data).then(res => {
-
-          const jwt = res.data.jwt_token
+      privateApi.call('post', '/auth', data).then(result => {
+        if (result.status === ResultStatus.SUCCESSFUL) {
+          const jwt = result.data.jwt_token
           localStorage.setItem('auth._token.jwt', jwt)
+          userStore.user = result.data.user          
+          router.push({ path: '/' }) // TODO navigate to previous page
+        }
+        else {
+          showLoginFailed()
+        }
 
-          userStore.user = res.data.user
-
-          if (userStore.user) {
-            // move to dashboard
-            router.push({ path: '/admin' })
-          }
-
-          loginInProgress.value = true
-        })
-      } catch (error) {
-        showLoginFailed()
-      }
+        password.value = ''
+        loginInProgress.value = false
+      })
     }
 
     async function showLoginFailed() {
@@ -69,7 +66,6 @@ export default defineComponent({
           message: 'Anmeldung fehlgeschlagen',
           duration: 2000
         })
-      loginInProgress.value = true
       return toast.present()
     }
 
