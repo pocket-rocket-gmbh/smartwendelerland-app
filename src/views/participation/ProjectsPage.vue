@@ -30,8 +30,8 @@ import BaseLayout from '@/components/general/BaseLayout.vue'
 import { useOrdersStore } from '@/stores/server-cache/orders'
 import { useOrdersApi } from '@/composables/api/ordersApi'
 
-export default  defineComponent({
-  name: 'ListPage',
+export default defineComponent({
+  name: 'ParticipationProjectsPage',
   components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonList, IonItem, IonLabel, IonLoading },
   setup() {
 

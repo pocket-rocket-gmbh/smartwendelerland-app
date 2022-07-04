@@ -15,9 +15,12 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/participation',
-    component: () => import('@/views/participation/ProjectsPage.vue'),
-    meta: { requiresAuthentication: false }
+    redirect: '/participation/projects',    
   },
+  {
+    path: '/participation/projects',
+    component: () => import('@/views/participation/ProjectsPage.vue')
+  }  
 ]
 
 const router = createRouter({

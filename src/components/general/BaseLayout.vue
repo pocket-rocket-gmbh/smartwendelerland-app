@@ -21,10 +21,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue'
-1
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, onIonViewDidEnter } from '@ionic/vue'
+
 export default defineComponent({
   name: 'BaseLayout',
-  components: { IonPage, IonHeader, IonToolbar, IonTitle, IonContent },  
+  components: { IonPage, IonHeader, IonToolbar, IonTitle, IonContent },
+  setup() {
+    onIonViewDidEnter(() => {
+      console.log('BaseLayout: onIonViewDidEnter')
+    })
+  }
 })
 </script>
