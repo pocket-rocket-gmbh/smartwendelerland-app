@@ -5,8 +5,23 @@
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
 
-      <div v-if="project">{{ project.name }}</div>
-
+      <ion-grid v-if="project">
+        <ion-row>
+          <img :src="project.image_url"/>
+        </ion-row>
+        <ion-row>
+          <ion-label class="headline">{{ project.name }}</ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-label>{{ useDatetime().getTimeRangeString(project) }}</ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-label>Baukosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-label>{{ project.description }}</ion-label>
+        </ion-row>
+      </ion-grid>
       <ion-loading
         :is-open="loadingInProgress"
         message="Projekt wird geladen..."
@@ -18,14 +33,16 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { IonContent, IonRefresher, IonRefresherContent, IonLoading, onIonViewWillEnter, RefresherCustomEvent } from '@ionic/vue'
+import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonLabel, IonLoading, onIonViewWillEnter, RefresherCustomEvent } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
+import { useDatetime } from '@/composables/ui/datetime'
+import { useCurrency } from '@/composables/ui/currency'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonLoading },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonLabel, IonLoading },
   setup() {
 
     const route = useRoute()
@@ -51,14 +68,23 @@ export default defineComponent({
       loadingInProgress.value = true
       api.getItem(route.params.id?.toString()).then(() => {
         loadingInProgress.value = false
+        console.log(project.value)
       })      
     }
 
     return {
       loadingInProgress,
       doRefresh,
-      project
+      project,
+      useDatetime,
+      useCurrency
     }
   }
 })
 </script>
+
+<style scoped>
+.headline {
+  font-size: 1.5em;
+}
+</style>
