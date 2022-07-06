@@ -50,16 +50,16 @@ export function useCollectionApi() {
     const result: ServerCallResult = await baseApi.call('post', `${endpoint}`, data)
 
     if (result.status === ResultStatus.SUCCESSFUL) {
-      await getItem(result.data.resource.id)
       // TODO snackbar
-    } 
+    }
+
+    return result
   }
 
   const updateItem = async (data: any) => {
     const result: ServerCallResult = await baseApi.call('put', `${endpoint}/${data.id}`, data)
 
     if (result.status === ResultStatus.SUCCESSFUL) {
-      await getItem(data.id)
       // TODO snackbar
     }
   }

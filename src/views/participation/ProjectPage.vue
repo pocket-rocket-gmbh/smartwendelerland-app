@@ -33,7 +33,7 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-label>Kommentare</ion-label>
+            <ion-label><h1>Kommentare zum Projekt</h1></ion-label>
           </ion-col>
         </ion-row>
         <ion-row v-if="!useUserStore().user">
@@ -42,6 +42,18 @@
           </ion-col>
         </ion-row>
         <template v-else>
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-textarea v-model="newComment" inputmode="text" rows=5 placeholder="Kommentar verfassen ..."></ion-textarea>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col style="text-align: right">
+              <ion-button @click="create()">Absenden</ion-button>
+            </ion-col>
+          </ion-row>
           <ion-row v-if="comments.length === 0">
             <ion-col>
               <ion-label>Keine Kommentare gefunden</ion-label>
@@ -49,7 +61,7 @@
           </ion-row>
           <ion-row v-else v-for="comment in comments" :key="comment.id">
             <ion-col>
-              <ion-label>Kommentar: {{ comment }}</ion-label>
+              <CommentPanel :comment="comment"></CommentPanel>
             </ion-col>
           </ion-row>
         </template>
@@ -66,7 +78,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, onIonViewWillEnter, RefresherCustomEvent } from '@ionic/vue'
+import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonItem, IonTextarea, IonButton, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -74,10 +86,12 @@ import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
+import CommentPanel from '../../components/participation/CommentPanel.vue'
+import { ResultStatus } from '@/types/serverCallResult'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonItem, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel },
   setup() {
 
     const route = useRoute()
@@ -95,8 +109,10 @@ export default defineComponent({
     const comments = commentsApi.items
 
     const loadingInProgress = ref(false)
+    const newComment = ref('')
 
-    onIonViewWillEnter(() => {
+    onIonViewDidEnter(() => {
+      commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
       reloadData()
     })
 
@@ -113,24 +129,39 @@ export default defineComponent({
         loadComments()
       ])
 
-      loadingInProgress.value = false      
+      loadingInProgress.value = false
     }
 
     const loadComments = async () => {
       if (useUserStore().user) {
-        commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
         commentsApi.retrieveCollection()
       }
     }
 
+    const create = async () => {
+      loadingInProgress.value = true
+      const result = await commentsApi.createItem({
+        comment: newComment.value
+      })
+
+      if (result.status === ResultStatus.SUCCESSFUL) {
+        newComment.value = ''
+        await loadComments()
+      }
+      
+      loadingInProgress.value = false
+    }
+
     return {
       loadingInProgress,
+      newComment,
       doRefresh,
       project,
       comments,
       useDatetime,
       useCurrency,
-      useUserStore
+      useUserStore,
+      create
     }
   }
 })

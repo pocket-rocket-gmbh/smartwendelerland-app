@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { IonApp, IonRouterOutlet } from '@ionic/vue'
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onBeforeMount } from 'vue'
 import { useRouter, useRoute, RouteLocationNormalized } from "vue-router"
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
@@ -23,7 +23,7 @@ export default defineComponent({
     const userStore = useUserStore()
     const privateApi = usePrivateApi()
 
-    onMounted(() => {
+    onBeforeMount(() => {
       // Register navigation handling for all route changes.
       router.beforeEach(async (to) => {
         navigationTo(to)
@@ -40,16 +40,13 @@ export default defineComponent({
 
       // User already logged in.
       if (jwt !== null && user !== null) {
-        console.log('user already logged in')
         return
       }
 
       // Try to get user information if there is a token.
       if (jwt !== null && user === null) {
-        console.log('getting user data')
-        await privateApi.call('get', '/users/me', null).then((response) => {
-          userStore.user = response.data
-        })
+        const result = await privateApi.call('get', '/users/me', null)
+        userStore.user = result.data
       }
     }
   }
