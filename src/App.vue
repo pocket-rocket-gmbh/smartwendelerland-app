@@ -6,13 +6,52 @@
 
 <script lang="ts">
 import { IonApp, IonRouterOutlet } from '@ionic/vue'
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
+import { useRouter, useRoute, RouteLocationNormalized } from "vue-router"
+import { useUserStore } from '@/stores/user'
+import { usePrivateApi } from '@/composables/api/private'
 
 export default defineComponent({
   name: 'App',
   components: {
     IonApp,
     IonRouterOutlet
+  },
+  setup() {
+    const router = useRouter()
+    const route = useRoute()
+    const userStore = useUserStore()
+    const privateApi = usePrivateApi()
+
+    onMounted(() => {
+      // Register navigation handling for all route changes.
+      router.beforeEach(async (to) => {
+        navigationTo(to)
+      })
+
+      // Trigger entry page navigation as it is not considered a route change.
+      navigationTo(route)
+    })
+
+    const navigationTo = async (to: RouteLocationNormalized) => {
+
+      const jwt = localStorage.getItem('auth._token.jwt')
+      const user = userStore.user
+
+      // User already logged in.
+      if (jwt !== null && user !== null) {
+        console.log('user already logged in')
+        return
+      }
+
+      // Try to get user information if there is a token.
+      if (jwt !== null && user === null) {
+        console.log('getting user data')
+        await privateApi.call('get', '/users/me', null).then((response) => {
+          userStore.user = response.data
+        })
+      }
+    }
   }
 })
 </script>
