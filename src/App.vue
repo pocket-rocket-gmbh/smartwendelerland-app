@@ -46,7 +46,7 @@ export default defineComponent({
       // Try to get user information if there is a token.
       if (jwt !== null && user === null) {
         const result = await privateApi.call('get', '/users/me', null)
-        userStore.user = result.data
+        userStore.user = result.data.resource
       }
     }
   }
