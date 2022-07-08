@@ -45,8 +45,9 @@ export default defineComponent({
   props: {
     comment: Object
   },
+  emits: ['comment-deleted'],
   components: { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, IonButton },
-  setup(props) {
+  setup(props, { emit }) {
 
     const route = useRoute()
 
@@ -71,8 +72,7 @@ export default defineComponent({
     const deleteComment = () => {
       commentsApi.setEndpoint('comments')
       commentsApi.deleteItem(props.comment.id)
-      commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
-      commentsApi.retrieveCollection()
+      emit('comment-deleted')
       closePopover()
     }
 

@@ -61,7 +61,7 @@
           </ion-row>
           <ion-row v-else v-for="comment in comments" :key="comment.id">
             <ion-col>
-              <CommentPanel :comment="comment"></CommentPanel>
+              <CommentPanel :comment="comment" @comment-deleted="reloadData"></CommentPanel>
             </ion-col>
           </ion-row>
         </template>
@@ -156,6 +156,7 @@ export default defineComponent({
       loadingInProgress,
       newComment,
       doRefresh,
+      reloadData,
       project,
       comments,
       useDatetime,
