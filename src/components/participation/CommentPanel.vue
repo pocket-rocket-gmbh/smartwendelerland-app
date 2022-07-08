@@ -19,6 +19,11 @@
           {{ comment.comment }}
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col>
+          <LikeDislikePanel :comment="comment"></LikeDislikePanel>
+        </ion-col>
+      </ion-row>
     </ion-grid>
     
     <ion-popover
@@ -36,6 +41,7 @@
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, IonButton } from '@ionic/vue'
+import LikeDislikePanel from '@/components/participation/LikeDislikePanel.vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -47,7 +53,7 @@ export default defineComponent({
     comment: Object
   },
   emits: ['comment-deleted'],
-  components: { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, IonButton },
+  components: { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, IonButton, LikeDislikePanel },
   setup(props, { emit }) {
 
     const route = useRoute()
@@ -72,8 +78,8 @@ export default defineComponent({
     }
 
     const deleteComment = () => {
-      commentsApi.setEndpoint('comments')
-      commentsApi.deleteItem(props.comment.id)
+      commentsApi.setEndpoint('comments/' + props.comment.id)
+      commentsApi.deleteItem()
       emit('comment-deleted')
       closePopover()
     }

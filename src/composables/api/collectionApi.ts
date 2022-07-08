@@ -57,7 +57,7 @@ export function useCollectionApi() {
   }
 
   const updateItem = async (data: any) => {
-    const result: ServerCallResult = await baseApi.call('put', `${endpoint}/${data.id}`, data)
+    const result: ServerCallResult = await baseApi.call('put', `${endpoint}`, data)
 
     if (result.status === ResultStatus.SUCCESSFUL) {
       // TODO snackbar
@@ -72,8 +72,8 @@ export function useCollectionApi() {
     }
   }
 
-  const deleteItem = async (id: string) => {
-    const result: ServerCallResult = await baseApi.call('delete', `${endpoint}/${id}`)
+  const deleteItem = async () => {
+    const result: ServerCallResult = await baseApi.call('delete', `${endpoint}`)
 
     if (result.status === ResultStatus.SUCCESSFUL) {
       // TODO snackbar
