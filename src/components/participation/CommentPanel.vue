@@ -6,7 +6,7 @@
           {{ comment.user.name }}
         </ion-col>
         <ion-col style="text-align: right">
-          <ion-label @click="showContext($event)">...</ion-label>
+          <ion-label v-if="comment.user.id === user.user.id || user.user.permissions.role === 'root'" @click="showContext($event)">...</ion-label>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -39,6 +39,7 @@ import { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, IonButton } fro
 import { useDatetime } from '@/composables/ui/datetime'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
+import { useUserStore } from '@/stores/user'
 
 export default defineComponent({
   name: 'ParticipationCommentPanel',
@@ -50,6 +51,7 @@ export default defineComponent({
   setup(props, { emit }) {
 
     const route = useRoute()
+    const user = useUserStore()
 
     const privateApi = usePrivateApi()
     const commentsApi = useCollectionApi()
@@ -77,6 +79,7 @@ export default defineComponent({
     }
 
     return {
+      user,
       useDatetime,
       showContext,
       popoverOpen,
