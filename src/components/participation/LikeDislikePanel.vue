@@ -1,15 +1,13 @@
 <template>
   <div>
     <span @click="handleComment('upvote')">
-      <ion-button>
-        <ion-icon class="ion-margin-right" :ios="thumbsUpOutline" :md="thumbsUpSharp"></ion-icon>
-        Gefällt mir   
+      <ion-button :color="getButtonColorUpvoted()" class="ion-margin-end">
+        <ion-icon :ios="thumbsUpOutline" :md="thumbsUpSharp"></ion-icon>
       </ion-button>
     </span>
     <span @click="handleComment('downvote')">
-      <ion-button>
+      <ion-button :color="getButtonColorDownvoted()">
         <ion-icon :ios="thumbsDownOutline" :md="thumbsDownSharp"></ion-icon>
-        Gefällt mir nicht
       </ion-button>
     </span>
     <div>Punktzahl: {{ commentScore }}</div>
@@ -41,7 +39,7 @@ export default defineComponent({
     const downvoteCount = ref(0)
     const commentScore = ref(0)
 
-     onMounted(() => {
+    onMounted(() => {
       if (props.comment.has_upvoted_comment) {
         commentUpvoted.value = true
       } else if (props.comment.has_downvoted_comment) {
@@ -51,7 +49,21 @@ export default defineComponent({
       upvoteCount.value = props.comment.upvote_count
       downvoteCount.value = props.comment.downvote_count
       commentScore.value = props.comment.score
-     })
+    })
+
+    const getButtonColorUpvoted = () => {
+      if (commentUpvoted.value) {
+        return 'primary'
+      }
+      return 'light'
+    }
+
+    const getButtonColorDownvoted = () => {
+      if (commentDownvoted.value) {
+        return 'primary'
+      }
+      return 'light'
+    }
 
     const handleComment = async (kind: string) => {
       loading.value = true
@@ -106,7 +118,9 @@ export default defineComponent({
       commentDownvoted,
       upvoteCount,
       downvoteCount,
-      commentScore
+      commentScore,
+      getButtonColorUpvoted,
+      getButtonColorDownvoted
     }
   }
 })

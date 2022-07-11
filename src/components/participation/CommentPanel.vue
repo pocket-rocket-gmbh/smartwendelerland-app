@@ -32,7 +32,7 @@
       :event="commentContextEvent"
       @didDismiss="closePopover"
     >
-      <ion-button @click="deleteComment()">Löschen</ion-button>
+      <div @click="deleteComment()" align="center" class="ion-margin">Löschen</div>
     </ion-popover>
   </ion-item>
 </template>
@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, IonButton } from '@ionic/vue'
+import { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover } from '@ionic/vue'
 import LikeDislikePanel from '@/components/participation/LikeDislikePanel.vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { usePrivateApi } from '@/composables/api/private'
@@ -52,8 +52,8 @@ export default defineComponent({
   props: {
     comment: Object
   },
-  emits: ['comment-deleted'],
-  components: { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, IonButton, LikeDislikePanel },
+  emits: ['refreshCollection'],
+  components: { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, LikeDislikePanel },
   setup(props, { emit }) {
 
     const route = useRoute()
@@ -80,7 +80,7 @@ export default defineComponent({
     const deleteComment = () => {
       commentsApi.setEndpoint('comments/' + props.comment.id)
       commentsApi.deleteItem()
-      emit('comment-deleted')
+      emit('refreshCollection')
       closePopover()
     }
 

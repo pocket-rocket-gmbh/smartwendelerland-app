@@ -61,7 +61,10 @@
           </ion-row>
           <ion-row v-else v-for="comment in comments" :key="comment.id">
             <ion-col>
-              <CommentPanel :comment="comment" @comment-deleted="reloadData"></CommentPanel>
+              <CommentPanel
+                :comment="comment"
+                @refreshCollection="reloadData()"
+              />
             </ion-col>
           </ion-row>
         </template>
@@ -133,9 +136,7 @@ export default defineComponent({
     }
 
     const loadComments = async () => {
-      if (useUserStore().user) {
-        commentsApi.retrieveCollection()
-      }
+      commentsApi.retrieveCollection()
     }
 
     const create = async () => {
