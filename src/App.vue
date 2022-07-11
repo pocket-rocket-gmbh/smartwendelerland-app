@@ -10,6 +10,7 @@ import { defineComponent, onBeforeMount } from 'vue'
 import { useRouter, useRoute, RouteLocationNormalized } from "vue-router"
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
+import { ResultStatus } from './types/serverCallResult'
 
 export default defineComponent({
   name: 'App',
@@ -46,7 +47,9 @@ export default defineComponent({
       // Try to get user information if there is a token.
       if (jwt !== null && user === null) {
         const result = await privateApi.call('get', '/users/me', null)
-        userStore.user = result.data.resource
+        if (result.status === ResultStatus.SUCCESSFUL) {
+          userStore.user = result.data.resource
+        }
       }
     }
   }
