@@ -36,8 +36,8 @@ export default defineComponent({
     const privateApi = usePrivateApi()
     const userStore = useUserStore()
 
-    const email = ref(null)
-    const password = ref(null)
+    const lastPage = ref(null)
+
     const loginInProgress = ref(false)
 
     const doLogin = async () => {
@@ -48,8 +48,8 @@ export default defineComponent({
         if (result.status === ResultStatus.SUCCESSFUL) {
           const jwt = result.data.jwt_token
           localStorage.setItem('auth._token.jwt', jwt)
-          userStore.user = result.data.user          
-          router.push({ path: '/' }) // TODO navigate to previous page
+          userStore.user = result.data.user
+          router.push({ path: lastPage.value })
         }
         else {
           showLoginFailed()
@@ -68,6 +68,10 @@ export default defineComponent({
         })
       return toast.present()
     }
+
+    onIonViewWillEnter(() => {
+      lastPage.value = router.options.history.state.back
+    }) 
 
     return {
       email,
