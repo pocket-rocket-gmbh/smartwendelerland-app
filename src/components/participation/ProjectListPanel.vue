@@ -1,27 +1,24 @@
 <template>
-  <ion-grid style="--ion-grid-column-padding: 0px;">
-    <ion-row>
-      <ion-col size="5"><img :src="project.image_url"/></ion-col>
-      <ion-col style="background-color: grey;">
-        <ion-grid>
-          <ion-row>
-            <ion-label>{{ project.name }}</ion-label>
-          </ion-row>
-          <ion-row>
-            <ion-label>{{ useDatetime().getTimeRangeString(project) }}</ion-label>
-          </ion-row>
-          <ion-row>
-            <ion-label>Baukosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</ion-label>
-          </ion-row>
-        </ion-grid>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-card>
+    <img :src="project.image_url" />
+    <ion-card-header>
+      <ion-card-subtitle v-if="project.category">{{ project.category.name }}</ion-card-subtitle>
+      <ion-card-title>{{ project.name }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div>{{ useDatetime().getTimeRangeString(project) }}</div>
+      <div v-if="project.costs">Kosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</div>
+      <div v-if="project.community && project.zip && project.town">
+        {{ project.community }} | {{ project.zip }} - {{ project.town }}
+      </div>
+      <div class="ion-margin-top">{{ project.excerpt }}</div>
+    </ion-card-content>
+  </ion-card>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { IonLabel, IonGrid, IonRow, IonCol } from '@ionic/vue'
+import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
 
@@ -30,7 +27,7 @@ export default defineComponent({
   props: {
     project: Object
   },
-  components: { IonLabel, IonGrid, IonRow, IonCol },
+  components: { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent },
   setup() {
     return {
       useDatetime,
