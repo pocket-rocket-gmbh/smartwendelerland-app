@@ -1,12 +1,16 @@
 <template>
   <div>
     <span @click="handleComment('upvote')">
-      <ion-icon :ios="thumbsUpOutline" :md="thumbsUpSharp"></ion-icon>
-      Gefällt mir
+      <ion-button>
+        <ion-icon class="ion-margin-right" :ios="thumbsUpOutline" :md="thumbsUpSharp"></ion-icon>
+        Gefällt mir   
+      </ion-button>
     </span>
     <span @click="handleComment('downvote')">
-      <ion-icon :ios="thumbsDownOutline" :md="thumbsDownSharp"></ion-icon>
-      Gefällt mir nicht
+      <ion-button>
+        <ion-icon :ios="thumbsDownOutline" :md="thumbsDownSharp"></ion-icon>
+        Gefällt mir nicht
+      </ion-button>
     </span>
     <div>Punktzahl: {{ commentScore }}</div>
   </div>
