@@ -68,8 +68,8 @@ export default defineComponent({
       }
     }) 
 
+    // We only remove the local JWT/user to prevent logout from wiiir-frontend.
     const logout = () => {
-      // TODO call API to perform logout
       localStorage.removeItem('auth._token.jwt')
       userStore.user = null
       router.push('/')
