@@ -38,6 +38,8 @@ export default defineComponent({
 
     const lastPage = ref(null)
 
+    const email = ref(localStorage.getItem('email'))
+    const password = ref('')
     const loginInProgress = ref(false)
 
     const doLogin = async () => {
@@ -48,6 +50,7 @@ export default defineComponent({
         if (result.status === ResultStatus.SUCCESSFUL) {
           const jwt = result.data.jwt_token
           localStorage.setItem('auth._token.jwt', jwt)
+          localStorage.setItem('email', email.value)          
           userStore.user = result.data.user
           router.push({ path: lastPage.value })
         }
