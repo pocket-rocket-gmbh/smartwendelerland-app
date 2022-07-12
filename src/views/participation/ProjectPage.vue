@@ -14,7 +14,17 @@
             >
               zurück
             </ion-button>
-            <img :src="project.image_url"/>
+
+            <ion-slides pager="true" :options="slideOpts">
+              <ion-slide>
+                <img :src="project.image_url"/>
+              </ion-slide>
+              <ion-slide v-for="(image, index) in project.sanitized_images" :key="index">
+                <img :src="image.url"/>
+              </ion-slide>
+            </ion-slides>
+
+            
           </ion-col>
         </ion-row>
         <ion-row>
@@ -108,7 +118,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonItem, IonTextarea, IonButton, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent } from '@ionic/vue'
+import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonItem, IonTextarea, IonButton, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -121,7 +131,7 @@ import { ResultStatus } from '@/types/serverCallResult'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonItem, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonItem, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide },
   setup() {
 
     const route = useRoute()
@@ -147,6 +157,11 @@ export default defineComponent({
 
     const loadingInProgress = ref(false)
     const newComment = ref('')
+
+    const slideOpts = {
+      initialSlide: 0,
+      speed: 400
+    }
 
     onIonViewDidEnter(() => {
       currentPage.value = 1
@@ -212,7 +227,8 @@ export default defineComponent({
       filterOptions,
       loadData,
       currentPage,
-      totalPages
+      totalPages,
+      slideOpts
     }
   }
 })
