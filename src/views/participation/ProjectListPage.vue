@@ -22,6 +22,13 @@
             :project="project"
           />
         </div>
+        <ion-infinite-scroll
+          v-if="currentPage < totalPages"
+          @ionInfinite="loadData($event)"
+        >
+          <ion-infinite-scroll-content>
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
       </div>
 
       <ion-loading
@@ -34,7 +41,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { IonContent, IonSearchbar, IonRefresher, IonRefresherContent, IonLoading, onIonViewWillEnter, RefresherCustomEvent } from '@ionic/vue'
+import { IonContent, IonSearchbar, IonRefresher, IonRefresherContent, IonLoading, onIonViewWillEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -42,7 +49,7 @@ import { useCollectionApi } from '@/composables/api/collectionApi'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading },
+  components: { BaseLayout, IonContent, IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent },
   setup() {
 
     const publicApi = usePublicApi()
@@ -50,6 +57,8 @@ export default defineComponent({
     api.setBaseApi(publicApi)
     api.setEndpoint('projects')
     const searchQuery = ref("")
+    const currentPage = ref(1)
+    const totalPages = ref(1)
 
     const projects = api.items
 
@@ -57,23 +66,31 @@ export default defineComponent({
 
     onIonViewWillEnter(() => {
       loadingInProgress.value = true
-      getPublicProjects()     
+      getPublicProjects(false)     
     })
 
     const doRefresh = (event: RefresherCustomEvent) => {
-      getPublicProjects()
+      getPublicProjects(false)
       event.target.complete() // we have a separate loading indicator so we can complete the refresh indicator
     }
 
     const clearSearch = () => {
-      getPublicProjects()
+      getPublicProjects(false)
     }
 
-    const getPublicProjects = async () => {
-      const options = { page: 1, per_page: 25, sort_by: 'created_at', sort_order: 'DESC', searchQuery: searchQuery.value, concat: false }
-      api.retrieveCollection(options).then(() => {
-        loadingInProgress.value = false
-      })
+    const getPublicProjects = async (concat = true) => {
+      const options = { page: currentPage.value, per_page: 5, sort_by: 'created_at', sort_order: 'DESC', searchQuery: searchQuery.value, concat: concat }
+      await api.retrieveCollection(options)
+      loadingInProgress.value = false
+      totalPages.value = api.totalPages.value
+    }
+
+    const loadData = (ev: InfiniteScrollCustomEvent) => {
+      setTimeout(() => {
+        currentPage.value += 1
+        getPublicProjects(true)
+        ev.target.complete()
+      }, 300);
     }
 
     return {
@@ -82,7 +99,10 @@ export default defineComponent({
       projects,
       searchQuery,
       getPublicProjects,
-      clearSearch
+      clearSearch,
+      currentPage,
+      totalPages,
+      loadData
     }
   }
 })

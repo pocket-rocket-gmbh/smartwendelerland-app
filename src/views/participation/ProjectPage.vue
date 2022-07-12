@@ -190,10 +190,10 @@ export default defineComponent({
 
     const loadData = (ev: InfiniteScrollCustomEvent) => {
       setTimeout(() => {
-        loadComments(true)
         currentPage.value += 1
+        loadComments(true)
         ev.target.complete()
-      }, 500);
+      }, 300);
     }
 
     return {
