@@ -12,6 +12,10 @@
         @ionClear="clearSearch"
       />
 
+      <ion-select placeholder="Kategorien wählen" multiple="true">
+        <ion-select-option v-for="(category, index) in categories" :key="index">{{ category.name }}</ion-select-option>
+      </ion-select>
+
       <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
         Keine Projekte gefunden
       </div>
@@ -41,7 +45,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { IonContent, IonSearchbar, IonRefresher, IonRefresherContent, IonLoading, onIonViewWillEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent } from '@ionic/vue'
+import { IonContent, IonSearchbar, IonRefresher, IonRefresherContent, IonLoading, onIonViewWillEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -49,7 +53,7 @@ import { useCollectionApi } from '@/composables/api/collectionApi'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent },
+  components: { BaseLayout, IonContent, IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption },
   setup() {
 
     const publicApi = usePublicApi()
@@ -60,6 +64,11 @@ export default defineComponent({
     const currentPage = ref(1)
     const totalPages = ref(1)
 
+    const categoriesApi = useCollectionApi()
+    categoriesApi.setBaseApi(usePublicApi())
+    categoriesApi.setEndpoint(`categories`)
+    const categories = categoriesApi.items
+
     const projects = api.items
 
     const loadingInProgress = ref(false)
@@ -67,11 +76,13 @@ export default defineComponent({
     onIonViewWillEnter(() => {
       currentPage.value = 1
       loadingInProgress.value = true
-      getPublicProjects(false)     
+      getPublicProjects(false)
+      getPublicCategories()   
     })
 
     const doRefresh = (event: RefresherCustomEvent) => {
       getPublicProjects(false)
+      getPublicCategories()  
       event.target.complete() // we have a separate loading indicator so we can complete the refresh indicator
     }
 
@@ -84,6 +95,10 @@ export default defineComponent({
       await api.retrieveCollection(options)
       loadingInProgress.value = false
       totalPages.value = api.totalPages.value
+    }
+
+    const getPublicCategories = async () => {
+      await categoriesApi.retrieveCollection()
     }
 
     const loadData = (ev: InfiniteScrollCustomEvent) => {
@@ -103,7 +118,8 @@ export default defineComponent({
       clearSearch,
       currentPage,
       totalPages,
-      loadData
+      loadData,
+      categories
     }
   }
 })

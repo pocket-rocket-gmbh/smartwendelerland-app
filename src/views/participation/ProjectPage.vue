@@ -70,7 +70,7 @@
           </ion-row>
           <ion-row v-else>
             <ion-col>
-              <ion-select placeholder="Neuste zuerst" v-model="filter">
+              <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter">
                 <ion-select-option
                   v-for="(option, index) in filterOptions"
                   :key="index"
