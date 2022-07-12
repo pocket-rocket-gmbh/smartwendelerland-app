@@ -149,6 +149,7 @@ export default defineComponent({
     const newComment = ref('')
 
     onIonViewDidEnter(() => {
+      currentPage.value = 1
       commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
       reloadData()
     })

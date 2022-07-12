@@ -65,6 +65,7 @@ export default defineComponent({
     const loadingInProgress = ref(false)
 
     onIonViewWillEnter(() => {
+      currentPage.value = 1
       loadingInProgress.value = true
       getPublicProjects(false)     
     })
