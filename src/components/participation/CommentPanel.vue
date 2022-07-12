@@ -1,30 +1,18 @@
 <template>
-  <ion-item>
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          {{ comment.user.name }}
-        </ion-col>
-        <ion-col style="text-align: right">
-          <ion-label v-if="comment.user.id === user.user.id || user.user.permissions.role === 'root'" @click="showContext($event)">...</ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          schrieb am {{ useDatetime().parseDatetime(comment.created_at) }}
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          {{ comment.comment }}
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <LikeDislikePanel :comment="comment"></LikeDislikePanel>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <div class="comment-panel">
+
+    <ion-icon
+      v-if="comment.user.id === user.user.id || user.user.permissions.role === 'root'"
+      @click="showContext($event)"
+      :ios="ellipsisVerticalOutline"
+      :md="ellipsisVerticalSharp">
+    </ion-icon>
+
+    <div>{{ comment.user.name }} schrieb am {{ useDatetime().parseDatetime(comment.created_at) }}</div>
+
+    <div class="comment">{{ comment.comment }}</div>
+
+    <LikeDislikePanel :comment="comment"></LikeDislikePanel>
     
     <ion-popover
       :is-open="popoverOpen"
@@ -34,13 +22,16 @@
     >
       <div @click="deleteComment()" align="center" class="ion-margin">Löschen</div>
     </ion-popover>
-  </ion-item>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { IonIcon } from '@ionic/vue'
 import { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover } from '@ionic/vue'
+import { ellipsisVerticalOutline, ellipsisVerticalSharp } from 'ionicons/icons'
+
 import LikeDislikePanel from '@/components/participation/LikeDislikePanel.vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { usePrivateApi } from '@/composables/api/private'
@@ -53,7 +44,7 @@ export default defineComponent({
     comment: Object
   },
   emits: ['refreshCollection'],
-  components: { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, LikeDislikePanel },
+  components: { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, LikeDislikePanel, IonIcon },
   setup(props, { emit }) {
 
     const route = useRoute()
@@ -77,9 +68,9 @@ export default defineComponent({
       popoverOpen.value = false
     }
 
-    const deleteComment = () => {
+    const deleteComment = async () => {
       commentsApi.setEndpoint('comments/' + props.comment.id)
-      commentsApi.deleteItem()
+      const result = await commentsApi.deleteItem()
       emit('refreshCollection')
       closePopover()
     }
@@ -91,8 +82,27 @@ export default defineComponent({
       popoverOpen,
       commentContextEvent,
       closePopover,
-      deleteComment
+      deleteComment,
+      ellipsisVerticalOutline,
+      ellipsisVerticalSharp
     }
   }
 })
 </script>
+<style scoped>
+.comment-panel {
+  position: relative;
+  padding: 10px;
+}
+ion-icon {
+  position: absolute;
+  font-size: 25px;
+  top: 5px;
+  right: 5px;
+}
+
+.comment {
+  font-size: 17px;
+  margin: 10px 0;
+}
+</style>

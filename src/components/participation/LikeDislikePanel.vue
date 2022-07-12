@@ -1,22 +1,22 @@
 <template>
-  <div>
+  <div class="like-dislike-panel">
     <span @click="handleComment('upvote')">
-      <ion-button :color="getButtonColorUpvoted()" class="ion-margin-end">
+      <ion-button shape="round" size="small" :color="getButtonColorUpvoted()" class="ion-margin-end">
         <ion-icon :ios="thumbsUpOutline" :md="thumbsUpSharp"></ion-icon>
       </ion-button>
     </span>
     <span @click="handleComment('downvote')">
-      <ion-button :color="getButtonColorDownvoted()">
+      <ion-button shape="round" size="small" :color="getButtonColorDownvoted()">
         <ion-icon :ios="thumbsDownOutline" :md="thumbsDownSharp"></ion-icon>
       </ion-button>
     </span>
-    <div>Punktzahl: {{ commentScore }}</div>
+    <div class="score">Punktzahl: {{ commentScore }}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
-import { IonIcon } from '@ionic/vue'
+import { IonButton, IonIcon } from '@ionic/vue'
 import { thumbsDownOutline, thumbsDownSharp, thumbsUpOutline, thumbsUpSharp } from 'ionicons/icons'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -24,7 +24,7 @@ import { useCollectionApi } from '@/composables/api/collectionApi'
 
 export default defineComponent({
   name: 'ParticipationLikeDislikePanel',
-  components: { IonIcon },
+  components: { IonButton, IonIcon },
   props: {
     comment: Object
   },
@@ -125,3 +125,12 @@ export default defineComponent({
   }
 })
 </script>
+<style scoped>
+.like-dislike-panel {
+  position: relative;
+}
+.score {
+  font-size: 12px;
+  float: right;
+}
+</style>

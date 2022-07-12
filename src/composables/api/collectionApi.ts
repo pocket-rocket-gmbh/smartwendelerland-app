@@ -44,6 +44,7 @@ export function useCollectionApi() {
           items.value = result.data['resources']
         }
     }
+    return result
   }
 
   const createItem = async (data: any) => {
@@ -52,7 +53,6 @@ export function useCollectionApi() {
     if (result.status === ResultStatus.SUCCESSFUL) {
       // TODO snackbar
     }
-
     return result
   }
 
@@ -62,6 +62,7 @@ export function useCollectionApi() {
     if (result.status === ResultStatus.SUCCESSFUL) {
       // TODO snackbar
     }
+    return result
   }
 
   const getItem = async (id: string) => {   
@@ -70,6 +71,7 @@ export function useCollectionApi() {
     if (result.status === ResultStatus.SUCCESSFUL) {
       item.value = result.data['resource']
     }
+    return result
   }
 
   const deleteItem = async () => {
@@ -78,6 +80,7 @@ export function useCollectionApi() {
     if (result.status === ResultStatus.SUCCESSFUL) {
       // TODO snackbar
     }
+    return result
   }
 
   const duplicateItem = async (data: any) => {
@@ -87,6 +90,7 @@ export function useCollectionApi() {
       await getItem(data.id)
       // TODO snackbar
     }
+    return result
   }
 
   return {

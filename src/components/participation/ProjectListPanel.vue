@@ -1,6 +1,9 @@
 <template>
   <ion-card>
-    <img :src="project.image_url" />
+    <div class="image-wrapper">
+      <img :src="project.image_url" />
+    </div>
+    
     <ion-card-header>
       <ion-card-subtitle v-if="project.category">{{ project.category.name }}</ion-card-subtitle>
       <ion-card-title>{{ project.name }}</ion-card-title>
@@ -18,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/vue'
+import { IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
 
@@ -27,7 +30,7 @@ export default defineComponent({
   props: {
     project: Object
   },
-  components: { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent },
+  components: { IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent },
   setup() {
     return {
       useDatetime,
@@ -36,3 +39,8 @@ export default defineComponent({
   }
 })
 </script>
+<style scoped>
+.image-wrapper {
+  position: relative;
+}
+</style>

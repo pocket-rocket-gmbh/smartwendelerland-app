@@ -1,18 +1,21 @@
 <template>
-    <ion-page>
+    <ion-page class="main">
         <ion-content>
           <ion-card>
-            <img src="@/assets/images/logo.png" />
-            <ion-item>
-                <ion-label position="stacked">E-Mail</ion-label>
-                <ion-input v-model="email" type="text" />
-            </ion-item>
-            <ion-item>
-                <ion-label position="stacked">Passwort</ion-label>
-                <ion-input v-model="password" type="password" />
-            </ion-item>
-            <ion-button @click="doLogin" color="primary" expand="block">Anmelden</ion-button>
+            <div align="center">
+              <img src="@/assets/images/logo.png" class="logo" />
 
+              <div class="field">
+                <ion-input v-model="email" type="text" placeholder="E-Mail" />
+              </div>
+              
+              <div class="field">
+                <ion-input v-model="password" type="password" placeholder="Passwort" />
+              </div>
+            
+              <ion-button @click="doLogin" color="primary">Anmelden</ion-button>
+            </div>
+            
             <ion-loading
               :is-open="loginInProgress"
               message="Anmelden..."
@@ -88,3 +91,28 @@ export default defineComponent({
   }
 })
 </script>
+<style scoped>
+ion-content {
+  --background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%);
+}
+
+ion-card {
+  margin-top: 100px;
+}
+
+ion-input {
+  --background: #F5F5F5;
+  --padding-start: 10px;
+  height: 50px;
+  font-size: 20px;
+}
+
+.field {
+  width: 90%;
+  margin: 16px;
+}
+
+.logo {
+  width: 70%;
+}
+</style>
