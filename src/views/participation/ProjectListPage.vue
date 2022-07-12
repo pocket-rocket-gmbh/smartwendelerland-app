@@ -81,6 +81,7 @@ export default defineComponent({
     })
 
     const doRefresh = (event: RefresherCustomEvent) => {
+      currentPage.value = 1
       getPublicProjects(false)
       getPublicCategories()  
       event.target.complete() // we have a separate loading indicator so we can complete the refresh indicator

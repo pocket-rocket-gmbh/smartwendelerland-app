@@ -29,7 +29,7 @@
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonIcon } from '@ionic/vue'
-import { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover } from '@ionic/vue'
+import { IonPopover } from '@ionic/vue'
 import { ellipsisVerticalOutline, ellipsisVerticalSharp } from 'ionicons/icons'
 
 import LikeDislikePanel from '@/components/participation/LikeDislikePanel.vue'
@@ -44,7 +44,7 @@ export default defineComponent({
     comment: Object
   },
   emits: ['refreshCollection'],
-  components: { IonItem, IonGrid, IonRow, IonCol, IonLabel, IonPopover, LikeDislikePanel, IonIcon },
+  components: { IonPopover, LikeDislikePanel, IonIcon },
   setup(props, { emit }) {
 
     const route = useRoute()

@@ -28,14 +28,14 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter, onBeforeRouteUpdate } from 'vue-router'
-import { IonPage, IonCard, IonItem, IonLabel, IonInput, IonContent, IonButton, IonLoading, toastController, onIonViewWillEnter } from '@ionic/vue'
+import { IonPage, IonCard, IonInput, IonContent, IonButton, IonLoading, toastController, onIonViewWillEnter } from '@ionic/vue'
 import { usePrivateApi } from '@/composables/api/private'
 import { useUserStore } from '@/stores/user'
 import { ServerCallResult, ResultStatus } from '@/types/serverCallResult'
 
 export default defineComponent({
   name: 'LoginPage',
-  components: { IonPage, IonCard, IonItem, IonLabel, IonInput, IonContent, IonButton, IonLoading },
+  components: { IonPage, IonCard, IonInput, IonContent, IonButton, IonLoading },
   setup() {
 
     const router = useRouter()

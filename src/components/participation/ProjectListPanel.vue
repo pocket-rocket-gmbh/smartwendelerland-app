@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/vue'
+import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
 
@@ -30,7 +30,7 @@ export default defineComponent({
   props: {
     project: Object
   },
-  components: { IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent },
+  components: { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent },
   setup() {
     return {
       useDatetime,

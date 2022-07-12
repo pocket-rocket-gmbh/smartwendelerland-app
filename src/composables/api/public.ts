@@ -11,7 +11,10 @@ export function usePublicApi() {
   const encodedToken = Buffer.from(token).toString('base64')
 
   const serverInterface = useServerInterface()
-  serverInterface.setDomain('http://localhost:3000/v1/public/')
+
+  // serverInterface.setDomain('http://localhost:3000/v1/public')
+  serverInterface.setDomain('https://wiiir-api-proto.herokuapp.com/v1/public')
+
   serverInterface.setHeaders({
     Authorization: `Basic ${encodedToken}`
   })

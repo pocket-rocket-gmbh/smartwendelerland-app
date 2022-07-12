@@ -79,7 +79,7 @@
             </ion-col>
           </ion-row>
           <ion-row v-else>
-            <ion-col>
+            <ion-col size="6">
               <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter">
                 <ion-select-option
                   v-for="(option, index) in filterOptions"
@@ -89,6 +89,8 @@
                   {{ option.name }}
                 </ion-select-option>
               </ion-select>
+            </ion-col>
+            <ion-col size="12">
               <ion-card v-for="comment in comments" :key="comment.id">
                 <CommentPanel
                   :comment="comment"
@@ -118,7 +120,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonItem, IonTextarea, IonButton, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide } from '@ionic/vue'
+import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -131,7 +133,7 @@ import { ResultStatus } from '@/types/serverCallResult'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonItem, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide },
   setup() {
 
     const route = useRoute()
@@ -170,6 +172,7 @@ export default defineComponent({
     })
 
     const doRefresh = (event: RefresherCustomEvent) => {
+      currentPage.value = 1
       reloadData()
       event.target.complete() // We have a separate loading indicator so we can complete the refresh indicator.
     }
