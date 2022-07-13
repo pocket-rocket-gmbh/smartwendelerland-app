@@ -245,4 +245,10 @@ ion-textarea {
   --background: #F5F5F5;
   padding: 5px 10px;
 }
+
+@media (prefers-color-scheme: dark) {
+  ion-textarea {
+    --background: #000000;
+  }
+}
 </style>
