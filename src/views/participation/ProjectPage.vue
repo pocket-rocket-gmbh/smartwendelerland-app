@@ -193,7 +193,7 @@ export default defineComponent({
 
     const loadComments = async (concat = true) => {
       const sortField = filterOptions.value.find((element) => element.id === filter.value).apiField
-      await commentsApi.retrieveCollection({ page: currentPage.value, per_page: 5, sort_by: sortField, sort_order: 'DESC', searchQuery: null, concat: concat })
+      await commentsApi.retrieveCollection({ page: currentPage.value, per_page: 5, sort_by: sortField, sort_order: 'DESC', searchQuery: null, concat: concat, filters: null })
       totalPages.value = commentsApi.totalPages.value
     }
 
