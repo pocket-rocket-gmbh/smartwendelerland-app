@@ -2,6 +2,7 @@
   <ion-card>
     <div class="image-wrapper">
       <img :src="project.image_url" />
+      <div class="bubble">{{ project.comment_count }}</div>
     </div>
     
     <ion-card-header>
@@ -43,4 +44,17 @@ export default defineComponent({
 .image-wrapper {
   position: relative;
 }
+.bubble {
+  display: grid;
+  align-items: center;
+  text-align: center;
+  color: white;
+  width: 45px;
+  height: 45px;
+  background: url('@/assets/images/bubble.svg');
+  position: absolute;
+  right: 10px;
+  bottom: -20px;
+}
+      
 </style>
