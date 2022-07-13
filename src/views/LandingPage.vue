@@ -4,10 +4,12 @@
       <ion-row v-for="(row, rowIndex) in rowCount" :key="rowIndex">
         <ion-col v-for="(column, columnIndex) in columnCount" :key="columnIndex">
           <template v-if="items[rowIndex * columnCount + columnIndex] !== undefined">
-            <ion-button :router-link="items[rowIndex * columnCount + columnIndex].link">
-              <ion-icon :ios="items[rowIndex * columnCount + columnIndex].iosIcon" :md="items[rowIndex * columnCount + columnIndex].mdIcon"/>
-            </ion-button>
-            <div class="label">{{ items[rowIndex * columnCount + columnIndex].name }}</div>
+            <ion-card :router-link="items[rowIndex * columnCount + columnIndex].link">
+              <img src="@/assets/images/people.png" />
+              <ion-card-header>
+                <ion-card-subtitle>{{ items[rowIndex * columnCount + columnIndex].name }}</ion-card-subtitle>
+              </ion-card-header>
+            </ion-card>
           </template>
         </ion-col>        
       </ion-row>      
@@ -17,14 +19,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue'
-import { IonGrid, IonRow, IonCol, IonButton, IonIcon, } from '@ionic/vue'
-import { accessibilityOutline, accessibilitySharp, logInOutline, logInSharp, constructOutline, constructSharp } from 'ionicons/icons'
+import { IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardSubtitle } from '@ionic/vue'
+import { accessibilityOutline, accessibilitySharp } from 'ionicons/icons'
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 
 export default defineComponent({
   name: 'LandingPage',
-  components: { BaseLayout, IonGrid, IonRow, IonCol, IonButton, IonIcon },
+  components: { BaseLayout, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardSubtitle },
   setup() {
 
     const columnCountPortrait = 3
@@ -37,24 +39,6 @@ export default defineComponent({
         iosIcon: accessibilityOutline,
         mdIcon: accessibilitySharp
       },
-      {
-        name: 'Login Test',
-        link: '/login',
-        iosIcon: logInOutline,
-        mdIcon: logInSharp
-      },
-      {
-        name: 'Placeholder',
-        link: '/',
-        iosIcon: constructOutline,
-        mdIcon: constructSharp
-      },
-      {
-        name: 'Placeholder',
-        link: '/',
-        iosIcon: constructOutline,
-        mdIcon: constructSharp
-      }
     ]
 
     const windowwidth = ref(window.innerWidth)

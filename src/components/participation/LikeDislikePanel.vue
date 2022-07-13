@@ -1,20 +1,22 @@
 <template>
-  <div>
+  <div class="like-dislike-panel">
     <span @click="handleComment('upvote')">
-      <ion-icon :ios="thumbsUpOutline" :md="thumbsUpSharp"></ion-icon>
-      Gefällt mir
+      <ion-button shape="round" size="small" :color="getButtonColorUpvoted()" class="ion-margin-end">
+        <ion-icon :ios="thumbsUpOutline" :md="thumbsUpSharp"></ion-icon>
+      </ion-button>
     </span>
     <span @click="handleComment('downvote')">
-      <ion-icon :ios="thumbsDownOutline" :md="thumbsDownSharp"></ion-icon>
-      Gefällt mir nicht
+      <ion-button shape="round" size="small" :color="getButtonColorDownvoted()">
+        <ion-icon :ios="thumbsDownOutline" :md="thumbsDownSharp"></ion-icon>
+      </ion-button>
     </span>
-    <div>Punktzahl: {{ commentScore }}</div>
+    <div class="score">Punktzahl: {{ commentScore }}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
-import { IonIcon } from '@ionic/vue'
+import { IonButton, IonIcon } from '@ionic/vue'
 import { thumbsDownOutline, thumbsDownSharp, thumbsUpOutline, thumbsUpSharp } from 'ionicons/icons'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -22,7 +24,7 @@ import { useCollectionApi } from '@/composables/api/collectionApi'
 
 export default defineComponent({
   name: 'ParticipationLikeDislikePanel',
-  components: { IonIcon },
+  components: { IonButton, IonIcon },
   props: {
     comment: Object
   },
@@ -37,7 +39,7 @@ export default defineComponent({
     const downvoteCount = ref(0)
     const commentScore = ref(0)
 
-     onMounted(() => {
+    onMounted(() => {
       if (props.comment.has_upvoted_comment) {
         commentUpvoted.value = true
       } else if (props.comment.has_downvoted_comment) {
@@ -47,7 +49,21 @@ export default defineComponent({
       upvoteCount.value = props.comment.upvote_count
       downvoteCount.value = props.comment.downvote_count
       commentScore.value = props.comment.score
-     })
+    })
+
+    const getButtonColorUpvoted = () => {
+      if (commentUpvoted.value) {
+        return 'primary'
+      }
+      return 'light'
+    }
+
+    const getButtonColorDownvoted = () => {
+      if (commentDownvoted.value) {
+        return 'primary'
+      }
+      return 'light'
+    }
 
     const handleComment = async (kind: string) => {
       loading.value = true
@@ -102,8 +118,19 @@ export default defineComponent({
       commentDownvoted,
       upvoteCount,
       downvoteCount,
-      commentScore
+      commentScore,
+      getButtonColorUpvoted,
+      getButtonColorDownvoted
     }
   }
 })
 </script>
+<style scoped>
+.like-dislike-panel {
+  position: relative;
+}
+.score {
+  font-size: 12px;
+  float: right;
+}
+</style>
