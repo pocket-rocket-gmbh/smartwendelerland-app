@@ -80,7 +80,7 @@
           </ion-row>
           <ion-row v-else>
             <ion-col size="6">
-              <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter">
+              <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter" @ionChange="reloadComments">
                 <ion-select-option
                   v-for="(option, index) in filterOptions"
                   :key="index"
@@ -142,10 +142,10 @@ export default defineComponent({
     const projectsApi = useCollectionApi()
     projectsApi.setBaseApi(publicApi)
     projectsApi.setEndpoint('projects')
-    const filter = ref('all')
+    const filter = ref('newest')
     const filterOptions = ref([
-      { id: 'all', name: 'Neuste zuerst' },
-      { id: 'relevant', name: 'Relevante zuerst' }
+      { id: 'newest', name: 'Neuste zuerst', apiField: 'created_at' },
+      { id: 'relevant', name: 'Relevante zuerst', apiField: 'score' }
     ])
 
     const privateApi = usePrivateApi()
@@ -192,7 +192,8 @@ export default defineComponent({
     }
 
     const loadComments = async (concat = true) => {
-      await commentsApi.retrieveCollection({ page: currentPage.value, per_page: 5, sort_by: 'created_at', sort_order: 'DESC', searchQuery: null, concat: concat })
+      const sortField = filterOptions.value.find((element) => element.id === filter.value).apiField
+      await commentsApi.retrieveCollection({ page: currentPage.value, per_page: 5, sort_by: sortField, sort_order: 'DESC', searchQuery: null, concat: concat })
       totalPages.value = commentsApi.totalPages.value
     }
 
