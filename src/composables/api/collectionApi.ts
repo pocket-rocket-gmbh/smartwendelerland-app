@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { ResultStatus, ServerCallResult } from '@/types/serverCallResult'
+import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 
 export function useCollectionApi() {
 
@@ -22,7 +23,7 @@ export function useCollectionApi() {
     endpoint = endpoint_
   }
 
-  const retrieveCollection = async (options = { page: 1, per_page: 25, sort_by: 'created_at', sort_order: 'DESC', searchQuery: '', concat: false }) => {
+  const retrieveCollection = async (options: RetrieveCollectionOptions = { page: 1, per_page: 25, sort_by: 'created_at', sort_order: 'DESC', searchQuery: '', concat: false, filters: [] }) => {
 
     let search = ''
 
@@ -30,7 +31,15 @@ export function useCollectionApi() {
       search = `&search=${options.searchQuery}`
     }
 
-    const result: ServerCallResult = await baseApi.call('get', `/${endpoint}?page=${options.page}&per_page=${options.per_page}&sort_by=${options.sort_by}&sort_order=${options.sort_order}${search}`, null)
+    let filtersParam = ''
+
+    if (options.filters?.length > 0) {
+      options.filters.forEach((element: any) => {
+        filtersParam += '&filter_' + element.field + "=" + element.value        
+      })
+    }
+
+    const result: ServerCallResult = await baseApi.call('get', `/${endpoint}?page=${options.page}&per_page=${options.per_page}&sort_by=${options.sort_by}&sort_order=${options.sort_order}${search}${filtersParam}`, null)
 
     if (result.status === ResultStatus.SUCCESSFUL) {
         totalPages.value = Math.ceil(result.data['total_results'] / options.per_page)

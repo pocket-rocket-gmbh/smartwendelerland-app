@@ -80,7 +80,7 @@
           </ion-row>
           <ion-row v-else>
             <ion-col size="6">
-              <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter">
+              <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter" @ionChange="reloadComments">
                 <ion-select-option
                   v-for="(option, index) in filterOptions"
                   :key="index"
@@ -94,7 +94,7 @@
               <ion-card v-for="comment in comments" :key="comment.id">
                 <CommentPanel
                   :comment="comment"
-                  @refreshCollection="reloadData()"
+                  @refreshCollection="reloadComments()"
                 />
               </ion-card>
               <ion-infinite-scroll
@@ -142,10 +142,10 @@ export default defineComponent({
     const projectsApi = useCollectionApi()
     projectsApi.setBaseApi(publicApi)
     projectsApi.setEndpoint('projects')
-    const filter = ref('all')
+    const filter = ref('newest')
     const filterOptions = ref([
-      { id: 'all', name: 'Neuste zuerst' },
-      { id: 'relevant', name: 'Relevante zuerst' }
+      { id: 'newest', name: 'Neuste zuerst', apiField: 'created_at' },
+      { id: 'relevant', name: 'Relevante zuerst', apiField: 'score' }
     ])
 
     const privateApi = usePrivateApi()
@@ -166,13 +166,11 @@ export default defineComponent({
     }
 
     onIonViewDidEnter(() => {
-      currentPage.value = 1
       commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
       reloadData()
     })
 
     const doRefresh = (event: RefresherCustomEvent) => {
-      currentPage.value = 1
       reloadData()
       event.target.complete() // We have a separate loading indicator so we can complete the refresh indicator.
     }
@@ -182,14 +180,20 @@ export default defineComponent({
 
       await Promise.all([
         projectsApi.getItem(route.params.id?.toString()),
-        loadComments(false)
+        reloadComments()
       ])
 
       loadingInProgress.value = false
     }
 
+    const reloadComments = async () => {
+      currentPage.value = 1
+      await loadComments(false)
+    }
+
     const loadComments = async (concat = true) => {
-      await commentsApi.retrieveCollection({ page: currentPage.value, per_page: 5, sort_by: 'created_at', sort_order: 'DESC', searchQuery: null, concat: concat })
+      const sortField = filterOptions.value.find((element) => element.id === filter.value).apiField
+      await commentsApi.retrieveCollection({ page: currentPage.value, per_page: 5, sort_by: sortField, sort_order: 'DESC', searchQuery: null, concat: concat, filters: null })
       totalPages.value = commentsApi.totalPages.value
     }
 
@@ -201,7 +205,7 @@ export default defineComponent({
 
       if (result.status === ResultStatus.SUCCESSFUL) {
         newComment.value = ''
-        await loadComments(false)
+        await reloadComments()
       }
       
       loadingInProgress.value = false
@@ -220,6 +224,7 @@ export default defineComponent({
       newComment,
       doRefresh,
       reloadData,
+      reloadComments,
       project,
       comments,
       useDatetime,
@@ -244,5 +249,11 @@ export default defineComponent({
 ion-textarea {
   --background: #F5F5F5;
   padding: 5px 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-textarea {
+    --background: #000000;
+  }
 }
 </style>
