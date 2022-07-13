@@ -94,7 +94,7 @@
               <ion-card v-for="comment in comments" :key="comment.id">
                 <CommentPanel
                   :comment="comment"
-                  @refreshCollection="reloadData()"
+                  @refreshCollection="reloadComments()"
                 />
               </ion-card>
               <ion-infinite-scroll
@@ -166,13 +166,11 @@ export default defineComponent({
     }
 
     onIonViewDidEnter(() => {
-      currentPage.value = 1
       commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
       reloadData()
     })
 
     const doRefresh = (event: RefresherCustomEvent) => {
-      currentPage.value = 1
       reloadData()
       event.target.complete() // We have a separate loading indicator so we can complete the refresh indicator.
     }
@@ -182,10 +180,15 @@ export default defineComponent({
 
       await Promise.all([
         projectsApi.getItem(route.params.id?.toString()),
-        loadComments(false)
+        reloadComments()
       ])
 
       loadingInProgress.value = false
+    }
+
+    const reloadComments = async () => {
+      currentPage.value = 1
+      await loadComments(false)
     }
 
     const loadComments = async (concat = true) => {
@@ -201,7 +204,7 @@ export default defineComponent({
 
       if (result.status === ResultStatus.SUCCESSFUL) {
         newComment.value = ''
-        await loadComments(false)
+        await reloadComments()
       }
       
       loadingInProgress.value = false
@@ -220,6 +223,7 @@ export default defineComponent({
       newComment,
       doRefresh,
       reloadData,
+      reloadComments,
       project,
       comments,
       useDatetime,
