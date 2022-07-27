@@ -23,7 +23,6 @@
                 <img :src="image.url"/>
               </ion-slide>
             </ion-slides>
-
             
           </ion-col>
         </ion-row>
@@ -50,6 +49,17 @@
         <ion-row>
           <ion-col>
             <div v-html="project.description" />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <MapWidget
+              ref="map"
+              style="width: 340px; height: 170px;"
+              :zoomControl=false
+              :locations="locations"
+              :interactive=false
+            />
           </ion-col>
         </ion-row>
         <ion-row>
@@ -122,6 +132,7 @@ import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
+import MapWidget from '@/components/MapWidget.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { useDatetime } from '@/composables/ui/datetime'
@@ -130,10 +141,11 @@ import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
 import CommentPanel from '../../components/participation/CommentPanel.vue'
 import { ResultStatus } from '@/types/serverCallResult'
+import { MapLocation } from '@/types/MapLocation'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, MapWidget },
   setup() {
 
     const route = useRoute()
@@ -159,6 +171,8 @@ export default defineComponent({
 
     const loadingInProgress = ref(false)
     const newComment = ref('')
+    const locations = ref<MapLocation[]>([])
+    const map = ref(null)
 
     const slideOpts = {
       initialSlide: 0,
@@ -178,10 +192,23 @@ export default defineComponent({
     const reloadData = async () => {
       loadingInProgress.value = true
 
+      locations.value = []
+
       await Promise.all([
         projectsApi.getItem(route.params.id?.toString()),
         reloadComments()
       ])
+
+      project.value.locations?.forEach((location: any) => {
+        locations.value.push({
+          id: location.id,
+          longitude: parseFloat(location.longitude),
+          latitude: parseFloat(location.latitude),
+          draggable: false
+        })
+      })
+
+      map.value.refreshView()
 
       loadingInProgress.value = false
     }
@@ -222,6 +249,7 @@ export default defineComponent({
     return {
       loadingInProgress,
       newComment,
+      locations,
       doRefresh,
       reloadData,
       reloadComments,
@@ -236,7 +264,8 @@ export default defineComponent({
       loadData,
       currentPage,
       totalPages,
-      slideOpts
+      slideOpts,
+      map
     }
   }
 })
