@@ -71,27 +71,13 @@ export default defineComponent({
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { // TODO make configurable (e.g. environment varaible)
         minZoom: props.minZoom,
-        maxZoom: props.maxZoom,
-        attribution: `<span style="font-size: ${props.attributionFontSize}px">© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors</span>`
+        maxZoom: props.maxZoom
       }).addTo(map)
 
-      map.attributionControl.setPrefix('')
-      map.attributionControl.getContainer().style.height = `${props.attributionFontSize + 4}px`
-      map.attributionControl.getContainer().style.paddingRight = '2px'
-      map.attributionControl.getContainer().style.paddingLeft = '2px'
-      map.attributionControl.getContainer().style.paddingTop = getTopPaddingFromFontSize(props.attributionFontSize)
-      map.attributionControl.getContainer().style.lineHeight = `${props.attributionFontSize}px`
+      createAttribution()
 
       if (!props.interactive) {
-        map.dragging.disable()
-        map.touchZoom.disable()
-        map.doubleClickZoom.disable()
-        map.scrollWheelZoom.disable()
-        map.boxZoom.disable()
-        map.keyboard.disable()
-        if (map.tap) {
-          map.tap.disable()
-        }
+        disableMapInteraction()        
       }
 
       refreshView()
@@ -160,6 +146,16 @@ export default defineComponent({
       return result
     }
 
+    const createAttribution = () => {
+      map.attributionControl.addAttribution(`<span style="font-size: ${props.attributionFontSize}px">© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</span>`)
+      map.attributionControl.setPrefix('')
+      map.attributionControl.getContainer().style.height = `${props.attributionFontSize + 4}px`
+      map.attributionControl.getContainer().style.paddingRight = '2px'
+      map.attributionControl.getContainer().style.paddingLeft = '2px'
+      map.attributionControl.getContainer().style.paddingTop = getTopPaddingFromFontSize(props.attributionFontSize)
+      map.attributionControl.getContainer().style.lineHeight = `${props.attributionFontSize}px`
+    }
+
     const getTopPaddingFromFontSize = (fontsize: number) => {
       if (fontsize < 8) {
         return '0px'
@@ -169,6 +165,18 @@ export default defineComponent({
       }
       else {
         return '2px'
+      }
+    }
+
+    const disableMapInteraction = () => {
+      map.dragging.disable()
+      map.touchZoom.disable()
+      map.doubleClickZoom.disable()
+      map.scrollWheelZoom.disable()
+      map.boxZoom.disable()
+      map.keyboard.disable()
+      if (map.tap) {
+        map.tap.disable()
       }
     }
 
