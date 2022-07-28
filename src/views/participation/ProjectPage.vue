@@ -59,6 +59,7 @@
               :zoomControl=false
               :locations="locations"
               :interactive=false
+              :attributionFontSize=8
             />
           </ion-col>
         </ion-row>

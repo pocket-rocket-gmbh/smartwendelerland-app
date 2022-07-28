@@ -51,6 +51,10 @@ export default defineComponent({
     interactive: {
       type: Boolean,
       default: true
+    },
+    attributionFontSize: {
+      type: Number,
+      default: 12
     }
   },
   setup(props: any) {
@@ -66,8 +70,15 @@ export default defineComponent({
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { // TODO make configurable (e.g. environment varaible)
         minZoom: props.minZoom,
         maxZoom: props.maxZoom,
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: `<span style="font-size: ${props.attributionFontSize}px">© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors</span>`
       }).addTo(map)
+
+      map.attributionControl.setPrefix('')
+      map.attributionControl.getContainer().style.height = `${props.attributionFontSize + 4}px`
+      map.attributionControl.getContainer().style.paddingRight = '2px'
+      map.attributionControl.getContainer().style.paddingLeft = '2px'
+      map.attributionControl.getContainer().style.paddingTop = getTopPaddingFromFontSize(props.attributionFontSize)
+      map.attributionControl.getContainer().style.lineHeight = `${props.attributionFontSize}px`
 
       if (!props.interactive) {
         map.dragging.disable()
@@ -145,6 +156,18 @@ export default defineComponent({
       })
 
       return result
+    }
+
+    const getTopPaddingFromFontSize = (fontsize: number) => {
+      if (fontsize < 8) {
+        return '0px'
+      }
+      else if (fontsize < 10) {
+        return '1px'
+      }
+      else {
+        return '2px'
+      }
     }
 
     return {
