@@ -53,13 +53,9 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <MapWidget
+            <ProjectMapPanel
               ref="map"
-              style="width: 340px; height: 170px;"
-              :zoomControl=false
               :locations="locations"
-              :interactive=false
-              :attributionFontSize=8
             />
           </ion-col>
         </ion-row>
@@ -133,7 +129,7 @@ import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
-import MapWidget from '@/components/MapWidget.vue'
+import ProjectMapPanel from '@/components/participation/ProjectMapPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { useDatetime } from '@/composables/ui/datetime'
@@ -146,7 +142,7 @@ import { MapLocation } from '@/types/MapLocation'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, MapWidget },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel },
   setup() {
 
     const route = useRoute()
@@ -174,6 +170,7 @@ export default defineComponent({
     const newComment = ref('')
     const locations = ref<MapLocation[]>([])
     const map = ref(null)
+    const mapStyle = ref('')
 
     const slideOpts = {
       initialSlide: 0,
@@ -209,7 +206,7 @@ export default defineComponent({
         })
       })
 
-      map.value.refreshView()
+      map.value.refresh()
 
       loadingInProgress.value = false
     }
@@ -266,7 +263,8 @@ export default defineComponent({
       currentPage,
       totalPages,
       slideOpts,
-      map
+      map,
+      mapStyle
     }
   }
 })
