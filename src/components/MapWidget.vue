@@ -1,5 +1,5 @@
 <template>
-  <div class="mapwidget" id="map"></div>
+  <div class="mapwidget" :id="mapWidgetId"></div>
 </template>
 
 <script lang="ts">
@@ -59,11 +59,13 @@ export default defineComponent({
   },
   setup(props: any) {
 
+    const mapWidgetId = 'map' + self.crypto.randomUUID()
+
     let locationMarkers: Array<LocationMarker> = []
     let map: L.Map = null
 
     onMounted(() => {
-      map = L.map('map', {
+      map = L.map(mapWidgetId, {
         zoomControl: props.zoomControl
       })
 
@@ -171,6 +173,7 @@ export default defineComponent({
     }
 
     return {
+      mapWidgetId,
       refreshView,
       getLocations
     }
