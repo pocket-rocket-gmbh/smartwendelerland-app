@@ -48,7 +48,15 @@ export default defineComponent({
     centerPoint: {
       type: Object as PropType<L.LatLngExpression>
     },
-    interactive: {
+    zoom: {
+      type: Boolean,
+      default: true
+    },
+    drag: {
+      type: Boolean,
+      default: true
+    },
+    tap: {
       type: Boolean,
       default: true
     },
@@ -76,8 +84,16 @@ export default defineComponent({
 
       createAttribution()
 
-      if (!props.interactive) {
-        disableMapInteraction()        
+      if (!props.zoom) {
+        disableZoom()        
+      }
+
+      if (!props.drag) {
+        disableDragging()
+      }
+
+      if (!props.tap) {
+        disableTapping()
       }
 
       refreshView()
@@ -168,13 +184,26 @@ export default defineComponent({
       }
     }
 
-    const disableMapInteraction = () => {
-      map.dragging.disable()
+    const disableAll = () => {
+      disableZoom()
+      disableDragging()
+      disableTapping()
+    }
+
+    const disableZoom = () => {      
       map.touchZoom.disable()
       map.doubleClickZoom.disable()
       map.scrollWheelZoom.disable()
       map.boxZoom.disable()
       map.keyboard.disable()
+    }
+
+    const disableDragging = () => {
+      map.dragging.disable()
+      map.keyboard.disable()
+    }
+
+    const disableTapping = () => {
       if (map.tap) {
         map.tap.disable()
       }

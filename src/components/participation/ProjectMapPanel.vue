@@ -4,7 +4,8 @@
     :style="mapStyle"
     :zoomControl=false
     :locations="locations"
-    :interactive=false
+    :drag=false
+    :tap=false
     :attributionFontSize=8
   />
 </template>
