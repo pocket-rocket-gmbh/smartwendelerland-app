@@ -114,7 +114,7 @@ export default defineComponent({
 
       // Calculate viewport after timeout to make sure the page is already properly initialized.
       setTimeout(function () {
-        if (props.locations.length === 0) {
+        if (locationMarkers.length === 0) {
           map.setView(getCenterPoint(), getZoom())
         }
         else {
@@ -132,10 +132,8 @@ export default defineComponent({
         return props.centerPoint
       }
 
-      // Fallback center point if nothing is defined and there are no locations.
-      if (props.locations.length == 0) {
-        return [0.0, 0.0]
-      }
+      // Default center point.
+      return [0.0, 0.0]
     }
 
     const getZoom = () => {
