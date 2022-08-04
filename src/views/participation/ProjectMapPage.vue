@@ -24,7 +24,7 @@
 
       <ion-modal
         ref="projectsList"
-        :is-open="true"
+        :is-open="showProjectsList"
         :initial-breakpoint="0.1"
         :breakpoints="[0.1, 1.0]"
         :backdrop-dismiss="false"
@@ -38,7 +38,7 @@
           <div v-else>
             <div v-for="project in projects" :router-link="`projects/${project.id}`" :key="project.id">
               <ParticipationProjectListPanel
-                @click="$router.push({path: `/participation/projects/${project.id}`})"
+                @click="navigateToProject(project.id)"
                 :project="project"
               />
             </div>
@@ -63,6 +63,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { IonContent, IonSearchbar, IonLoading, onIonViewWillEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
@@ -76,6 +77,8 @@ export default defineComponent({
   name: 'ParticipationProjectListPage',
   components: { BaseLayout, IonContent, IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal },
   setup() {
+
+    const router = useRouter()
 
     const publicApi = usePublicApi()
     const api = useCollectionApi()
@@ -95,10 +98,13 @@ export default defineComponent({
     const locations: Ref<MapLocation[]> = ref([])
 
     const projects = api.items
+    const projectsList = ref(null)
+    const showProjectsList = ref(true)
 
     const loadingInProgress = ref(false)
 
     onIonViewWillEnter(() => {
+      showProjectsList.value = true
       reloadData()
     })
 
@@ -190,9 +196,16 @@ export default defineComponent({
       }
     }
 
+    const navigateToProject = (projectId: string) => {
+      showProjectsList.value = false
+      router.push({path: `/participation/projects/${projectId}`})      
+    }
+
     return {
       loadingInProgress,
       projects,
+      projectsList,
+      showProjectsList,
       searchQuery,
       selectedCategories,
       reloadProjects,
@@ -201,6 +214,7 @@ export default defineComponent({
       loadData,
       categories,
       debounce: createDebounce(),
+      navigateToProject,
       map,
       locations
     }
