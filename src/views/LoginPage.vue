@@ -14,6 +14,8 @@
               </div>
             
               <ion-button @click="doLogin" color="primary">Anmelden</ion-button>
+
+              <ion-button @click="callPlugin" color="primary">Launch a Rocket</ion-button>
             </div>
             
             <ion-loading
@@ -32,6 +34,7 @@ import { IonPage, IonCard, IonInput, IonContent, IonButton, IonLoading, toastCon
 import { usePrivateApi } from '@/composables/api/private'
 import { useUserStore } from '@/stores/user'
 import { ServerCallResult, ResultStatus } from '@/types/serverCallResult'
+import PocketRocket from '@/capacitor/android/PocketRocketPlugin'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -78,6 +81,17 @@ export default defineComponent({
       return toast.present()
     }
 
+    const callPlugin = async () => {
+
+      const speed = 1
+      console.log('launching a rocket with speed ' + speed)
+
+      const result = await PocketRocket.launchARocket({ speed: speed })
+
+      console.log('final speed was: ' + result.final_speed)
+      console.log('from native code!!!')
+    }
+
     onIonViewWillEnter(() => {
       lastPage.value = router.options.history.state.back
     }) 
@@ -86,7 +100,8 @@ export default defineComponent({
       email,
       password,
       loginInProgress,
-      doLogin
+      doLogin,
+      callPlugin
     }
   }
 })
