@@ -18,6 +18,7 @@
         <MapWidget
           ref="map"
           :locations="locations"
+          :zoomControl=false
           @markerClick="mapMarkerClick"
         />
       </div>
@@ -232,7 +233,7 @@ export default defineComponent({
 <style>
 div.mapcontainer {
   width: 100%;
-  height: 100%;
+  height: 85%;
   position: relative;
 }
 
