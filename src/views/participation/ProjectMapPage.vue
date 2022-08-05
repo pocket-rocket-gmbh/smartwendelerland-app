@@ -23,7 +23,6 @@
       </div>
 
       <ion-modal
-        ref="projectsList"
         :is-open="showProjectsList"
         :initial-breakpoint="0.1"
         :breakpoints="[0.1, 1.0]"
@@ -40,6 +39,7 @@
               <ParticipationProjectListPanel
                 @click="navigateToProject(project.id)"
                 :project="project"
+                :id="project.id"
               />
             </div>
             <ion-infinite-scroll
@@ -98,7 +98,6 @@ export default defineComponent({
     const locations: Ref<MapLocation[]> = ref([])
 
     const projects = api.items
-    const projectsList = ref(null)
     const showProjectsList = ref(true)
 
     const loadingInProgress = ref(false)
@@ -202,14 +201,14 @@ export default defineComponent({
     }
 
     const mapMarkerClick = (marker: MapLocation) => {
-      // TODO open sheet modal and scroll to project
-      console.log(marker)
+      // Show project list modal and scroll relevant project into view.
+      document.querySelector('ion-modal').setCurrentBreakpoint(1.0)
+      document.getElementById(marker.id).scrollIntoView()
     }
 
     return {
       loadingInProgress,
       projects,
-      projectsList,
       showProjectsList,
       searchQuery,
       selectedCategories,
