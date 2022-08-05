@@ -65,7 +65,10 @@ export default defineComponent({
       default: 12
     }
   },
-  setup(props: any) {
+  emits: [
+    'markerClick'
+  ],
+  setup(props: any, { emit }) {
 
     const mapWidgetId = 'map' + self.crypto.randomUUID()
 
@@ -109,7 +112,9 @@ export default defineComponent({
       props.locations.forEach((location: MapLocation) => {
         const marker = new LocationMarker(location.id, [location.latitude, location.longitude], { draggable: location.draggable })
         locationMarkers.push(marker)
-        marker.addTo(map)        
+        marker.addTo(map).on('click', (marker) => {
+          emit('markerClick', location)
+        })
       })
 
       // Calculate viewport after timeout to make sure the page is already properly initialized.

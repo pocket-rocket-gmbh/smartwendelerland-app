@@ -18,7 +18,7 @@
         <MapWidget
           ref="map"
           :locations="locations"
-          :attributionFontSize=10
+          @markerClick="mapMarkerClick"
         />
       </div>
 
@@ -158,7 +158,7 @@ export default defineComponent({
       projects.value.forEach((project) => {
         project.locations.forEach((location: any) => {
           locations.value.push({
-            id: location.id,
+            id: project.id,
             longitude: parseFloat(location.longitude),
             latitude: parseFloat(location.latitude),
             draggable: false
@@ -201,6 +201,11 @@ export default defineComponent({
       router.push({path: `/participation/projects/${projectId}`})      
     }
 
+    const mapMarkerClick = (marker: MapLocation) => {
+      // TODO open sheet modal and scroll to project
+      console.log(marker)
+    }
+
     return {
       loadingInProgress,
       projects,
@@ -216,7 +221,8 @@ export default defineComponent({
       debounce: createDebounce(),
       navigateToProject,
       map,
-      locations
+      locations,
+      mapMarkerClick
     }
   }
 })
