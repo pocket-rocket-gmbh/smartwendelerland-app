@@ -30,7 +30,7 @@
         :backdrop-breakpoint="1.0"
       >
         <div style="height: 40px;"></div>
-        <ion-content>  
+        <ion-content id="projectList">
           <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
             Keine Projekte gefunden
           </div>
@@ -203,7 +203,9 @@ export default defineComponent({
     const mapMarkerClick = (marker: MapLocation) => {
       // Show project list modal and scroll relevant project into view.
       document.querySelector('ion-modal').setCurrentBreakpoint(1.0)
-      document.getElementById(marker.id).scrollIntoView()
+      const yOffset = document.getElementById(marker.id).offsetTop
+      const projectList: any = document.querySelector('ion-content#projectList')
+      projectList.scrollToPoint(0, yOffset, 500)
     }
 
     return {
