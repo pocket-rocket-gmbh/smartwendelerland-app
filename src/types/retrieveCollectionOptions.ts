@@ -5,5 +5,5 @@ export interface RetrieveCollectionOptions {
   sort_order: string,
   searchQuery: string,
   concat: boolean,
-  filters: { field: string, value: any[] }[]
+  filters: { field: string, value: any }[]
 }

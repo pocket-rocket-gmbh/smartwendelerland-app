@@ -65,7 +65,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonContent, IonSearchbar, IonLoading, onIonViewWillEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal } from '@ionic/vue'
+import { IonContent, IonSearchbar, IonLoading, onIonViewDidEnter, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -103,9 +103,11 @@ export default defineComponent({
 
     const loadingInProgress = ref(false)
 
-    onIonViewWillEnter(() => {
+    onIonViewDidEnter(() => {
       showProjectsList.value = true
-      reloadData()
+      
+      // Give the map time to initialize before loading data.
+      setTimeout(() => { reloadData() }, 100)
     })
 
     const reloadData = async () => {
@@ -131,18 +133,28 @@ export default defineComponent({
       if (selectedCategories.value.length > 0) {
         filters.push({
           field: 'category',
-          value: selectedCategories.value
+          value: selectedCategories.value.toString()
         }) 
       }
 
+      const longitude_min = map.value.getVisibleRectangle()._southWest.lng
+      const latitude_min = map.value.getVisibleRectangle()._southWest.lat
+      const longitude_max = map.value.getVisibleRectangle()._northEast.lng
+      const latitude_max = map.value.getVisibleRectangle()._northEast.lat
+
+      filters.push({
+        field: 'georectangle',
+        value: longitude_min + ',' + latitude_min + ',' + longitude_max + ',' + latitude_max
+      })
+
       const options: RetrieveCollectionOptions = { 
         page: currentPage.value, 
-        per_page: 5,
+        per_page: 100,
         sort_by: 'created_at', 
         sort_order: 'DESC', 
         searchQuery: searchQuery.value, 
         concat: concat, 
-        filters: filters 
+        filters: filters
       }
 
       await api.retrieveCollection(options)      

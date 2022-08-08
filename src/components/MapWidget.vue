@@ -165,6 +165,10 @@ export default defineComponent({
       return result
     }
 
+    const getVisibleRectangle = () => {
+      return map.getBounds()
+    }
+
     const createAttribution = () => {
       map.attributionControl.addAttribution(`<span style="font-size: ${props.attributionFontSize}px">© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</span>`)
       map.attributionControl.setPrefix('')
@@ -215,7 +219,8 @@ export default defineComponent({
     return {
       mapWidgetId,
       refreshView,
-      getLocations
+      getLocations,
+      getVisibleRectangle
     }
   }
 })
