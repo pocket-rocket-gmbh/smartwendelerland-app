@@ -79,6 +79,7 @@ import { useCollectionApi } from '@/composables/api/collectionApi'
 import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 import { MapLocation } from '@/types/MapLocation'
 import MapWidget from '@/components/MapWidget.vue'
+import L from 'leaflet'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
@@ -103,6 +104,7 @@ export default defineComponent({
 
     const map = ref(null)
     const locations: Ref<MapLocation[]> = ref([])
+    let lastLoadedMapBoundaries: L.LatLngBounds = null
 
     const projects = api.items
     const showProjectsList = ref(true)
@@ -128,6 +130,7 @@ export default defineComponent({
 
     const reloadProjects = async () => {
       loadingInProgress.value = true
+      console.log('reloading projects')
       currentPage.value = 1
       await getPublicProjects(false)
       loadingInProgress.value = false
@@ -167,6 +170,10 @@ export default defineComponent({
       totalPages.value = api.totalPages.value
 
       updateLocations()
+
+      if (lastLoadedMapBoundaries === null) {
+        lastLoadedMapBoundaries = map.value.getVisibleRectangle()
+      }
     }
 
     const updateLocations = () => {
@@ -228,7 +235,10 @@ export default defineComponent({
     }
 
     const scroll = () => {
-      reloadProjects()
+      if (!lastLoadedMapBoundaries.contains(map.value.getVisibleRectangle())) {
+        lastLoadedMapBoundaries = map.value.getVisibleRectangle()
+        reloadProjects()
+      }      
     }
 
     return {
