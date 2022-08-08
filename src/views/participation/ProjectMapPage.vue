@@ -19,7 +19,13 @@
           ref="map"
           :locations="locations"
           :zoomControl=false
+          :center-point="{
+            lng: 7.107012,
+            lat: 49.516275
+          }"
+          :default-zoom=11
           @markerClick="mapMarkerClick"
+          @scroll="scroll"
         />
       </div>
 
@@ -221,6 +227,10 @@ export default defineComponent({
       projectList.scrollToPoint(0, yOffset, 500)
     }
 
+    const scroll = () => {
+      reloadProjects()
+    }
+
     return {
       loadingInProgress,
       projects,
@@ -236,7 +246,8 @@ export default defineComponent({
       navigateToProject,
       map,
       locations,
-      mapMarkerClick
+      mapMarkerClick,
+      scroll
     }
   }
 })

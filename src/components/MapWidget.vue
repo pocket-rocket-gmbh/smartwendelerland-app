@@ -39,6 +39,10 @@ export default defineComponent({
     defaultZoom: {
       type: Number
     },
+    autoFit: {
+      type: Boolean,
+      default: false
+    },
     locations: {
       type: Array as PropType<MapLocation[]>,
       default(): MapLocation[] {
@@ -66,7 +70,7 @@ export default defineComponent({
     }
   },
   emits: [
-    'markerClick'
+    'markerClick', 'scroll'
   ],
   setup(props: any, { emit }) {
 
@@ -74,6 +78,8 @@ export default defineComponent({
 
     let locationMarkers: Array<LocationMarker> = []
     let map: L.Map = null
+
+    let programmaticScrollInProgress = false
 
     onMounted(() => {
       map = L.map(mapWidgetId, {
@@ -88,7 +94,7 @@ export default defineComponent({
       createAttribution()
 
       if (!props.zoom) {
-        disableZoom()        
+        disableZoom()
       }
 
       if (!props.drag) {
@@ -97,6 +103,19 @@ export default defineComponent({
 
       if (!props.tap) {
         disableTapping()
+      }
+
+      map.on('moveend', function() {
+        if (!programmaticScrollInProgress)
+        {
+          emit('scroll')
+        }        
+      })
+
+      if (props.centerPoint) {
+        programmaticScrollInProgress = true
+        map.setView(props.centerPoint, getZoom())
+        programmaticScrollInProgress = false
       }
 
       refreshView()
@@ -119,26 +138,14 @@ export default defineComponent({
 
       // Calculate viewport after timeout to make sure the page is already properly initialized.
       setTimeout(function () {
-        if (locationMarkers.length === 0) {
-          map.setView(getCenterPoint(), getZoom())
-        }
-        else {
+        programmaticScrollInProgress = true
+        if (props.autoFit && locationMarkers.length > 0) {
           const group: L.FeatureGroup<any> = L.featureGroup(locationMarkers)
           map.fitBounds(group.getBounds())
         }
         map.invalidateSize()
+        programmaticScrollInProgress = false
       }, 100)
-    }
-
-    const getCenterPoint = (): L.LatLngExpression => {
-
-      // Predefined center point.
-      if (props.centerPoint) {
-        return props.centerPoint
-      }
-
-      // Default center point.
-      return [0.0, 0.0]
     }
 
     const getZoom = () => {
