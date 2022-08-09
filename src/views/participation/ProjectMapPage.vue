@@ -129,8 +129,7 @@ export default defineComponent({
     }
 
     const reloadProjects = async () => {
-      loadingInProgress.value = true
-      console.log('reloading projects')
+      loadingInProgress.value = true      
       currentPage.value = 1
       await getPublicProjects(false)
       loadingInProgress.value = false
@@ -171,9 +170,7 @@ export default defineComponent({
 
       updateLocations()
 
-      if (lastLoadedMapBoundaries === null) {
-        lastLoadedMapBoundaries = map.value.getVisibleRectangle()
-      }
+      lastLoadedMapBoundaries = map.value.getVisibleRectangle()
     }
 
     const updateLocations = () => {
