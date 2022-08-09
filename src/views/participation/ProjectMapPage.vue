@@ -20,8 +20,8 @@
           :locations="locations"
           :zoomControl=false
           :center-point="{
-            lng: 7.107012,
-            lat: 49.516275
+            lng: 7.131735,
+            lat: 49.523656
           }"
           :default-zoom=11
           @markerClick="mapMarkerClick"
