@@ -6,6 +6,7 @@
     :locations="locations"
     :drag=false
     :tap=false
+    :autoFit=true
     :attributionFontSize=8
   />
 </template>
