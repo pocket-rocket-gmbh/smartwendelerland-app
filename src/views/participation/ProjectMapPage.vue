@@ -71,7 +71,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonContent, IonSearchbar, IonLoading, onIonViewDidEnter, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal } from '@ionic/vue'
+import { IonContent, IonSearchbar, IonLoading, onIonViewDidEnter, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, onIonViewWillLeave } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -116,6 +116,10 @@ export default defineComponent({
       
       // Give the map time to initialize before loading data.
       setTimeout(() => { reloadData() }, 100)
+    })
+
+    onIonViewWillLeave(() => {
+      showProjectsList.value = false
     })
 
     const reloadData = async () => {
@@ -219,7 +223,6 @@ export default defineComponent({
     }
 
     const navigateToProject = (projectId: string) => {
-      showProjectsList.value = false
       router.push({path: `/participation/projects/${projectId}`})      
     }
 
