@@ -24,6 +24,11 @@
               </ion-slide>
             </ion-slides>
             
+            <VotePanel
+              v-if="useUser().loggedIn()"
+              :key="votePanelKey"
+              :project="project"
+            />
           </ion-col>
         </ion-row>
         <ion-row>
@@ -64,7 +69,7 @@
             <ion-label><h1>Kommentare zum Projekt</h1></ion-label>
           </ion-col>
         </ion-row>
-        <ion-row v-if="useUser().loggedIn()">
+        <div v-if="useUser().loggedIn()">
           <ion-row>
             <ion-col>
               <ion-textarea v-model="newComment" inputmode="text" rows=5 placeholder="Kommentar verfassen ..."></ion-textarea>
@@ -108,7 +113,7 @@
               </ion-infinite-scroll>
             </ion-col>
           </ion-row>
-        </ion-row>
+        </div>
         <template v-else>
           <ion-col>
             <ion-label>Bitte einloggen, um die Kommentare zu sehen</ion-label>
@@ -125,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
@@ -138,19 +143,22 @@ import { useUser } from '@/composables/user/user'
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
 import CommentPanel from '../../components/participation/CommentPanel.vue'
+import VotePanel from '../../components/participation/VotePanel.vue'
 import { ResultStatus } from '@/types/serverCallResult'
 import { MapLocation } from '@/types/MapLocation'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, VotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel },
   setup() {
 
     const route = useRoute()
 
     const publicApi = usePublicApi()
+    const privateApi = usePrivateApi()
+
     const projectsApi = useCollectionApi()
-    projectsApi.setBaseApi(publicApi)
+
     projectsApi.setEndpoint('projects')
     const filter = ref('newest')
     const filterOptions = ref([
@@ -158,7 +166,6 @@ export default defineComponent({
       { id: 'relevant', name: 'Relevante zuerst', apiField: 'score' }
     ])
 
-    const privateApi = usePrivateApi()
     const commentsApi = useCollectionApi()
     commentsApi.setBaseApi(privateApi)
 
@@ -166,6 +173,7 @@ export default defineComponent({
     const comments = commentsApi.items
     const currentPage = ref(1)
     const totalPages = ref(1)
+    const votePanelKey = ref(1)
 
     const loadingInProgress = ref(false)
     const newComment = ref('')
@@ -179,6 +187,12 @@ export default defineComponent({
     }
 
     onIonViewDidEnter(() => {
+      if (useUser().loggedIn()) {
+        projectsApi.setBaseApi(privateApi)
+      } else {
+        projectsApi.setBaseApi(publicApi)
+      }
+
       commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
       reloadData()
     })
@@ -247,6 +261,10 @@ export default defineComponent({
       }, 300);
     }
 
+    watch(project, () => {
+      votePanelKey.value += 1
+    })
+
     return {
       loadingInProgress,
       newComment,
@@ -268,7 +286,8 @@ export default defineComponent({
       totalPages,
       slideOpts,
       map,
-      mapStyle
+      mapStyle,
+      votePanelKey
     }
   }
 })

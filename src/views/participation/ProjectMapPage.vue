@@ -36,7 +36,7 @@
         :backdrop-dismiss="false"
         :backdrop-breakpoint="1.0"
       >
-        <div style="height: 40px;"></div>
+        <div style="height: 40px; background: white;"></div>
         <ion-content id="projectList">
           <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
             Keine Projekte gefunden
@@ -287,7 +287,7 @@ ion-modal::part(content) {
   top: 21%;
 }
 
-ion-list.projectslist {
-  --ion-background-color: #ffffff;
+#projectList {
+  background-color: #ffffff;
 }
 </style>

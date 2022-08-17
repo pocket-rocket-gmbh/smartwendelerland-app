@@ -12,7 +12,7 @@
 
     <div class="comment">{{ comment.comment }}</div>
 
-    <LikeDislikePanel :comment="comment"></LikeDislikePanel>
+    <LikePanel :comment="comment" />
     
     <ion-popover
       :is-open="popoverOpen"
@@ -32,7 +32,7 @@ import { IonIcon } from '@ionic/vue'
 import { IonPopover } from '@ionic/vue'
 import { ellipsisVerticalOutline, ellipsisVerticalSharp } from 'ionicons/icons'
 
-import LikeDislikePanel from '@/components/participation/LikeDislikePanel.vue'
+import LikePanel from '@/components/participation/LikePanel.vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -44,7 +44,7 @@ export default defineComponent({
     comment: Object
   },
   emits: ['refreshCollection'],
-  components: { IonPopover, LikeDislikePanel, IonIcon },
+  components: { IonPopover, LikePanel, IonIcon },
   setup(props, { emit }) {
 
     const route = useRoute()

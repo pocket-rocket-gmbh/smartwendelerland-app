@@ -58,7 +58,11 @@ export default defineComponent({
           localStorage.setItem('auth._token.jwt', jwt)
           localStorage.setItem('email', email.value)          
           userStore.user = result.data.user
-          router.push({ path: lastPage.value })
+          if (lastPage.value) {
+            router.push({ path: lastPage.value })
+          } else {
+            router.push({ path: '/' })
+          }
         }
         else {
           showLoginFailed()
