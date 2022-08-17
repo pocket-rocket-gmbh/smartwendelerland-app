@@ -64,12 +64,7 @@
             <ion-label><h1>Kommentare zum Projekt</h1></ion-label>
           </ion-col>
         </ion-row>
-        <ion-row v-if="!useUserStore().user">
-          <ion-col>
-            <ion-label>Bitte einloggen, um die Kommentare zu sehen</ion-label>
-          </ion-col>
-        </ion-row>
-        <template v-else>
+        <ion-row v-if="useUser().loggedIn()">
           <ion-row>
             <ion-col>
               <ion-textarea v-model="newComment" inputmode="text" rows=5 placeholder="Kommentar verfassen ..."></ion-textarea>
@@ -113,6 +108,11 @@
               </ion-infinite-scroll>
             </ion-col>
           </ion-row>
+        </ion-row>
+        <template v-else>
+          <ion-col>
+            <ion-label>Bitte einloggen, um die Kommentare zu sehen</ion-label>
+          </ion-col>
         </template>
       </ion-grid>
 
@@ -134,6 +134,7 @@ import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
+import { useUser } from '@/composables/user/user'
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
 import CommentPanel from '../../components/participation/CommentPanel.vue'
@@ -212,8 +213,10 @@ export default defineComponent({
     }
 
     const reloadComments = async () => {
-      currentPage.value = 1
-      await loadComments(false)
+      if (useUser().loggedIn()) {
+        currentPage.value = 1
+        await loadComments(false)
+      }
     }
 
     const loadComments = async (concat = true) => {
@@ -256,6 +259,7 @@ export default defineComponent({
       useDatetime,
       useCurrency,
       useUserStore,
+      useUser,
       create,
       filter,
       filterOptions,
