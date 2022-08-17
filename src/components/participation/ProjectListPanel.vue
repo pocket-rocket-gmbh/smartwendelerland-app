@@ -16,6 +16,10 @@
         {{ project.community }} | {{ project.zip }} - {{ project.town }}
       </div>
       <div class="ion-margin-top">{{ project.excerpt }}</div>
+      <div class="ion-margin-top ion-margin-bottom"><b>Abstimmungen</b></div>
+      <ProjectVotes
+        :project="project"
+      />
     </ion-card-content>
   </ion-card>
 </template>
@@ -25,13 +29,14 @@ import { defineComponent } from 'vue'
 import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
+import ProjectVotes from '../../components/participation/ProjectVotes.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPanel',
   props: {
     project: Object
   },
-  components: { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent },
+  components: { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, ProjectVotes },
   setup() {
     return {
       useDatetime,

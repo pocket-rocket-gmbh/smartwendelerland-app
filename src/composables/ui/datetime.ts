@@ -15,8 +15,22 @@ export function useDatetime() {
     return datetime.toFormat('dd.MM.yyyy HH:MM')
   }
 
+  const parseDate = (item:any) => {
+    const datetime = DateTime.fromISO(item, { locale: 'de-DE' })
+    return datetime.toFormat('dd.MM.yyyy')
+  }
+
+  const isInPast = (item:any) => {
+    const today = DateTime.now()
+    const compareableTime = DateTime.fromISO(item, { locale: 'de-DE' })
+
+    return compareableTime <= today
+  }
+
   return {
     getTimeRangeString,
-    parseDatetime
+    parseDatetime,
+    parseDate,
+    isInPast
   }
 }

@@ -5,15 +5,15 @@
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
 
-      <ion-grid v-if="project">
+      <ion-grid v-if="project" class="expand">
         <ion-row>
           <ion-col>
-            <ion-button
-              color="light"
+            <div
+              class="back-button"
               @click="$router.push({path: '/participation/projects'})"
             >
-              zurück
-            </ion-button>
+              &lt; zurück
+            </div>
 
             <ion-slides pager="true" :options="slideOpts">
               <ion-slide>
@@ -24,101 +24,108 @@
               </ion-slide>
             </ion-slides>
             
-            <VotePanel
+            <ProjectVotePanel
               v-if="useUser().loggedIn()"
               :key="votePanelKey"
               :project="project"
+              @updateProject="reloadData()"
             />
           </ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-label class="headline">{{ project.name }}</ion-label>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-label>{{ useDatetime().getTimeRangeString(project) }}</ion-label>
-          </ion-col>
-        </ion-row>        
-        <ion-row v-if="project.costs">
-          <ion-col>
-            <ion-label>Kosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</ion-label>
-          </ion-col>
-        </ion-row>
-        <ion-row v-if="project.community && project.zip && project.town">
-          <ion-col>
-            <ion-label>Standort: {{ project.community }} | {{ project.zip }} - {{ project.town }}</ion-label>
-          </ion-col>
-        </ion-row> 
-        <ion-row>
-          <ion-col>
-            <div v-html="project.description" />
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ProjectMapPanel
-              ref="map"
-              :locations="locations"
-            />
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-label><h1>Kommentare zum Projekt</h1></ion-label>
-          </ion-col>
-        </ion-row>
-        <div v-if="useUser().loggedIn()">
+        <div class="has-padding">
           <ion-row>
-            <ion-col>
-              <ion-textarea v-model="newComment" inputmode="text" rows=5 placeholder="Kommentar verfassen ..."></ion-textarea>
+            <ion-col class="header">
+              <ion-label class="headline">{{ project.name }}</ion-label>
+              <div>{{ useDatetime().getTimeRangeString(project) }}</div>
+              <div v-if="project.costs">Kosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</div>
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col style="text-align: right">
-              <ion-button @click="create()">Absenden</ion-button>
-            </ion-col>
-          </ion-row>
-          <ion-row v-if="comments.length === 0">
             <ion-col>
-              <ion-label>Keine Kommentare gefunden</ion-label>
+              <ProjectMilestones
+                :projectId="project.id"
+              />
             </ion-col>
           </ion-row>
-          <ion-row v-else>
-            <ion-col size="6">
-              <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter" @ionChange="reloadComments">
-                <ion-select-option
-                  v-for="(option, index) in filterOptions"
-                  :key="index"
-                  :value="option.id"
+          <ion-row v-if="project.description">
+            <ion-col>
+              <div v-html="project.description" />
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <div class="ion-margin-top ion-margin-bottom"><b>Abstimmungen</b></div>
+              <ProjectVotes
+                :key="votePanelKey"
+                :project="project"
+              />
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <div class="headline" v-if="project.community && project.zip && project.town">Projekt Standort:<br/>{{ project.community }} | {{ project.zip }} - {{ project.town }}</div>
+              <ProjectMapPanel
+                ref="map"
+                :locations="locations"
+              />
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-label><h1>Kommentare zum Projekt</h1></ion-label>
+            </ion-col>
+          </ion-row>
+          <div v-if="useUser().loggedIn()">
+            <ion-row>
+              <ion-col>
+                <ion-textarea v-model="newComment" inputmode="text" rows=5 placeholder="Kommentar verfassen ..."></ion-textarea>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col style="text-align: right">
+                <ion-button @click="create()">Absenden</ion-button>
+              </ion-col>
+            </ion-row>
+            <ion-row v-if="comments.length === 0">
+              <ion-col>
+                <ion-label>Keine Kommentare gefunden</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row v-else>
+              <ion-col size="6">
+                <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter" @ionChange="reloadComments">
+                  <ion-select-option
+                    v-for="(option, index) in filterOptions"
+                    :key="index"
+                    :value="option.id"
+                  >
+                    {{ option.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-col>
+              <ion-col size="12">
+                <ion-card v-for="comment in comments" :key="comment.id">
+                  <CommentPanel
+                    :comment="comment"
+                    @refreshCollection="reloadComments()"
+                  />
+                </ion-card>
+                <ion-infinite-scroll
+                  v-if="currentPage < totalPages"
+                  @ionInfinite="loadData($event)"
                 >
-                  {{ option.name }}
-                </ion-select-option>
-              </ion-select>
+                  <ion-infinite-scroll-content>
+                  </ion-infinite-scroll-content>
+                </ion-infinite-scroll>
+              </ion-col>
+            </ion-row>
+          </div>
+          <template v-else>
+            <ion-col>
+              <ion-label>Bitte einloggen, um die Kommentare zu sehen</ion-label>
             </ion-col>
-            <ion-col size="12">
-              <ion-card v-for="comment in comments" :key="comment.id">
-                <CommentPanel
-                  :comment="comment"
-                  @refreshCollection="reloadComments()"
-                />
-              </ion-card>
-              <ion-infinite-scroll
-                v-if="currentPage < totalPages"
-                @ionInfinite="loadData($event)"
-              >
-                <ion-infinite-scroll-content>
-                </ion-infinite-scroll-content>
-              </ion-infinite-scroll>
-            </ion-col>
-          </ion-row>
+          </template>
         </div>
-        <template v-else>
-          <ion-col>
-            <ion-label>Bitte einloggen, um die Kommentare zu sehen</ion-label>
-          </ion-col>
-        </template>
       </ion-grid>
 
       <ion-loading
@@ -143,13 +150,15 @@ import { useUser } from '@/composables/user/user'
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
 import CommentPanel from '../../components/participation/CommentPanel.vue'
-import VotePanel from '../../components/participation/VotePanel.vue'
+import ProjectVotePanel from '../../components/participation/ProjectVotePanel.vue'
+import ProjectMilestones from '../../components/participation/ProjectMilestones.vue'
+import ProjectVotes from '../../components/participation/ProjectVotes.vue'
 import { ResultStatus } from '@/types/serverCallResult'
 import { MapLocation } from '@/types/MapLocation'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, VotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes },
   setup() {
 
     const route = useRoute()
@@ -294,8 +303,22 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.expand {
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -10px;
+}
+.header {
+  line-height: 22px;
+  margin-top: 10px;
+}
+.has-padding {
+  padding: 10px;
+}
 .headline {
-  font-size: 1.5em;
+  font-size: 18px;
+  font-weight: 700;
+  color: #58595E;
 }
 ion-textarea {
   --background: #F5F5F5;
@@ -306,5 +329,17 @@ ion-textarea {
   ion-textarea {
     --background: #000000;
   }
+}
+
+.back-button {
+  background: #FFFFFF;
+  border-radius: 20px;
+  position: absolute;
+  font-size: 13px;
+  top: 20px;
+  left: 15px;
+  z-index: 1000;
+  padding: 10px 20px;
+  font-weight: 500;
 }
 </style>

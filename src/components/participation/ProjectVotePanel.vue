@@ -22,7 +22,7 @@
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { usePrivateApi } from '@/composables/api/private'
-import { onIonViewDidEnter, IonRow, IonCol } from '@ionic/vue'
+import { IonRow, IonCol } from '@ionic/vue'
 export default defineComponent({
   emits: ['updateProject'],
   components: { IonRow, IonCol },
@@ -96,10 +96,9 @@ export default defineComponent({
 </script>
 <style scoped>
 .vote-panel {
+  padding-top: 10px;
   color: rgb(68, 68, 68);
-  border-bottom: 1px solid rgb(207, 207, 207);
-  border-left: 1px solid rgb(207, 207, 207);
-  border-right: 1px solid rgb(207, 207, 207);
+  border-bottom: 1px solid rgb(229, 229, 229);
 }
 .vote-panel.upvoted {
   border: none;
