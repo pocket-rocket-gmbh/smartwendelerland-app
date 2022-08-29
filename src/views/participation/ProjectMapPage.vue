@@ -36,7 +36,7 @@
         :backdrop-dismiss="false"
         :backdrop-breakpoint="1.0"
       >
-        <div style="height: 40px; background: white;"></div>
+        <div style="height: 80px; background: white;"></div>
         <ion-content id="projectList">
           <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
             Keine Projekte gefunden
@@ -71,7 +71,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonContent, IonSearchbar, IonLoading, onIonViewDidEnter, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, onIonViewWillLeave } from '@ionic/vue'
+import { IonContent, IonSearchbar, IonLoading, onIonViewDidEnter, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, onIonViewWillLeave, IonIcon } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
