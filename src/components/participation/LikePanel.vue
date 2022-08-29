@@ -1,30 +1,22 @@
 <template>
   <div class="like-dislike-panel">
     <span @click="handleComment('upvote')">
-      <ion-button shape="round" size="small" :color="getButtonColorUpvoted()" class="ion-margin-end">
-        <ion-icon :ios="thumbsUpOutline" :md="thumbsUpSharp"></ion-icon>
-      </ion-button>
+      <ion-icon :ios="heart" :md="heart" v-if="commentUpvoted" class="upvoted"></ion-icon>
+      <ion-icon :ios="heartOutline" :md="heartOutline" v-else></ion-icon>
     </span>
-    <span @click="handleComment('downvote')">
-      <ion-button shape="round" size="small" :color="getButtonColorDownvoted()">
-        <ion-icon :ios="thumbsDownOutline" :md="thumbsDownSharp"></ion-icon>
-      </ion-button>
-    </span>
-    <div class="score">Punktzahl: {{ commentScore }}</div>
+    <div class="score">{{ commentScore }}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
-import { IonButton, IonIcon } from '@ionic/vue'
-import { thumbsDownOutline, thumbsDownSharp, thumbsUpOutline, thumbsUpSharp } from 'ionicons/icons'
+import { IonIcon } from '@ionic/vue'
+import { heartOutline, heart } from 'ionicons/icons'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 
-
 export default defineComponent({
-  name: 'ParticipationLikeDislikePanel',
-  components: { IonButton, IonIcon },
+  components: { IonIcon },
   props: {
     comment: Object
   },
@@ -108,10 +100,8 @@ export default defineComponent({
     }
 
     return {
-      thumbsDownOutline,
-      thumbsDownSharp,
-      thumbsUpOutline,
-      thumbsUpSharp,
+      heartOutline,
+      heart,
       loading,
       handleComment,
       commentUpvoted,
@@ -128,9 +118,21 @@ export default defineComponent({
 <style scoped>
 .like-dislike-panel {
   position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
 }
 .score {
-  font-size: 12px;
-  float: right;
+  display: inline;
+  font-size: 18px;
+  margin-top: 2px;
+}
+ion-icon {
+  margin-right: 3px;
+  font-size: 25px;
+}
+
+ion-icon.upvoted {
+  color: #F44336;
 }
 </style>
