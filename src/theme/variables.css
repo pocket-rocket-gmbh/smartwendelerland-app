@@ -1,8 +1,22 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
+/** Font Face **/
+@font-face {
+  font-family: Lato;
+  src: url("../assets/fonts/Lato-Bold.ttf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("../assets/fonts/Lato-Regular.ttf");
+  font-weight: normal;
+}
+
 /** Ionic CSS Variables **/
 :root {
+  --ion-font-family: 'Lato';
   /** primary **/
   --ion-color-primary: #015281;
   --ion-color-primary-rgb: 56, 128, 255;

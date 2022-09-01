@@ -30,6 +30,10 @@
               :project="project"
               @updateProject="reloadData()"
             />
+            <LoginHint
+              v-else
+              label="Bitte melden Sie sich an um dieses Projekt zu bewerten"
+            />
           </ion-col>
         </ion-row>
         <div class="has-padding">
@@ -63,7 +67,7 @@
           </ion-row>
           <ion-row>
             <ion-col>
-              <div class="headline" v-if="project.community && project.zip && project.town">Projekt Standort:<br/>{{ project.community }} | {{ project.zip }} - {{ project.town }}</div>
+              <div class="headline ion-margin-bottom" v-if="project.community && project.zip && project.town">Projekt Standort:<br/>{{ project.community }} | {{ project.zip }} - {{ project.town }}</div>
               <ProjectMapPanel
                 ref="map"
                 :locations="locations"
@@ -120,11 +124,10 @@
               </ion-col>
             </ion-row>
           </div>
-          <template v-else>
-            <ion-col>
-              <ion-label>Bitte einloggen, um die Kommentare zu sehen</ion-label>
-            </ion-col>
-          </template>
+          <LoginHint
+            v-else
+            label="Bitte melden Sie sich an um Kommentare zu sehen"
+          />
         </div>
       </ion-grid>
 
@@ -155,10 +158,11 @@ import ProjectMilestones from '../../components/participation/ProjectMilestones.
 import ProjectVotes from '../../components/participation/ProjectVotes.vue'
 import { ResultStatus } from '@/types/serverCallResult'
 import { MapLocation } from '@/types/MapLocation'
+import LoginHint from '@/components/participation/LoginHint.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint },
   setup() {
 
     const route = useRoute()
