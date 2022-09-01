@@ -1,30 +1,38 @@
 <template>
-  <span v-if="comment">
+  <div v-if="comment" class="comment-reply">
     <span class="is-clickable" @click="replyBoxOpen = !replyBoxOpen" v-if="showReplyHandle">Antworten ({{ comment.replies_count}})</span>
     <Transition>
-    <div class="replies" v-if="replyBoxOpen">
-      <PublicCommentsComment
-        v-for="comment in comments" :key="comment.id"
-        :comment="comment"
-        :show-reply="false"
-        @removeComment="removeComment"
-      />
-
-      <PublicCommentsNew
-        v-if="useUser().isAdmin()"
-        placeholder="Auf Kommentar antworten"
-        :project-id="comment.project_id"
-        :parent-id="comment.id"
-        @refreshCollection="getItems(false)"
-      />
-    </div>
-  </Transition>
-  </span>
+      <div class="replies" v-if="replyBoxOpen">
+        <ion-card v-for="comment in comments" :key="comment.id">
+          <CommentPanel
+            :comment="comment"
+            :show-reply="false"
+            @removeComment="removeComment"
+          />
+        </ion-card>
+        <CommentNew
+          v-if="useUser().isAdmin()"
+          placeholder="Auf Kommentar antworten"
+          :project-id="comment.project_id"
+          :parent-id="comment.id"
+          @refreshCollection="getItems(false)"
+        />
+      </div>
+    </Transition> 
+  </div>
   
 </template>
-<script>
+<script lang="ts">
+import { defineComponent, ref, computed, watch } from 'vue'
+import { useUser } from '@/composables/user/user'
+import { useCollectionApi } from '@/composables/api/collectionApi'
+import { usePrivateApi } from '@/composables/api/private'
+import CommentNew from '@/components/participation/CommentNew.vue'
+import CommentPanel from '@/components/participation/CommentPanel.vue'
+
 export default defineComponent({
   name: 'Reply',
+  components: { CommentNew, CommentPanel },
   props: {
     comment: {
       type: Object,
@@ -69,7 +77,7 @@ export default defineComponent({
       totalPages.value = api.totalPages.value
     }
 
-    const removeComment = (commentId) => {
+    const removeComment = (commentId:string) => {
       const foundItem = comments.value.find(comment => comment.id === commentId)
       const index = comments.value.indexOf(foundItem)
       comments.value.splice(index, 1)
@@ -81,14 +89,18 @@ export default defineComponent({
       removeComment,
       comments,
       getItems,
-      showReplyHandle
+      showReplyHandle,
+      useUser
     }
   }
 })
 </script>
 <style lang="sass" scoped>
+
+.comment-reply
+  margin-left: 20px
 .replies
-  margin-left: 30px
+  margin-left: 10px
 
 .v-enter-active,.v-leave-active
   transition: 0.5s

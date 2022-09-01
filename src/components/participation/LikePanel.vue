@@ -1,11 +1,11 @@
 <template>
-  <div class="like-dislike-panel">
+  <span class="like-dislike-panel">
     <span @click="handleComment('upvote')">
       <ion-icon :ios="heart" :md="heart" v-if="commentUpvoted" class="upvoted"></ion-icon>
       <ion-icon :ios="heartOutline" :md="heartOutline" v-else></ion-icon>
     </span>
     <div class="score">{{ commentScore }}</div>
-  </div>
+  </span>
 </template>
 
 <script lang="ts">

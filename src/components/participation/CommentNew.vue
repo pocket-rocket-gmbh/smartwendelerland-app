@@ -1,7 +1,7 @@
 <template>
   <ion-row>
     <ion-col>
-      <ion-textarea v-model="newComment" inputmode="text" rows=5 placeholder="Kommentar verfassen ..."></ion-textarea>
+      <ion-textarea v-model="newComment" inputmode="text" :rows=5 :placeholder="placeholder"></ion-textarea>
     </ion-col>
   </ion-row>
   <ion-row>
@@ -21,7 +21,9 @@ export default defineComponent({
   components: { IonRow, IonCol, IonTextarea, IonButton },
   emits: ['refreshCollection'],
   props: {
-    projectId: String
+    projectId: String,
+    parentId: String,
+    placeholder: String
   },
   setup(props, { emit }) {
     const newComment = ref('')
@@ -34,6 +36,7 @@ export default defineComponent({
     const create = async () => {
       loadingInProgress.value = true
       const result = await commentsApi.createItem({
+        parent_id: props.parentId,
         comment: newComment.value
       })
 
@@ -53,3 +56,8 @@ export default defineComponent({
   },
 })
 </script>
+<style scoped lang="sass">
+ion-textarea
+  --background: #F5F5F5
+  --padding-start: 5px
+</style>

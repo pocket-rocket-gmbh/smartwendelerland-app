@@ -1,6 +1,5 @@
 <template>
   <div class="comment-panel">
-
     <ion-icon
       v-if="comment.user.id === user.user.id || user.user.permissions.role === 'root'"
       @click="showContext($event)"
@@ -31,7 +30,7 @@ import { useRoute } from 'vue-router'
 import { IonIcon } from '@ionic/vue'
 import { IonPopover } from '@ionic/vue'
 import { ellipsisVerticalOutline, ellipsisVerticalSharp } from 'ionicons/icons'
-
+import { useUser } from '@/composables/user/user'
 import LikePanel from '@/components/participation/LikePanel.vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { usePrivateApi } from '@/composables/api/private'
@@ -41,9 +40,11 @@ import { useUserStore } from '@/stores/user'
 export default defineComponent({
   name: 'ParticipationCommentPanel',
   props: {
-    comment: Object
+    comment: {
+      type: Object
+    }
   },
-  emits: ['refreshCollection'],
+  emits: ['refreshCollection', 'removeComment'],
   components: { IonPopover, LikePanel, IonIcon },
   setup(props, { emit }) {
 
@@ -71,8 +72,9 @@ export default defineComponent({
     const deleteComment = async () => {
       commentsApi.setEndpoint('comments/' + props.comment.id)
       const result = await commentsApi.deleteItem()
-      emit('refreshCollection')
       closePopover()
+      emit('removeComment', props.comment.id)
+      emit('refreshCollection')
     }
 
     return {
@@ -84,7 +86,8 @@ export default defineComponent({
       closePopover,
       deleteComment,
       ellipsisVerticalOutline,
-      ellipsisVerticalSharp
+      ellipsisVerticalSharp,
+      useUser
     }
   }
 })

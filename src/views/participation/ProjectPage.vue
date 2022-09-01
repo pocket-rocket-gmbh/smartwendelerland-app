@@ -83,6 +83,7 @@
           </ion-row>
           <div v-if="useUser().loggedIn()">
             <CommentNew
+              placeholder="Kommentar verfassen ..."
               :project-id="route.params.id?.toString()"
               @refreshCollection="reloadComments()"
             />
@@ -104,12 +105,18 @@
                 </ion-select>
               </ion-col>
               <ion-col size="12">
-                <ion-card v-for="comment in comments" :key="comment.id">
-                  <CommentPanel
+                <div v-for="comment in comments" :key="comment.id">
+                  <ion-card>
+                    <CommentPanel
+                      :comment="comment"
+                      @refreshCollection="reloadComments()"
+                    />
+                  </ion-card>
+                  <CommentsReply
+                    v-if="useUser().isAdmin()"
                     :comment="comment"
-                    @refreshCollection="reloadComments()"
                   />
-                </ion-card>
+                </div>
                 <ion-infinite-scroll
                   v-if="currentPage < totalPages"
                   @ionInfinite="loadData($event)"
@@ -155,10 +162,11 @@ import ProjectVotes from '../../components/participation/ProjectVotes.vue'
 import { MapLocation } from '@/types/MapLocation'
 import LoginHint from '@/components/participation/LoginHint.vue'
 import CommentNew from '@/components/participation/CommentNew.vue'
+import CommentsReply from '@/components/participation/CommentsReply.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply },
   setup() {
 
     const route = useRoute()
