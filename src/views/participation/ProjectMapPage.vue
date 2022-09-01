@@ -5,7 +5,7 @@
       <ion-searchbar
         placeholder="Suchen"
         v-model="searchQuery"
-        debounce="500"
+        :debounce="1000"
         @ionChange="reloadProjects()"
         @ionClear="reloadProjects()"
       />
