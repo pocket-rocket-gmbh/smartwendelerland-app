@@ -82,16 +82,10 @@
             </ion-col>
           </ion-row>
           <div v-if="useUser().loggedIn()">
-            <ion-row>
-              <ion-col>
-                <ion-textarea v-model="newComment" inputmode="text" rows=5 placeholder="Kommentar verfassen ..."></ion-textarea>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col style="text-align: right">
-                <ion-button @click="create()">Absenden</ion-button>
-              </ion-col>
-            </ion-row>
+            <CommentNew
+              :project-id="route.params.id?.toString()"
+              @refreshCollection="reloadComments()"
+            />
             <ion-row v-if="comments.length === 0">
               <ion-col>
                 <ion-label>Keine Kommentare gefunden</ion-label>
@@ -158,13 +152,13 @@ import CommentPanel from '../../components/participation/CommentPanel.vue'
 import ProjectVotePanel from '../../components/participation/ProjectVotePanel.vue'
 import ProjectMilestones from '../../components/participation/ProjectMilestones.vue'
 import ProjectVotes from '../../components/participation/ProjectVotes.vue'
-import { ResultStatus } from '@/types/serverCallResult'
 import { MapLocation } from '@/types/MapLocation'
 import LoginHint from '@/components/participation/LoginHint.vue'
+import CommentNew from '@/components/participation/CommentNew.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint },
+  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonTextarea, IonButton, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew },
   setup() {
 
     const route = useRoute()
@@ -191,7 +185,7 @@ export default defineComponent({
     const votePanelKey = ref(1)
 
     const loadingInProgress = ref(false)
-    const newComment = ref('')
+    
     const locations = ref<MapLocation[]>([])
     const map = ref(null)
     const mapStyle = ref('')
@@ -254,20 +248,6 @@ export default defineComponent({
       totalPages.value = commentsApi.totalPages.value
     }
 
-    const create = async () => {
-      loadingInProgress.value = true
-      const result = await commentsApi.createItem({
-        comment: newComment.value
-      })
-
-      if (result.status === ResultStatus.SUCCESSFUL) {
-        newComment.value = ''
-        await reloadComments()
-      }
-      
-      loadingInProgress.value = false
-    }
-
     const loadData = (ev: InfiniteScrollCustomEvent) => {
       setTimeout(() => {
         currentPage.value += 1
@@ -282,7 +262,6 @@ export default defineComponent({
 
     return {
       loadingInProgress,
-      newComment,
       locations,
       doRefresh,
       reloadData,
@@ -293,7 +272,6 @@ export default defineComponent({
       useCurrency,
       useUserStore,
       useUser,
-      create,
       filter,
       filterOptions,
       loadData,
@@ -302,7 +280,8 @@ export default defineComponent({
       slideOpts,
       map,
       mapStyle,
-      votePanelKey
+      votePanelKey,
+      route
     }
   }
 })
