@@ -36,13 +36,13 @@
         :backdrop-dismiss="false"
         :backdrop-breakpoint="1.0"
       >
-        <div style="height: 80px; background: white;"></div>
+        <div style="height: 40px; background: white;"></div>
         <ion-content id="projectList">
           <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
             Keine Projekte gefunden
           </div>
           <div v-else>
-            <div v-for="project in projects" :router-link="`projects/${project.id}`" :key="project.id">
+            <div v-for="(project, index) in projects" :router-link="`projects/${project.id}`" :key="project.id" :class="{ 'last-item' : index === projects.length - 1, 'active' : activeProjectId === project.id, 'not-active' : activeProjectId !== null && activeProjectId !== project.id }">
               <ParticipationProjectListPanel
                 @click="navigateToProject(project.id)"
                 :project="project"
@@ -101,6 +101,7 @@ export default defineComponent({
     categoriesApi.setEndpoint(`categories`)
     const categories = categoriesApi.items
     const selectedCategories = ref([])
+    const activeProjectId = ref(null)
 
     const map = ref(null)
     const locations: Ref<MapLocation[]> = ref([])
@@ -231,6 +232,7 @@ export default defineComponent({
       document.querySelector('ion-modal').setCurrentBreakpoint(1.0)
       const yOffset = document.getElementById(marker.id).offsetTop
       const projectList: any = document.querySelector('ion-content#projectList')
+      activeProjectId.value = marker.id
       projectList.scrollToPoint(0, yOffset, 500)
     }
 
@@ -257,13 +259,14 @@ export default defineComponent({
       map,
       locations,
       mapMarkerClick,
-      scroll
+      scroll,
+      activeProjectId
     }
   }
 })
 </script>
 
-<style>
+<style scoped>
 div.mapcontainer {
   width: 100%;
   height: 85%;
@@ -283,8 +286,16 @@ ion-modal::part(handle) {
 ion-modal::part(content) {
   position: relative;
   bottom: 0px;
-  height: 60%;
-  top: 21%;
+  height: 100%;
+  top: 0%;
+}
+
+.last-item {
+  margin-bottom: 100px;
+}
+
+.not-active {
+  opacity: 0.3;
 }
 
 #projectList {
