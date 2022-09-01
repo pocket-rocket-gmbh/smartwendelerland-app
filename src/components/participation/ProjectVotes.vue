@@ -61,32 +61,27 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="css" scoped>
-.votebar-wrap {
-  width: 100%;
-  background: #dcdcdc;
-}
-.votebar {
-  position: relative;
-  height: 40px;
-  transition: 0.5s;
-  overflow: initial;
-}
-.votebar.upvote {
-  background: #ABC812;
-}
-.votebar.downvote {
-  background: #A42258;
-}
+<style lang="sass" scoped>
+.votebar-wrap
+  width: 100%
+.votebar
+  position: relative
+  height: 40px
+  transition: 0.5s
+  overflow: initial
+.votebar.upvote
+  background: #ABC812
+  margin-bottom: 10px
+.votebar.downvote
+  background: #A42258
       
-.result {
-  position: absolute;
-  left: 5px;
-  top: 8px;
-  width: 150px;
-  color: white;
-}
-.is-small .result {
-  top: 10px;
-}
+.result
+  position: absolute
+  left: 5px
+  top: 8px
+  width: 150px
+  font-size: 14px
+  color: white
+.is-small .result
+  top: 10px
 </style>

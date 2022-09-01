@@ -36,11 +36,11 @@
             />
           </ion-col>
         </ion-row>
-        <div class="has-padding">
+        <div class="ion-padding">
           <ion-row>
             <ion-col class="header">
-              <ion-label class="headline">{{ project.name }}</ion-label>
-              <div>{{ useDatetime().getTimeRangeString(project) }}</div>
+              <div class="headline">{{ project.name }}</div>
+              <div class="ion-margin-top">{{ useDatetime().getTimeRangeString(project) }}</div>
               <div v-if="project.costs">Kosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</div>
             </ion-col>
           </ion-row>
@@ -68,12 +68,14 @@
           <ion-row>
             <ion-col>
               <div class="headline ion-margin-bottom" v-if="project.community && project.zip && project.town">Projekt Standort:<br/>{{ project.community }} | {{ project.zip }} - {{ project.town }}</div>
-              <ProjectMapPanel
-                ref="map"
-                :locations="locations"
-              />
             </ion-col>
           </ion-row>
+        </div>
+        <ProjectMapPanel
+          ref="map"
+          :locations="locations"
+        />
+        <div class="ion-padding">
           <ion-row>
             <ion-col>
               <ion-label><h1>Kommentare zum Projekt</h1></ion-label>
@@ -316,23 +318,10 @@ export default defineComponent({
   line-height: 22px;
   margin-top: 10px;
 }
-.has-padding {
-  padding: 10px;
-}
-.headline {
-  font-size: 18px;
-  font-weight: 700;
-  color: #58595E;
-}
+
 ion-textarea {
   --background: #F5F5F5;
   padding: 5px 10px;
-}
-
-@media (prefers-color-scheme: dark) {
-  ion-textarea {
-    --background: #000000;
-  }
 }
 
 .back-button {

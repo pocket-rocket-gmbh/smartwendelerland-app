@@ -47,7 +47,7 @@ export default defineComponent({
     const updateMapStyle = (width: number) => {
       const finalWidth = width - 20
       const finalHeight = width / 2
-      mapStyle.value = `width: ${finalWidth}px; height: ${finalHeight}px;`
+      mapStyle.value = `width: 100%; height: ${finalHeight}px;`
     }
 
     return {
