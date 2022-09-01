@@ -346,4 +346,8 @@ ion-textarea {
   padding: 10px 20px;
   font-weight: 500;
 }
+
+.swiper-slide img {
+  width: 100%;
+}
 </style>

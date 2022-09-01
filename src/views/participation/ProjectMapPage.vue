@@ -286,8 +286,8 @@ ion-modal::part(handle) {
 ion-modal::part(content) {
   position: relative;
   bottom: 0px;
-  height: 100%;
-  top: 0%;
+  height: 80%;
+  top: 10%;
 }
 
 .last-item {
