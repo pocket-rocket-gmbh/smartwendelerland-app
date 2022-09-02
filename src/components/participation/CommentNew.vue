@@ -19,7 +19,7 @@ import { IonRow, IonCol, IonTextarea, IonButton } from '@ionic/vue'
 
 export default defineComponent({
   components: { IonRow, IonCol, IonTextarea, IonButton },
-  emits: ['refreshCollection'],
+  emits: ['refreshCollection', 'increaseRepliesCount'],
   props: {
     projectId: String,
     parentId: String,
@@ -42,6 +42,7 @@ export default defineComponent({
 
       if (result.status === ResultStatus.SUCCESSFUL) {
         newComment.value = ''
+        emit('increaseRepliesCount')
         emit('refreshCollection')
       }
       

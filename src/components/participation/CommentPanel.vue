@@ -70,9 +70,9 @@ export default defineComponent({
     }
 
     const deleteComment = async () => {
+      closePopover()
       commentsApi.setEndpoint('comments/' + props.comment.id)
       const result = await commentsApi.deleteItem()
-      closePopover()
       emit('removeComment', props.comment.id)
       emit('refreshCollection')
     }

@@ -1,6 +1,6 @@
 <template>
   <div v-if="comment" class="comment-reply">
-    <span class="is-clickable" @click="replyBoxOpen = !replyBoxOpen" v-if="showReplyHandle">Antworten ({{ comment.replies_count}})</span>
+    <span class="is-clickable" @click="replyBoxOpen = !replyBoxOpen" v-if="showReplyHandle">Antworten ({{ repliesCount}})</span>
     <Transition>
       <div class="replies" v-if="replyBoxOpen">
         <ion-card v-for="comment in comments" :key="comment.id">
@@ -15,6 +15,7 @@
           placeholder="Auf Kommentar antworten"
           :project-id="comment.project_id"
           :parent-id="comment.id"
+          @increaseRepliesCount="repliesCount += 1"
           @refreshCollection="getItems(false)"
         />
       </div>
@@ -31,7 +32,6 @@ import CommentNew from '@/components/participation/CommentNew.vue'
 import CommentPanel from '@/components/participation/CommentPanel.vue'
 
 export default defineComponent({
-  name: 'Reply',
   components: { CommentNew, CommentPanel },
   props: {
     comment: {
@@ -42,6 +42,7 @@ export default defineComponent({
   setup (props) {
     const replyBoxOpen = ref(false)
     const comment = ref(props.comment)
+    const repliesCount = ref(comment.value.replies_count)
     const api = useCollectionApi()
     api.setBaseApi(usePrivateApi())
     api.setEndpoint(`comments/${comment.value.id}/replies`)
@@ -81,16 +82,17 @@ export default defineComponent({
       const foundItem = comments.value.find(comment => comment.id === commentId)
       const index = comments.value.indexOf(foundItem)
       comments.value.splice(index, 1)
+      repliesCount.value -= 1
     }
 
     return {
       replyBoxOpen,
-      comment,
       removeComment,
       comments,
       getItems,
       showReplyHandle,
-      useUser
+      useUser,
+      repliesCount
     }
   }
 })
