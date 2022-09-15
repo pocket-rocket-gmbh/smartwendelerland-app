@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router'
 import { RouteRecordRaw } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { usePrivateApi } from '@/composables/api/private'
+import { ResultStatus } from '@/types/serverCallResult'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -31,6 +34,30 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach(async (to) => {
+
+  console.log("router before each")
+
+  const userStore = useUserStore()
+  const privateApi = usePrivateApi()
+
+  const jwt = localStorage.getItem('auth._token.jwt')
+  const user = userStore.user
+
+  // User already logged in.
+  if (jwt !== null && user !== null) {
+    return
+  }
+
+  // Try to get user information if there is a token.
+  if (jwt !== null && user === null) {
+    const result = await privateApi.call('get', '/users/me', null)
+    if (result.status === ResultStatus.SUCCESSFUL) {
+      userStore.user = result.data.resource
+    }
+  }
 })
 
 export default router
