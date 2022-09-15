@@ -8,7 +8,6 @@ export function usePrivateApi() {
 
   const AUTH_TOKEN = 'auth._token.jwt'
 
-  const router = useRouter()
   const userStore = useUserStore()
 
   const serverInterface = useServerInterface()
@@ -27,7 +26,7 @@ export function usePrivateApi() {
     if (result.httpCode === 401) {
       localStorage.removeItem(AUTH_TOKEN)
       userStore.user = null
-      router.push({ path: '/login' })
+      useRouter().push({ path: '/login' })
     }
 
     return result
