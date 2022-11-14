@@ -10,8 +10,12 @@
         @ionClear="reloadProjects()"
       />
 
-      <ion-select placeholder="Kategorien wählen" multiple="true" v-model="selectedCategories" @ionChange="debounce(reloadProjects)">
-        <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name }}</ion-select-option>
+      <ion-select v-if="categories.length > 0" placeholder="Kategorien wählen" multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
+        <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name_with_projects_count }}</ion-select-option>
+      </ion-select>
+
+      <ion-select v-if="communities.length > 0" placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
+        <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name_with_projects_count }}</ion-select-option>
       </ion-select>
 
       <div class="mapcontainer">
@@ -71,7 +75,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonContent, IonSearchbar, IonLoading, onIonViewDidEnter, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, onIonViewWillLeave, IonIcon } from '@ionic/vue'
+import { IonContent, IonSearchbar, IonLoading, onIonViewDidEnter, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, onIonViewWillLeave } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -100,8 +104,14 @@ export default defineComponent({
     categoriesApi.setBaseApi(usePublicApi())
     categoriesApi.setEndpoint(`categories`)
     const categories = categoriesApi.items
-    const selectedCategories = ref([])
+    const selectedCategoryIds = ref([])
     const activeProjectId = ref(null)
+
+    const communitiesApi = useCollectionApi()
+    communitiesApi.setBaseApi(usePublicApi())
+    communitiesApi.setEndpoint(`communities`)
+    const communities = communitiesApi.items
+    const selectedCommunityIds = ref([])
 
     const map = ref(null)
     const locations: Ref<MapLocation[]> = ref([])
@@ -128,7 +138,8 @@ export default defineComponent({
       currentPage.value = 1
       Promise.all([
         getPublicProjects(false),
-        getPublicCategories()
+        getPublicCategories(),
+        getPublicCommunities()
       ])      
       loadingInProgress.value = false
     }
@@ -143,10 +154,17 @@ export default defineComponent({
     const getPublicProjects = async (concat = true) => {
 
       const filters = []
-      if (selectedCategories.value.length > 0) {
+      if (selectedCategoryIds.value.length > 0) {
         filters.push({
           field: 'category',
-          value: selectedCategories.value.toString()
+          value: selectedCategoryIds.value.toString()
+        }) 
+      }
+
+      if (selectedCommunityIds.value.length > 0) {
+        filters.push({
+          field: 'community',
+          value: selectedCommunityIds.value
         }) 
       }
 
@@ -200,7 +218,11 @@ export default defineComponent({
     }
 
     const getPublicCategories = async () => {
-      await categoriesApi.retrieveCollection()
+      await categoriesApi.retrieveCollection({ page: currentPage.value, per_page: 1000, sort_by: 'name', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
+    }
+
+    const getPublicCommunities = async () => {
+      await communitiesApi.retrieveCollection({ page: currentPage.value, per_page: 1000, sort_by: 'name', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
     }
 
     const loadData = (ev: InfiniteScrollCustomEvent) => {
@@ -248,12 +270,14 @@ export default defineComponent({
       projects,
       showProjectsList,
       searchQuery,
-      selectedCategories,
+      selectedCategoryIds,
+      selectedCommunityIds,
       reloadProjects,
       currentPage,
       totalPages,
       loadData,
       categories,
+      communities,
       debounce: createDebounce(),
       navigateToProject,
       map,

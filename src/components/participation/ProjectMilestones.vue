@@ -53,49 +53,43 @@ export default defineComponent({
   }
 })
 </script>
-<style scoped>
-.milestones {
-  margin-top: 20px;
-}
-.bottom {
-  margin-bottom: 20px;
-}
+<style lang="sass" scoped>
+.milestones
+  margin-top: 20px
+.bottom
+  margin-bottom: 20px
 
-.font-weight-bold {
-  font-weight: 500;
-}
-.milestone-grid {
-  color: #C2C2C2;
-  display: grid;
-  grid-template-columns: 50px auto;
-}
-.milestone-slide {
-  background: #F5F5F5;
-  width: 40px;
-}
-.milestone-slide.first {
-  border-top-left-radius: 50%;
-  border-top-right-radius: 50%;
-}
-.milestone-slide.last {
-  height: 40px;
-  border-bottom-left-radius: 50%;
-  border-bottom-right-radius: 50%;
-}
-.milestone-bubble {
-  color: white;
-  display: grid;
-  place-items: center;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  font-weight: bold;
-  background: #C2C2C2;
-}    
-.milestone-bubble.active {
-  color: #58595E;
-}
-.milestone-bubble.active .milestone-bubble {
-  background: #ABC812;
-}
+.font-weight-bold
+  font-weight: 500
+.milestone-grid
+  color: #C2C2C2
+  display: grid
+  grid-template-columns: 50px auto
+  &.active
+    color: #58595E
+  &.active .milestone-bubble
+    background: #ABC812
+.milestone-slide
+  background: #F5F5F5
+  width: 40px
+.milestone-slide.first
+  border-top-left-radius: 50%
+  border-top-right-radius: 50%
+.milestone-slide.last
+  height: 40px
+  border-bottom-left-radius: 50%
+  border-bottom-right-radius: 50%
+.milestone-bubble
+  color: white
+  display: grid
+  place-items: center
+  height: 40px
+  width: 40px
+  border-radius: 50%
+  font-weight: bold
+  background: #C2C2C2  
+.milestone-bubble.active
+  color: #58595E
+.milestone-bubble.active .milestone-bubble
+  background: #ABC812
 </style>

@@ -1,41 +1,47 @@
 <template>
     <ion-page class="main">
         <ion-content>
-          <ion-card>
-            <div align="center">
-              <img src="@/assets/images/logo.png" class="logo" />
+          <ion-grid>
+            <ion-row class="ion-justify-content-center">
+              <ion-col size-sm="12" size-md="6" size-lg="3">
+                <ion-card>
+                  <div align="center">
+                    <img src="@/assets/images/logo.png" class="logo" />
 
-              <div class="field">
-                <ion-input v-model="email" type="text" placeholder="E-Mail" />
-              </div>
-              
-              <div class="field">
-                <ion-input v-model="password" type="password" placeholder="Passwort" />
-              </div>
-            
-              <ion-button @click="doLogin" color="primary">Anmelden</ion-button>
-            </div>
-            
-            <ion-loading
-              :is-open="loginInProgress"
-              message="Anmelden..."
-            />
-          </ion-card>
+                    <div class="field">
+                      <ion-input v-model="email" type="text" placeholder="E-Mail" />
+                    </div>
+                    
+                    <div class="field">
+                      <ion-input v-model="password" type="password" placeholder="Passwort" />
+                    </div>
+                  
+                    <ion-button @click="doLogin" color="primary">Anmelden</ion-button>
+                  </div>
+                  
+                  <ion-loading
+                    :is-open="loginInProgress"
+                    message="Anmelden..."
+                  />
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
         </ion-content>
     </ion-page>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useRouter, onBeforeRouteUpdate } from 'vue-router'
-import { IonPage, IonCard, IonInput, IonContent, IonButton, IonLoading, toastController, onIonViewWillEnter } from '@ionic/vue'
+import { useRouter } from 'vue-router'
+import { IonPage, IonCard, IonInput, IonContent, IonButton, IonLoading, toastController, onIonViewWillEnter, IonGrid, IonRow, IonCol } from '@ionic/vue'
 import { usePrivateApi } from '@/composables/api/private'
 import { useUserStore } from '@/stores/user'
-import { ServerCallResult, ResultStatus } from '@/types/serverCallResult'
+import { ResultStatus } from '@/types/serverCallResult'
 
 export default defineComponent({
   name: 'LoginPage',
-  components: { IonPage, IonCard, IonInput, IonContent, IonButton, IonLoading },
+  components: { IonPage, IonCard, IonInput, IonContent, IonButton, IonLoading, IonGrid, IonRow, IonCol },
   setup() {
 
     const router = useRouter()

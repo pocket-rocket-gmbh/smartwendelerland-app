@@ -7,13 +7,17 @@
       <ion-searchbar
         placeholder="Suchen"
         v-model="searchQuery"
-        debounce="500"
+        :debounce="500"
         @ionChange="reloadProjects()"
         @ionClear="reloadProjects()"
       />
 
-      <ion-select placeholder="Kategorien wählen" multiple="true" v-model="selectedCategories" @ionChange="debounce(reloadProjects)">
+      <ion-select placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
         <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name }}</ion-select-option>
+      </ion-select>
+
+      <ion-select placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
+        <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name }}</ion-select-option>
       </ion-select>
 
       <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
@@ -69,7 +73,13 @@ export default defineComponent({
     categoriesApi.setBaseApi(usePublicApi())
     categoriesApi.setEndpoint(`categories`)
     const categories = categoriesApi.items
-    const selectedCategories = ref([])
+    const selectedCategoryIds = ref([])
+
+    const communitiesApi = useCollectionApi()
+    communitiesApi.setBaseApi(usePublicApi())
+    communitiesApi.setEndpoint(`communities`)
+    const communities = communitiesApi.items
+    const selectedCommunityIds = ref([])
 
     const projects = api.items
 
@@ -89,7 +99,8 @@ export default defineComponent({
       currentPage.value = 1
       Promise.all([
         getPublicProjects(false),
-        getPublicCategories()
+        getPublicCategories(),
+        getPublicCommunities()
       ])      
       loadingInProgress.value = false
     }
@@ -104,10 +115,17 @@ export default defineComponent({
     const getPublicProjects = async (concat = true) => {
 
       const filters = []
-      if (selectedCategories.value.length > 0) {
+      if (selectedCategoryIds.value.length > 0) {
         filters.push({
           field: 'category',
-          value: selectedCategories.value
+          value: selectedCategoryIds.value
+        }) 
+      }
+
+      if (selectedCommunityIds.value.length > 0) {
+        filters.push({
+          field: 'community',
+          value: selectedCommunityIds.value
         }) 
       }
 
@@ -126,13 +144,19 @@ export default defineComponent({
     }
 
     const getPublicCategories = async () => {
-      await categoriesApi.retrieveCollection()
+      await categoriesApi.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'name', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
+    }
+
+    const getPublicCommunities = async () => {
+      await communitiesApi.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'name', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
     }
 
     const loadData = (ev: InfiniteScrollCustomEvent) => {
       setTimeout(() => {
         currentPage.value += 1
         getPublicProjects(true)
+        getPublicCategories()
+        getPublicCommunities()
         ev.target.complete()
       }, 300);
     }
@@ -154,12 +178,14 @@ export default defineComponent({
       doRefresh,
       projects,
       searchQuery,
-      selectedCategories,
+      selectedCategoryIds,
+      selectedCommunityIds,
       reloadProjects,
       currentPage,
       totalPages,
       loadData,
       categories,
+      communities,
       debounce: createDebounce()
     }
   }

@@ -4,7 +4,7 @@
       <ion-toolbar>
         <img @click="$router.push({path: `/`})" src="@/assets/images/logo.png" class="logo" slot="start"/>
         <ion-icon v-if="userStore.user === null" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
-        <ion-icon v-else  @click="router.push('/me')" router-link="/me" :ios="personCircleOutline" :md="personCircleSharp" slot="end"></ion-icon>
+        <img v-else  @click="router.push('/me')" router-link="/me" src="@/assets/images/user-standard.png" slot="end" />
       </ion-toolbar>
     </ion-header>
 

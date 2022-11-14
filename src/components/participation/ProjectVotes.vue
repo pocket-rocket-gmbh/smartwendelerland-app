@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="totalVoteCount > 0" :class="{'is-small' : isSmall}">
+    <div v-if="totalVoteCount > 0 && project.rating_results_public" :class="{'is-small' : isSmall}">
       <div class="votebar-wrap">
         <div v-if="upvoteRelation > 0" class="votebar upvote" :style="`width: ${upvoteRelation}%;`">
           <div class="result">{{ upvoteCount }} dafür</div>
@@ -13,11 +13,12 @@
         </div>
       </div>
       
-      <div class="ion-margin-top">
+      <div class="ion-margin-top" v-if="showVoteCount">
         Abgegebene Stimmen: {{ totalVoteCount }}
       </div>
     </div>
-    <div v-else>Noch keine Abstimmung</div>
+    <div v-else-if="!project.rating_results_public">Ergebnis noch nicht freigegeben</div>
+    <div v-else>Noch keine Abstimmung</div>      
   </div>
   
 </template>
@@ -31,6 +32,10 @@ export default defineComponent({
     isSmall: {
       type: Boolean,
       default: false
+    },
+    showVoteCount: {
+      type: Boolean,
+      default: true
     }
   },
   setup (props) {

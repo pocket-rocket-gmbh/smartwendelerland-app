@@ -40,6 +40,11 @@
           <ion-row>
             <ion-col class="header">
               <div class="headline">{{ project.name }}</div>
+              <div class="headline ion-margin-top" v-if="project.community && project.zip && project.town">
+                <strong v-if="project.community && project.zip && project.town">
+                  <ion-icon :icon="location"></ion-icon> {{ project.community.name }} | {{ project.zip }} - {{ project.town }}
+                </strong>
+              </div>
               <div class="ion-margin-top">{{ useDatetime().getTimeRangeString(project) }}</div>
               <div v-if="project.costs">Kosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</div>
             </ion-col>
@@ -58,16 +63,11 @@
           </ion-row>
           <ion-row>
             <ion-col>
-              <div class="ion-margin-top ion-margin-bottom"><b>Abstimmungen</b></div>
+              <div class="ion-margin-top ion-margin-bottom"><b>Abstimmung</b></div>
               <ProjectVotes
                 :key="votePanelKey"
                 :project="project"
               />
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <div class="headline ion-margin-bottom" v-if="project.community && project.zip && project.town">Projekt Standort:<br/>{{ project.community }} | {{ project.zip }} - {{ project.town }}</div>
             </ion-col>
           </ion-row>
         </div>
@@ -163,6 +163,7 @@ import { MapLocation } from '@/types/MapLocation'
 import LoginHint from '@/components/participation/LoginHint.vue'
 import CommentNew from '@/components/participation/CommentNew.vue'
 import CommentsReply from '@/components/participation/CommentsReply.vue'
+import { location } from 'ionicons/icons'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
@@ -289,7 +290,8 @@ export default defineComponent({
       map,
       mapStyle,
       votePanelKey,
-      route
+      route,
+      location
     }
   }
 })
