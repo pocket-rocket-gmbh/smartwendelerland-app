@@ -290,39 +290,32 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-div.mapcontainer {
-  width: 100%;
-  height: 85%;
-  position: relative;
-}
+<style lang="sass" scoped>
+div.mapcontainer
+  width: 100%
+  height: 85%
+  position: relative
 
-ion-modal {
-  --ion-background-color: #ffffff00;
-}
+ion-modal
+  --ion-background-color: #ffffff00
 
-ion-modal::part(handle) {
-  background: #007bbe;
-  width: 70px;
-  height: 7px;
-}
+ion-modal::part(handle)
+  background: #007bbe
+  width: 70px
+  height: 7px
 
-ion-modal::part(content) {
-  position: relative;
-  bottom: 0px;
-  height: 80%;
-  top: 10%;
-}
+ion-modal::part(content)
+  position: relative
+  bottom: 0px
+  height: 80%
+  top: 10%
 
-.last-item {
-  margin-bottom: 100px;
-}
+.last-item
+  margin-bottom: 100px
 
-.not-active {
-  opacity: 0.3;
-}
+// .not-active
+//   opacity: 0.3
 
-#projectList {
-  background-color: #ffffff;
-}
+#projectList
+  background-color: #ffffff
 </style>
