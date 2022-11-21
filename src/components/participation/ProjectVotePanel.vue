@@ -1,8 +1,8 @@
 <template>
   <ion-row no-gutters :class="['vote-panel', votedClass]" align="center">
     <ion-col>
-      <img src="@/assets/images/dislike.png" @click="handleVote('downvote')" v-if="projectDownvoted" />
-      <img src="@/assets/images/dislike-inactive.png" @click="handleVote('downvote')" v-else />
+      <img src="@/assets/images/dislike.png" @click="handleVote('downvote')" v-if="project.rating_kind === 'upvote_downvote' && projectDownvoted" />
+      <img src="@/assets/images/dislike-inactive.png" @click="handleVote('downvote')" v-else-if="project.rating_kind === 'upvote_downvote'" />
     </ion-col>
     <ion-col>
       <div v-if="votedClass" class="your-vote">

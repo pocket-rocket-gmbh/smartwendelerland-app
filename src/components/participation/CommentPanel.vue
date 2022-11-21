@@ -19,6 +19,7 @@
       :event="commentContextEvent"
       @didDismiss="closePopover"
     >
+      <div @click="reportComment(comment.id)" v-if="comment.user.id !== useUser().currentUser().id" align="center" class="ion-margin">Melden</div>
       <div @click="deleteComment()" align="center" class="ion-margin">Löschen</div>
     </ion-popover>
   </div>
@@ -48,13 +49,15 @@ export default defineComponent({
   components: { IonPopover, LikePanel, IonIcon },
   setup(props, { emit }) {
 
-    const route = useRoute()
     const user = useUserStore()
 
     const privateApi = usePrivateApi()
     const commentsApi = useCollectionApi()
     commentsApi.setBaseApi(privateApi)
     commentsApi.setEndpoint('comments')
+
+    const reportApi = useCollectionApi()
+    reportApi.setBaseApi(privateApi)
 
     const popoverOpen = ref(false)
     const commentContextEvent = ref(null)
@@ -77,6 +80,12 @@ export default defineComponent({
       emit('refreshCollection')
     }
 
+    const reportComment = async (commentId:string) => {
+      reportApi.setEndpoint(`comment_reports/comments/${commentId}`)
+      await reportApi.createItem({})
+      popoverOpen.value = false
+    }
+
     return {
       user,
       useDatetime,
@@ -85,6 +94,7 @@ export default defineComponent({
       commentContextEvent,
       closePopover,
       deleteComment,
+      reportComment,
       ellipsisVerticalOutline,
       ellipsisVerticalSharp,
       useUser

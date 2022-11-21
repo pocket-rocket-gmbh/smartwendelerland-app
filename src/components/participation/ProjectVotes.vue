@@ -8,7 +8,7 @@
       </div>
       
       <div class="votebar-wrap">
-        <div v-if="downvoteRelation > 0" class="votebar downvote" :style="`width: ${downvoteRelation}%;`">
+        <div v-if="project.rating_kind === 'upvote_downvote' && downvoteRelation > 0" class="votebar downvote" :style="`width: ${downvoteRelation}%;`">
           <div class="result">{{ downvoteCount }} dagegen</div>
         </div>
       </div>
