@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { IonIcon } from '@ionic/vue'
 import { IonPopover } from '@ionic/vue'
 import { ellipsisVerticalOutline, ellipsisVerticalSharp } from 'ionicons/icons'
