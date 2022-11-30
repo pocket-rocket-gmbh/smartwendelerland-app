@@ -34,6 +34,27 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
+/* Push Notifications */
+import OneSignal from 'onesignal-cordova-plugin'
+// Call this function when your app starts
+function OneSignalInit(): void {
+  // Uncomment to set OneSignal device logging to VERBOSE  
+  // OneSignal.setLogLevel(6, 0);
+
+  // NOTE: Update the setAppId value below with your OneSignal AppId.
+  OneSignal.setAppId("07a3e29a-e951-4662-98a9-d92076e0cbb9");
+  OneSignal.setNotificationOpenedHandler(function(jsonData) {
+      console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+  });
+
+  // Prompts the user for notification permissions.
+  //    * Since this shows a generic native prompt, we recommend instead using an In-App Message to prompt for notification permission (See step 7) to better communicate to your users what notifications they will get.
+  OneSignal.promptForPushNotificationsWithUserResponse(function(accepted) {
+      console.log("User accepted notifications: " + accepted);
+  });
+}
+document.addEventListener("deviceready", OneSignalInit, false)
+
 const app = createApp(App)
   .use(createPinia())
   .use(IonicVue)
