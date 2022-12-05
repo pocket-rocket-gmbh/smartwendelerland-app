@@ -39,6 +39,8 @@
         </ion-infinite-scroll>
       </div>
 
+      <PollsBox />
+
       <ion-loading
         :is-open="loadingInProgress"
         message="Projekte werden geladen..."
@@ -52,13 +54,14 @@ import { defineComponent, ref } from 'vue'
 import { IonContent, IonSearchbar, IonRefresher, IonRefresherContent, IonLoading, onIonViewWillEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption } from '@ionic/vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
+import PollsBox from '@/components/participation/PollsBox.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption },
+  components: { BaseLayout, IonContent, IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, PollsBox },
   setup() {
 
     const publicApi = usePublicApi()

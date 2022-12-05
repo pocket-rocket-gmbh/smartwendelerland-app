@@ -39,9 +39,12 @@
         :breakpoints="[0.15, 1.0]"
         :backdrop-dismiss="false"
         :backdrop-breakpoint="1.0"
+        @ionBreakpointDidChange="(projectListHeadlineVisible = !projectListHeadlineVisible)"
       >
         <div style="height: 40px; background: white;"></div>
-        <div style="height: 60px; background: white; padding-bottom: 15px;" align="center">Projekte in Liste anzeigen</div>
+        <div style="height: 60px; background: white; padding-bottom: 15px;" align="center">
+          <span v-if="projectListHeadlineVisible">Projekte in Liste anzeigen</span>
+        </div>
         <ion-content id="projectList">
           <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
             Keine Projekte gefunden
@@ -65,6 +68,8 @@
         </ion-content>
       </ion-modal>
 
+      <PollsBox />
+
       <ion-loading
         :is-open="loadingInProgress"
         message="Projekte werden geladen..."
@@ -85,10 +90,11 @@ import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 import { MapLocation } from '@/types/MapLocation'
 import MapWidget from '@/components/MapWidget.vue'
 import L from 'leaflet'
+import PollsBox from '@/components/participation/PollsBox.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal },
+  components: { BaseLayout, IonContent, IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal, PollsBox },
   setup() {
 
     const router = useRouter()
@@ -100,6 +106,7 @@ export default defineComponent({
     const searchQuery = ref('')
     const currentPage = ref(1)
     const totalPages = ref(1)
+    const projectListHeadlineVisible = ref(true)
 
     const categoriesApi = useCollectionApi()
     categoriesApi.setBaseApi(usePublicApi())
@@ -131,6 +138,7 @@ export default defineComponent({
     })
 
     onIonViewWillLeave(() => {
+      projectListHeadlineVisible.value = true
       showProjectsList.value = false
     })
 
@@ -285,7 +293,8 @@ export default defineComponent({
       locations,
       mapMarkerClick,
       scroll,
-      activeProjectId
+      activeProjectId,
+      projectListHeadlineVisible
     }
   }
 })
