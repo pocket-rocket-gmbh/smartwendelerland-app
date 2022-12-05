@@ -35,12 +35,13 @@
 
       <ion-modal
         :is-open="showProjectsList"
-        :initial-breakpoint="0.1"
-        :breakpoints="[0.1, 1.0]"
+        :initial-breakpoint="0.15"
+        :breakpoints="[0.15, 1.0]"
         :backdrop-dismiss="false"
         :backdrop-breakpoint="1.0"
       >
         <div style="height: 40px; background: white;"></div>
+        <div style="height: 60px; background: white; padding-bottom: 15px;" align="center">Projekte in Liste anzeigen</div>
         <ion-content id="projectList">
           <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
             Keine Projekte gefunden
@@ -307,8 +308,8 @@ ion-modal::part(handle)
 ion-modal::part(content)
   position: relative
   bottom: 0px
-  height: 80%
-  top: 10%
+  height: 100%
+  top: 5.2%
 
 .last-item
   margin-bottom: 100px

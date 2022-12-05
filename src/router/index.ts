@@ -14,6 +14,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/LoginPage.vue')
   },
   {
+    path: '/password-forgotten',
+    component: () => import('@/views/PasswordForgottenPage.vue')
+  },
+  {
+    path: '/register',
+    component: () => import('@/views/RegisterPage.vue')
+  },
+  {
     path: '/me',
     component: () => import('@/views/MePage.vue')
   },
