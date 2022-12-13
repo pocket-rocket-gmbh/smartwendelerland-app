@@ -6,7 +6,10 @@
         <div v-else class="bubble"><img src="@/assets/images/poll.svg" /></div>
       </div>
       <div class="content" v-if="!questionAnswered">
-        <div class="headline big has-text-grey ion-margin">{{ usePollStore().publicPoll.name }}</div>
+        <div class="headline big has-text-grey ion-margin">
+          <span v-if="(isPublic && usePollStore().publicPoll)">{{ usePollStore().publicPoll.name }}</span>
+          <span v-else-if="usePollStore().projectPoll">{{ usePollStore().projectPoll.name }}</span>
+        </div>
         <div class="has-text-primary is-size-small ion-margin">Dauert weniger als 1 Minute</div>
         <div v-for="pollQuestion in pollQuestions" :key="pollQuestion.id" class="mt-5">
           <label align="left">{{ pollQuestion.name }}</label>
@@ -62,6 +65,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const pollId = computed(() => {
       return router.currentRoute.value.params.id
+    })
+
+    const isPublic = computed(() => {
+      return router.currentRoute.value.query.is_public === 'true'
     })
 
     const api = useCollectionApi()
@@ -137,7 +144,6 @@ export default defineComponent({
           }
         }
       })
-      console.log(answersArray.value)
     }
 
     const storeResults = async () => {
@@ -163,10 +169,7 @@ export default defineComponent({
           }
         })
 
-        console.log(answersArraySanitized)
-
         await answersArraySanitized.value.forEach(answer => {
-          console.log(answer.poll_question_id)
           answersApi.setEndpoint(`poll_answers/poll_question/${answer.poll_question_id}`)
           const result = answersApi.createItem(
             { rating_value: answer.rating_value, text_value: answer.text_value, choices_answers: answer.choices_answers }
@@ -219,7 +222,8 @@ export default defineComponent({
       storeResults,
       answersArray,
       completedQuestionsNoText,
-      usePollStore
+      usePollStore,
+      isPublic
     }
   },
 })

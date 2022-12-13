@@ -1,17 +1,17 @@
 <template>
-  <BaseLayout>
+  <BackButtonLayout>
     <div align="center">
       <PollMain />
     </div>
-  </BaseLayout>
+  </BackButtonLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import BaseLayout from '@/components/general/BaseLayout.vue'
+import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import PollMain from '@/components/polls/PollMain.vue'
 export default defineComponent({
-  components: { BaseLayout, PollMain }
+  components: { BackButtonLayout, PollMain }
 })
 </script>
 

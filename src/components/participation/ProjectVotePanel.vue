@@ -6,11 +6,11 @@
     </ion-col>
     <ion-col>
       <div v-if="votedClass" class="your-vote">
-        <div>Ihre Stimme zum Projekt:</div>
+        <div>Deine Stimme zum Projekt:</div>
         <div v-if="projectUpvoted" class="has-text-white">gefällt mir</div>
         <div v-else-if="projectDownvoted" class="has-text-white">gefällt mir nicht</div>
       </div>
-      <div v-else class="your-vote">Geben Sie Ihre Stimme ab</div>
+      <div v-else class="your-vote">Gib Deine Stimme ab</div>
     </ion-col>
     <ion-col>
       <img src="@/assets/images/like.png" @click="handleVote('upvote')" v-if="projectUpvoted" />

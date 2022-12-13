@@ -1,5 +1,5 @@
 <template>
-  <base-layout>
+  <BackButtonLayout>
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -65,14 +65,14 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-  </base-layout>
+  </BackButtonLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { IonGrid, IonRow, IonCol, IonLabel, IonButton, onIonViewWillEnter, IonInput, IonItem } from '@ionic/vue'
-import BaseLayout from '@/components/general/BaseLayout.vue'
+import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -80,7 +80,7 @@ import { ResultStatus } from '@/types/serverCallResult'
 
 export default defineComponent({
   name: 'MePage',
-  components: { BaseLayout, IonGrid, IonRow, IonCol, IonLabel, IonButton, IonInput, IonItem },
+  components: { BackButtonLayout, IonGrid, IonRow, IonCol, IonLabel, IonButton, IonInput, IonItem },
   setup() {
 
     const router = useRouter()

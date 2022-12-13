@@ -1,5 +1,5 @@
 <template>
-  <base-layout>
+  <BackButtonLayout>
     <ion-content>
       <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
@@ -8,13 +8,6 @@
       <ion-grid v-if="project" class="expand">
         <ion-row>
           <ion-col>
-            <div
-              class="back-button"
-              @click="$router.push({path: '/participation/projects'})"
-            >
-              &lt; zurück
-            </div>
-
             <ion-slides pager="true" :options="slideOpts">
               <ion-slide>
                 <img :src="project.image_url"/>
@@ -37,6 +30,10 @@
           </ion-col>
         </ion-row>
         <div class="ion-padding">
+          <PollsBox
+            v-if="projectPoll"
+            :is-public="false"
+          />
           <ion-row>
             <ion-col class="header">
               <div class="headline">{{ project.name }}</div>
@@ -139,14 +136,14 @@
         message="Projekt wird geladen..."
       />
     </ion-content>
-  </base-layout>
+  </BackButtonLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide } from '@ionic/vue'
-import BaseLayout from '@/components/general/BaseLayout.vue'
+import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import ProjectMapPanel from '@/components/participation/ProjectMapPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -155,19 +152,21 @@ import { useCurrency } from '@/composables/ui/currency'
 import { useUser } from '@/composables/user/user'
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
-import CommentPanel from '../../components/participation/CommentPanel.vue'
-import ProjectVotePanel from '../../components/participation/ProjectVotePanel.vue'
-import ProjectMilestones from '../../components/participation/ProjectMilestones.vue'
-import ProjectVotes from '../../components/participation/ProjectVotes.vue'
+import CommentPanel from '@/components/participation/CommentPanel.vue'
+import ProjectVotePanel from '@/components/participation/ProjectVotePanel.vue'
+import ProjectMilestones from '@/components/participation/ProjectMilestones.vue'
+import ProjectVotes from '@/components/participation/ProjectVotes.vue'
 import { MapLocation } from '@/types/MapLocation'
 import LoginHint from '@/components/participation/LoginHint.vue'
 import CommentNew from '@/components/participation/CommentNew.vue'
 import CommentsReply from '@/components/participation/CommentsReply.vue'
 import { location } from 'ionicons/icons'
+import { usePollStore } from '@/stores/poll'
+import PollsBox from '@/components/polls/PollsBox.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply },
+  components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox },
   setup() {
 
     const route = useRoute()
@@ -192,6 +191,7 @@ export default defineComponent({
     const currentPage = ref(1)
     const totalPages = ref(1)
     const votePanelKey = ref(1)
+    const projectPoll = ref(null)
 
     const loadingInProgress = ref(false)
     
@@ -204,7 +204,7 @@ export default defineComponent({
       speed: 400
     }
 
-    onIonViewDidEnter(() => {
+    onIonViewDidEnter(async () => {
       if (useUser().loggedIn()) {
         projectsApi.setBaseApi(privateApi)
       } else {
@@ -212,6 +212,7 @@ export default defineComponent({
       }
 
       commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
+
       reloadData()
     })
 
@@ -229,6 +230,9 @@ export default defineComponent({
         projectsApi.getItem(route.params.id?.toString()),
         reloadComments()
       ])
+
+      await usePollStore().setProjectPoll(route.params.id?.toString())
+      projectPoll.value = usePollStore().projectPoll
 
       project.value.locations?.forEach((location: any) => {
         locations.value.push({
@@ -291,7 +295,8 @@ export default defineComponent({
       mapStyle,
       votePanelKey,
       route,
-      location
+      location,
+      projectPoll
     }
   }
 })
@@ -311,18 +316,6 @@ export default defineComponent({
 ion-textarea {
   --background: #F5F5F5;
   padding: 5px 10px;
-}
-
-.back-button {
-  background: #FFFFFF;
-  border-radius: 20px;
-  position: absolute;
-  font-size: 13px;
-  top: 20px;
-  left: 15px;
-  z-index: 1000;
-  padding: 10px 20px;
-  font-weight: 500;
 }
 
 .swiper-slide img {

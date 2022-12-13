@@ -26,6 +26,7 @@ export function useCollectionApi() {
   const retrieveCollection = async (options: RetrieveCollectionOptions = { page: 1, per_page: 25, sort_by: 'created_at', sort_order: 'DESC', searchQuery: '', concat: false, filters: [] }) => {
 
     let search = ''
+    let queryOperator = '?'
 
     if (options.searchQuery?.length > 0) {
       search = `&search=${options.searchQuery}`
@@ -39,7 +40,11 @@ export function useCollectionApi() {
       })
     }
 
-    const result: ServerCallResult = await baseApi.call('get', `/${endpoint}?page=${options.page}&per_page=${options.per_page}&sort_by=${options.sort_by}&sort_order=${options.sort_order}${search}${filtersParam}`, null)
+    if (endpoint.split("?").length > 1) {
+      queryOperator = '&'
+    }
+
+    const result: ServerCallResult = await baseApi.call('get', `/${endpoint}${queryOperator}page=${options.page}&per_page=${options.per_page}&sort_by=${options.sort_by}&sort_order=${options.sort_order}${search}${filtersParam}`, null)
 
     if (result.status === ResultStatus.SUCCESSFUL) {
         totalPages.value = Math.ceil(result.data['total_results'] / options.per_page)

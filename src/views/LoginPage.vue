@@ -66,7 +66,6 @@ export default defineComponent({
         localStorage.setItem('auth._token.jwt', jwt)
         localStorage.setItem('email', email.value)          
         userStore.user = result.data.user
-        console.log(lastPage.value)
         if (lastPage.value && lastPage.value === 'password-forgotten') {
           router.push({ path: lastPage.value })
         } else {

@@ -1,77 +1,57 @@
 <template>
-  <div />
+  <ion-nav-link :routerLink="pollLink">
+    <div class="box">
+      <img src="@/assets/images/poll-teaser.svg" class="has-drop-shadow is-fullwidth" />
+      <div class="box-headline-right">
+        <span v-if="useUser().loggedIn()">Sag uns Deine Meinung!<br/>Zur aktuellen Umfrage</span>
+        <span v-else>Jetzt anmelden um an<br/>Umfragen teilzunehmen</span>
+      </div>
+    </div>
+  </ion-nav-link>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, onMounted } from 'vue'
-import { useCollectionApi } from '@/composables/api/collectionApi'
-import { usePrivateApi } from '@/composables/api/private'
-import { useDatetime } from '@/composables/ui/datetime'
+import { useUser } from '@/composables/user/user'
+import { usePollStore } from '@/stores/poll'
+import { IonNavLink } from '@ionic/vue'
 export default defineComponent({
+  components: { IonNavLink },
   emits: ['setAccessiblePollId'],
   props: {
     projectId: {
       type: String,
       default: null
+    },
+    isPublic: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { emit }) {
-    const api = useCollectionApi()
-    api.setBaseApi(usePrivateApi())
-    if (props.projectId) {
-      api.setEndpoint(`polls?is_active=true&project_id=${props.projectId}`)
-    } else {
-      api.setEndpoint(`polls?is_active=true&ignore_projects=true`)
-    }
-
-    const polls = api.items
-    const loading = ref(false)
-    const activePollId = ref(null)
-    const showCurrentActivePoll = ref(true)
-
-    // currently considers only one active poll
-    const lastActivePoll = computed(() => {
-      if (polls.value.length > 0) {
-        emit('setAccessiblePollId', polls.value[0].id)
-        return polls.value[0]
+    const pollId = computed(() => {
+      usePollStore().publicPoll.id
+      if (!props.isPublic) {
+        return usePollStore().projectPoll.id
       }
-      return null
+      return usePollStore().publicPoll.id
     })
 
-    const getActivePolls = async () => {
-      loading.value = true
-      await api.retrieveCollection({ page: 1, per_page: 5, sort_by: 'created_at', sort_order: 'DESC', searchQuery: null, concat: false, filters: null })
-      loading.value = false
-    }
-
-    const setPoll = (id:any) => {
-      activePollId.value = id
-    }
-
-    const pollAlreadyAnswered = computed(() => {
-      if (lastActivePoll.value && localStorage.getItem(`smawela_poll_completed_${lastActivePoll.value.id}`)) {
-        return true
+    const pollLink = computed(() => {
+      if (useUser().loggedIn() && pollId.value) {
+        return `/polls/${pollId.value}?is_public=${props.isPublic}`
+      } else {
+        return '/login'
       }
-      return false
-    })
-
-    onMounted(() => {
-      getActivePolls()
     })
 
     return {
-      lastActivePoll,
-      activePollId,
-      setPoll,
-      showCurrentActivePoll,
-      pollAlreadyAnswered,
-      useDatetime
+      useUser,
+      pollLink
     }
   },
 })
 </script>
 
 <style lang="sass" scoped>
-.polls
-  position: relative
 </style>
