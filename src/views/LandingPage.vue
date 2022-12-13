@@ -1,29 +1,35 @@
 <template>
   <BaseLayout>
-    <div class="ion-padding">
-      <ion-nav-link routerLink="/participation">
-        <div class="box">
-          <img src="@/assets/images/participation.png" class="has-drop-shadow has-border-radius-large is-fullwidth" />
-          <div class="box-headline">Bürgerbeteiligung</div>
-        </div>
-      </ion-nav-link>
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size-sm="12" size-md="6" size-lg="3">
+          <div class="ion-padding">
+            <ion-nav-link routerLink="/participation">
+              <div class="box">
+                <img src="@/assets/images/participation.png" class="has-drop-shadow has-border-radius-large is-fullwidth" />
+                <div class="box-headline">Bürgerbeteiligung</div>
+              </div>
+            </ion-nav-link>
 
-      <ion-nav-link :routerLink="pollLink">
-        <div class="box">
-          <img src="@/assets/images/poll-teaser.svg" class="has-drop-shadow is-fullwidth" />
-          <div class="box-headline-right">
-            <span v-if="useUser().loggedIn()">Sag uns Deine Meinung!<br/>Zur aktuellen Umfrage</span>
-            <span v-else>Jetzt anmelden um an<br/>Umfragen teilzunehmen</span>
+            <ion-nav-link :routerLink="pollLink">
+              <div class="box">
+                <img src="@/assets/images/poll-teaser.svg" class="has-drop-shadow is-fullwidth" />
+                <div class="box-headline-right">
+                  <span v-if="useUser().loggedIn()">Sag uns Deine Meinung!<br/>Zur aktuellen Umfrage</span>
+                  <span v-else>Jetzt anmelden um an<br/>Umfragen teilzunehmen</span>
+                </div>
+              </div>
+            </ion-nav-link>
           </div>
-        </div>
-      </ion-nav-link>
-    </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </BaseLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue'
-import { IonNavLink } from '@ionic/vue'
+import { IonNavLink, IonGrid, IonRow, IonCol } from '@ionic/vue'
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation'
 import { useUser } from '@/composables/user/user'
 import BaseLayout from '@/components/general/BaseLayout.vue'
@@ -31,7 +37,7 @@ import { usePollStore } from '@/stores/poll'
 
 export default defineComponent({
   name: 'LandingPage',
-  components: { BaseLayout, IonNavLink },
+  components: { BaseLayout, IonNavLink, IonGrid, IonRow, IonCol },
   setup() {
     const windowwidth = ref(window.innerWidth)
     const isLandscape = ref(false)
