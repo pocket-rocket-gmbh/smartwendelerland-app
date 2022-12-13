@@ -1,15 +1,16 @@
 <template>
-  <ion-modal :is-open="true">
-    <img class="close" src="@/assets/images/icon-times.svg" height="20" @click="emitClose" />
+  <div class="ion-padding">
     <div class="poll poll-box" :style="{ minHeight: `${pollQuestions.length * 230}px`}">
-      <div v-if="questionAnswered" class="bubble-green">OK</div>
-      <div v-else class="bubble"><img src="@/assets/images/poll.svg" /></div>
+      <div class="icons-top">
+        <div v-if="questionAnswered" class="bubble-green">OK</div>
+        <div v-else class="bubble"><img src="@/assets/images/poll.svg" /></div>
+      </div>
       <div class="content" v-if="!questionAnswered">
-        <div class="headline big has-text-grey">{{ title }}</div>
-        <div class="has-text-primary is-size-small mt-2">Dauert weniger als 1 Minute</div>
+        <div class="headline big has-text-grey ion-margin">{{ usePollStore().publicPoll.name }}</div>
+        <div class="has-text-primary is-size-small ion-margin">Dauert weniger als 1 Minute</div>
         <div v-for="pollQuestion in pollQuestions" :key="pollQuestion.id" class="mt-5">
           <label align="left">{{ pollQuestion.name }}</label>
-          <div v-if="pollQuestion.kind === 'rating'">
+          <div v-if="pollQuestion.kind === 'rating'" class="ion-margin">
             <span v-for="i in pollQuestion.max_score_count" :key="i" class="star">
               <img
                 v-if="starArray[pollQuestion.id]"
@@ -20,7 +21,7 @@
               />
             </span>
           </div>
-          <div v-else-if="pollQuestion.kind === 'single_choice' && answersArray[pollQuestion.id]">
+          <div v-else-if="pollQuestion.kind === 'single_choice' && answersArray[pollQuestion.id]" class="ion-margin">
             <ion-radio-group v-model="answersArray[pollQuestion.id].choices_answers">
               <ion-item v-for="choice in pollQuestion.choices" :key="choice.id">
                 <ion-label>{{ choice.possible_answer }}</ion-label>
@@ -28,7 +29,7 @@
               </ion-item>
             </ion-radio-group>
           </div>
-          <div v-else-if="pollQuestion.kind === 'multiple_choice' && answersArray[pollQuestion.id]">
+          <div v-else-if="pollQuestion.kind === 'multiple_choice' && answersArray[pollQuestion.id]" class="ion-margin">
             <ion-item v-for="choice in pollQuestion.choices" :key="choice.id">
               <ion-checkbox v-model="answersArray[pollQuestion.id].choices_answers" slot="start"></ion-checkbox>
               <ion-label>{{ choice.possible_answer }}</ion-label>
@@ -45,25 +46,28 @@
       </div>
       <div :class="['footer', { 'inactive' : !completedQuestionsNoText }]" @click="storeResults">Absenden</div>
     </div>
-  </ion-modal>
+  </div>
 </template>
 
 <script lang="ts">
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { usePrivateApi } from '@/composables/api/private'
-import { IonRadioGroup, IonItem, IonLabel, IonRadio, IonModal } from '@ionic/vue'
+import { IonRadioGroup, IonItem, IonLabel, IonRadio } from '@ionic/vue'
 import { defineComponent, ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { usePollStore } from '@/stores/poll'
 export default defineComponent({
-  components: { IonRadioGroup, IonItem, IonLabel, IonRadio, IonModal },
+  components: { IonRadioGroup, IonItem, IonLabel, IonRadio },
   emits: ['close'],
-  props: {
-    title: String,
-    pollId: String
-  },
   setup(props, { emit }) {
+    const pollId = computed(() => {
+      return router.currentRoute.value.params.id
+    })
+
     const api = useCollectionApi()
+    const router = useRouter()
     api.setBaseApi(usePrivateApi())
-    api.setEndpoint(`poll_questions/poll/${props.pollId}`)
+    api.setEndpoint(`poll_questions/poll/${pollId.value}`)
 
     const answersApi = useCollectionApi()
     answersApi.setBaseApi(usePrivateApi())
@@ -197,7 +201,7 @@ export default defineComponent({
     onMounted(() => {
 
       // check if poll already answered
-      if (localStorage.getItem(`smawela_poll_completed_${props.pollId}`)) {
+      if (localStorage.getItem(`smawela_poll_completed_${pollId.value}`)) {
         questionAnswered.value = true
       }
 
@@ -214,7 +218,8 @@ export default defineComponent({
       questionAnswered,
       storeResults,
       answersArray,
-      completedQuestionsNoText
+      completedQuestionsNoText,
+      usePollStore
     }
   },
 })
@@ -222,11 +227,7 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .poll
-  width: 350px
-  background: #FFFFFF
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15)
-  border-radius: 20px
-  position: fixed
+  width: 100%
   top: 50%
   left: 50%
   margin-right: -50%

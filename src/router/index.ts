@@ -26,6 +26,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/MePage.vue')
   },
   {
+    path: '/polls/:id',
+    component: () => import('@/views/polls/PollsPage.vue')
+  },
+  {
     path: '/participation',
     redirect: '/participation/projects'
   },
@@ -42,30 +46,6 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
-
-router.beforeEach(async (to) => {
-
-  console.log("router before each")
-
-  const userStore = useUserStore()
-  const privateApi = usePrivateApi()
-
-  const jwt = localStorage.getItem('auth._token.jwt')
-  const user = userStore.user
-
-  // User already logged in.
-  if (jwt !== null && user !== null) {
-    return
-  }
-
-  // Try to get user information if there is a token.
-  if (jwt !== null && user === null) {
-    const result = await privateApi.call('get', '/users/me', null)
-    if (result.status === ResultStatus.SUCCESSFUL) {
-      userStore.user = result.data.resource
-    }
-  }
 })
 
 export default router

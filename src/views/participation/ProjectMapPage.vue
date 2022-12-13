@@ -68,8 +68,6 @@
         </ion-content>
       </ion-modal>
 
-      <PollsBox />
-
       <ion-loading
         :is-open="loadingInProgress"
         message="Projekte werden geladen..."
@@ -90,11 +88,10 @@ import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 import { MapLocation } from '@/types/MapLocation'
 import MapWidget from '@/components/MapWidget.vue'
 import L from 'leaflet'
-import PollsBox from '@/components/participation/PollsBox.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal, PollsBox },
+  components: { BaseLayout, IonContent, IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal },
   setup() {
 
     const router = useRouter()

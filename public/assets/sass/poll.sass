@@ -1,18 +1,18 @@
 .poll-box
   background: #FFFFFF
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15)
-  border-radius: 20px
   width: 270px
   height: 200px
   position: fixed
   bottom: 10%
   right: 5%
   text-align: center
-  display: grid
-  place-items: center
   z-index: 10000
   transition-timing-function: ease-out
   transition: .3s
+  .icons-top
+    display: grid
+    place-items: center
+    margin-bottom: 20px
 
   .bubble
     background: #EE9207
@@ -50,9 +50,7 @@
     position: absolute
     bottom: 0
     width: 100%
-    border-bottom-left-radius: 20px
-    border-bottom-right-radius: 20px
-    padding: 10px
+    padding: 20px
     cursor: pointer
     &.inactive
       opacity: 0.5

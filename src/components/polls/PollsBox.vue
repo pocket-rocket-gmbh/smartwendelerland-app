@@ -1,42 +1,21 @@
 <template>
-  <div class="polls" v-if="(lastActivePoll && (lastActivePoll.ends_at && !useDatetime().isInPast(lastActivePoll.ends_at) || !lastActivePoll.ends_at))">
-    <div
-      class="curtain"
-      v-if="activePollId"
-      @click="activePollId = null"
-    />
-    <PollTeaser
-      v-if="lastActivePoll && !activePollId && showCurrentActivePoll && !pollAlreadyAnswered"
-      :poll="lastActivePoll"
-      :title="lastActivePoll.name"
-      @setPoll="setPoll"
-      @close="showCurrentActivePoll = false"
-    />
-    <PollMain
-      v-if="activePollId"
-      :title="lastActivePoll.name"
-      :poll-id="activePollId"
-      @close="activePollId = null"
-    />
-  </div>
+  <div />
 </template>
 
 <script lang="ts">
-import PollTeaser from '@/components/participation/polls/PollTeaser.vue'
-import PollMain from '@/components/participation/polls/PollMain.vue'
 import { defineComponent, computed, ref, onMounted } from 'vue'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { usePrivateApi } from '@/composables/api/private'
 import { useDatetime } from '@/composables/ui/datetime'
 export default defineComponent({
-  components: { PollTeaser, PollMain },
+  emits: ['setAccessiblePollId'],
   props: {
     projectId: {
       type: String,
       default: null
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const api = useCollectionApi()
     api.setBaseApi(usePrivateApi())
     if (props.projectId) {
@@ -53,6 +32,7 @@ export default defineComponent({
     // currently considers only one active poll
     const lastActivePoll = computed(() => {
       if (polls.value.length > 0) {
+        emit('setAccessiblePollId', polls.value[0].id)
         return polls.value[0]
       }
       return null
