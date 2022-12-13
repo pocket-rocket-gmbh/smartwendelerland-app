@@ -1,4 +1,5 @@
 <template>
+  <!-- Not in use -->
   <base-layout>
     <ion-content>
       <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">

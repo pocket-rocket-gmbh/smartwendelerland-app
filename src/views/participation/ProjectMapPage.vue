@@ -1,24 +1,25 @@
 <template>
   <base-layout>
-    <ion-content>
-
-      <ion-searchbar
-        placeholder="Suchen"
-        v-model="searchQuery"
-        :debounce="1000"
-        @ionChange="reloadProjects()"
-        @ionClear="reloadProjects()"
-      />
-
-      <ion-select v-if="categories.length > 0" placeholder="Kategorien wählen" multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
-        <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name_with_projects_count }}</ion-select-option>
-      </ion-select>
-
-      <ion-select v-if="communities.length > 0" placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
-        <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name_with_projects_count }}</ion-select-option>
-      </ion-select>
+    <ion-content :fullscreen="true">
 
       <div class="mapcontainer">
+        <ion-searchbar
+          placeholder="Suchen"
+          v-model="searchQuery"
+          :debounce="1000"
+          @ionChange="reloadProjects()"
+          @ionClear="reloadProjects()"
+        />
+
+        <ion-select v-if="categories.length > 0" placeholder="Kategorien wählen" multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
+          <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name_with_projects_count }}</ion-select-option>
+        </ion-select>
+
+        <ion-select v-if="communities.length > 0" placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
+          <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name_with_projects_count }}</ion-select-option>
+        </ion-select>
+
+
         <MapWidget
           ref="map"
           :locations="locations"
