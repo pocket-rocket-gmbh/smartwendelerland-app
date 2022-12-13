@@ -34,10 +34,12 @@
           </div>
           <div v-else-if="pollQuestion.kind === 'multiple_choice' && answersArray[pollQuestion.id]" class="ion-margin">
             <ion-item v-for="choice in pollQuestion.choices" :key="choice.id">
-              
-              <label>
-                <input type="checkbox" :value="choice.id" v-model="answersArray[pollQuestion.id].choices_answers" slot="start" />
-                {{ choice.possible_answer }}
+              <label :for="choice.id" class="ion-padding custom-checkbox item-checkbox">
+                <div class="grid-2 has-font-face-meta-pro-normal is-narrow">
+                  <input type="checkbox" v-model="answersArray[pollQuestion.id].choices_answers" :id="choice.id" :value="choice.id" />
+                  <span class="label-text">{{ choice.possible_answer }}</span>
+                  <span class="checkmark"></span>
+                </div>
               </label>
             </ion-item>
           </div>
@@ -45,12 +47,14 @@
             <textarea placeholder="Antwort eingeben…" v-model="answersArray[pollQuestion.id].text_value"></textarea>
           </div>
         </div>
+        <div :class="['footer', { 'inactive' : !completedQuestionsNoText }]" @click="storeResults">Absenden</div>
       </div>
       <div v-else>
+        <div class="gap-1" />
         <p class="headline big has-text-grey">VIELEN DANK</p>
         <p class="headline big has-text-grey">FÜR DEINE MEINUNG</p>
       </div>
-      <div :class="['footer', { 'inactive' : !completedQuestionsNoText }]" @click="storeResults">Absenden</div>
+      
     </div>
   </div>
 </template>
@@ -179,9 +183,9 @@ export default defineComponent({
           )
         })
         console.log(answersArraySanitized)
-        //questionAnswered.value = true
+        questionAnswered.value = true
 
-        //localStorage.setItem(`smawela_poll_completed_${props.pollId}`, 'true')
+        localStorage.setItem(`smawela_poll_completed_${pollId.value}`, 'true')
       }
     }
 
