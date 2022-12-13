@@ -1,32 +1,26 @@
 <template>
-  <base-layout>
-    <ion-grid>
-      <ion-row v-for="(row, rowIndex) in rowCount" :key="rowIndex">
-        <ion-col v-for="(column, columnIndex) in columnCount" :key="columnIndex">
-          <template v-if="items[rowIndex * columnCount + columnIndex] !== undefined">
-            <ion-card :router-link="items[rowIndex * columnCount + columnIndex].link">
-              <img src="@/assets/images/people.png" />
-              <ion-card-header>
-                <ion-card-subtitle>{{ items[rowIndex * columnCount + columnIndex].name }}</ion-card-subtitle>
-              </ion-card-header>
-            </ion-card>
-          </template>
-        </ion-col>        
-      </ion-row>      
-    </ion-grid>
-  </base-layout>
+  <BaseLayout>
+    <div class="ion-padding">
+      <ion-nav-link routerLink="/participation">
+        <div class="box">
+          <img src="@/assets/images/participation.png" class="has-drop-shadow has-border-radius-large is-fullwidth" />
+          <div class="box-headline">Bürgerbeteiligung</div>
+        </div>
+      </ion-nav-link>
+    </div>
+  </BaseLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue'
-import { IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardSubtitle } from '@ionic/vue'
+import { IonNavLink } from '@ionic/vue'
 import { accessibilityOutline, accessibilitySharp } from 'ionicons/icons'
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 
 export default defineComponent({
   name: 'LandingPage',
-  components: { BaseLayout, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardSubtitle },
+  components: { BaseLayout, IonNavLink },
   setup() {
 
     const columnCountPortrait = 3
@@ -102,30 +96,19 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-ion-grid {
-  --ion-grid-padding: v-bind('padding');
-}
+<style lang="sass" scoped>
+.box
+  position: relative
+  text-align: center
+  .box-headline
+    position: absolute
+    color: white
+    bottom: 10px
+    left: 50%
+    font-size: 25px
+    letter-spacing: 0.09em
+    text-transform: uppercase
+    font-weight: 500
+    transform: translateX(-50%) translateY(-50%)
 
-ion-col {
-  --ion-grid-column-padding: v-bind('padding');
-}
-
-ion-button {
-  width: v-bind('buttonsize');
-  height: v-bind('buttonsize');
-}
-
-ion-icon {
-  font-size: v-bind('iconsize');
-}
-
-div.label {
-  padding-top: 10px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: v-bind('buttonsize');
-}
 </style>
