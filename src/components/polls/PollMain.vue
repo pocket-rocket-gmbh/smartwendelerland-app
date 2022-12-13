@@ -34,8 +34,11 @@
           </div>
           <div v-else-if="pollQuestion.kind === 'multiple_choice' && answersArray[pollQuestion.id]" class="ion-margin">
             <ion-item v-for="choice in pollQuestion.choices" :key="choice.id">
-              <ion-checkbox v-model="answersArray[pollQuestion.id].choices_answers" slot="start"></ion-checkbox>
-              <ion-label>{{ choice.possible_answer }}</ion-label>
+              
+              <label>
+                <input type="checkbox" :value="choice.id" v-model="answersArray[pollQuestion.id].choices_answers" slot="start" />
+                {{ choice.possible_answer }}
+              </label>
             </ion-item>
           </div>
           <div v-else-if="pollQuestion.kind === 'text' && answersArray[pollQuestion.id]">
@@ -175,7 +178,7 @@ export default defineComponent({
             { rating_value: answer.rating_value, text_value: answer.text_value, choices_answers: answer.choices_answers }
           )
         })
-
+        console.log(answersArraySanitized)
         //questionAnswered.value = true
 
         //localStorage.setItem(`smawela_poll_completed_${props.pollId}`, 'true')
