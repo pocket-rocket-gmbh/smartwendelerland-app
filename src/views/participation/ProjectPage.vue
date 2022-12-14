@@ -115,7 +115,8 @@
                   <ion-card>
                     <CommentPanel
                       :comment="comment"
-                      @refreshCollection="reloadComments()"
+                      @removeComment="removeComment"
+                      @setCommentReported="setCommentReported"
                     />
                   </ion-card>
                   <CommentsReply
@@ -272,6 +273,17 @@ export default defineComponent({
       totalPages.value = commentsApi.totalPages.value
     }
 
+    const removeComment = (commentId:string) => {
+      const foundItem = comments.value.find(comment => comment.id === commentId)
+      const index = comments.value.indexOf(foundItem)
+      comments.value.splice(index, 1)
+    }
+
+    const setCommentReported = (commentId:string) => {
+      const foundItem = comments.value.find(comment => comment.id === commentId)
+      foundItem.has_already_reported_comment = true
+    }
+
     const loadData = (ev: InfiniteScrollCustomEvent) => {
       setTimeout(() => {
         currentPage.value += 1
@@ -290,6 +302,8 @@ export default defineComponent({
       doRefresh,
       reloadData,
       reloadComments,
+      removeComment,
+      setCommentReported,
       project,
       comments,
       useDatetime,

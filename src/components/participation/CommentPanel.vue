@@ -24,9 +24,11 @@
       :event="commentContextEvent"
       @didDismiss="closePopover"
     >
-      <div @click="reportComment(comment.id)" v-if="comment.user.id !== useUser().currentUser().id" align="center" class="ion-margin">Melden</div>
+      <div @click="reportComment(comment.id)" v-if="(comment.user.id !== useUser().currentUser().id && !comment.has_already_reported_comment)" align="center" class="ion-margin">Melden</div>
       <div @click="deleteComment()" align="center" class="ion-margin">Löschen</div>
     </ion-popover>
+
+    <div class="pl-5 has-text-danger" v-if="comment.has_already_reported_comment">Du hast diesen Kommentar gemeldet!</div>
   </div>
 </template>
 
@@ -50,7 +52,7 @@ export default defineComponent({
       type: Object
     }
   },
-  emits: ['refreshCollection', 'removeComment'],
+  emits: ['setCommentReported', 'removeComment'],
   components: { IonPopover, LikePanel, IonIcon, UserProfile },
   setup(props, { emit }) {
 
@@ -82,13 +84,13 @@ export default defineComponent({
       commentsApi.setEndpoint('comments/' + props.comment.id)
       const result = await commentsApi.deleteItem()
       emit('removeComment', props.comment.id)
-      emit('refreshCollection')
     }
 
     const reportComment = async (commentId:string) => {
       reportApi.setEndpoint(`comment_reports/comments/${commentId}`)
       await reportApi.createItem({})
       popoverOpen.value = false
+      emit('setCommentReported', commentId)
     }
 
     return {

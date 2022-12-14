@@ -133,6 +133,6 @@ ion-icon {
 }
 
 ion-icon.upvoted {
-  color: #F44336;
+  color: #015281;
 }
 </style>

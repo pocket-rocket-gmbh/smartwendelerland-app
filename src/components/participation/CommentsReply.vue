@@ -8,6 +8,7 @@
             :comment="comment"
             :show-reply="false"
             @removeComment="removeComment"
+            @setCommentReported="setCommentReported"
           />
         </ion-card>
         <CommentNew
@@ -85,9 +86,15 @@ export default defineComponent({
       repliesCount.value -= 1
     }
 
+    const setCommentReported = (commentId:string) => {
+      const foundItem = comments.value.find(comment => comment.id === commentId)
+      foundItem.has_already_reported_comment = true
+    }
+
     return {
       replyBoxOpen,
       removeComment,
+      setCommentReported,
       comments,
       getItems,
       showReplyHandle,

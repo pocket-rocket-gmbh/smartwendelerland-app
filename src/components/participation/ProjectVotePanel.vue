@@ -110,7 +110,7 @@ export default defineComponent({
   background: #A42258;
 }
 .your-vote {
-  margin-top: 10px;
+  margin-top: 3px;
   font-weight: 500;
 }
 .has-text-white {
