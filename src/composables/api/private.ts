@@ -11,9 +11,9 @@ export function usePrivateApi() {
   const userStore = useUserStore()
 
   const serverInterface = useServerInterface()
-  serverInterface.setDomain('http://localhost:3000/v1/')
+  // serverInterface.setDomain('http://localhost:3000/v1/')
   // serverInterface.setDomain('https://wiiir-api-proto.herokuapp.com/v1/')
-  // serverInterface.setDomain('https://wiiir-api-proto-staging.herokuapp.com/v1/')
+  serverInterface.setDomain('https://wiiir-api-proto-staging.herokuapp.com/v1/')
 
   const call = async (method: Method, url: string, data?: any): Promise<ServerCallResult> => {
     // Reset authorization header each time to account for an auth token that is set after creation.
