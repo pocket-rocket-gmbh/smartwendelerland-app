@@ -6,7 +6,11 @@
           <ion-back-button text="" default-href="/" :icon="arrowBackOutline" />
         </ion-buttons>
         <ion-icon v-if="userStore.user === null" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
-        <img v-else  @click="router.push('/me')" router-link="/me" src="@/assets/images/user-standard.png" slot="end" />
+        <div v-else @click="router.push('/me')" router-link="/me" slot="end">
+          <UserProfile
+            :user="userStore.user"
+          />
+        </div>
       </ion-toolbar>
     </ion-header>
 
@@ -22,10 +26,11 @@ import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonBackButton, Ion
 import { logInOutline, logInSharp, personCircleOutline, personCircleSharp, arrowBackOutline } from 'ionicons/icons'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import UserProfile from '@/components/UserProfile.vue'
 
 export default defineComponent({
   name: 'BaseLayout',
-  components: { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonBackButton, IonButtons },
+  components: { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonBackButton, IonButtons, UserProfile },
   setup () {
 
     const router = useRouter()

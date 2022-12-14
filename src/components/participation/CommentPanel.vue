@@ -7,7 +7,12 @@
       :md="ellipsisVerticalSharp">
     </ion-icon>
 
-    <div>{{ comment.user.name }} schrieb am {{ useDatetime().parseDatetime(comment.created_at) }}</div>
+    <div>
+      <UserProfile
+        :user="comment.user"
+      />
+      {{ comment.user.name }} schrieb am {{ useDatetime().parseDatetime(comment.created_at) }}
+    </div>
 
     <div class="comment">{{ comment.comment }}</div>
 
@@ -36,6 +41,7 @@ import { useDatetime } from '@/composables/ui/datetime'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { useUserStore } from '@/stores/user'
+import UserProfile from '@/components/UserProfile.vue'
 
 export default defineComponent({
   name: 'ParticipationCommentPanel',
@@ -45,7 +51,7 @@ export default defineComponent({
     }
   },
   emits: ['refreshCollection', 'removeComment'],
-  components: { IonPopover, LikePanel, IonIcon },
+  components: { IonPopover, LikePanel, IonIcon, UserProfile },
   setup(props, { emit }) {
 
     const user = useUserStore()
