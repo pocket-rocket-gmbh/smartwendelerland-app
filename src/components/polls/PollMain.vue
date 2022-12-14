@@ -1,6 +1,6 @@
 <template>
   <div class="ion-padding">
-    <div class="poll poll-box" :style="{ minHeight: `${pollQuestions.length * 230}px`}">
+    <div :class="['poll poll-box', { 'answered' : questionAnswered }]">
       <div class="icons-top">
         <div v-if="questionAnswered" class="bubble-green">OK</div>
         <div v-else class="bubble"><img src="@/assets/images/poll.svg" /></div>
@@ -43,14 +43,13 @@
               </label>
             </ion-item>
           </div>
-          <div v-else-if="pollQuestion.kind === 'text' && answersArray[pollQuestion.id]">
-            <textarea placeholder="Antwort eingeben…" v-model="answersArray[pollQuestion.id].text_value"></textarea>
+          <div v-else-if="pollQuestion.kind === 'text' && answersArray[pollQuestion.id]" class="field">
+            <ion-textarea placeholder="Antwort eingeben…" v-model="answersArray[pollQuestion.id].text_value"></ion-textarea>
           </div>
         </div>
         <div :class="['footer', { 'inactive' : !completedQuestionsNoText }]" @click="storeResults">Absenden</div>
       </div>
       <div v-else>
-        <div class="gap-1" />
         <p class="headline big has-text-grey">VIELEN DANK</p>
         <p class="headline big has-text-grey">FÜR DEINE MEINUNG</p>
       </div>
@@ -62,12 +61,12 @@
 <script lang="ts">
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { usePrivateApi } from '@/composables/api/private'
-import { IonRadioGroup, IonItem, IonLabel, IonRadio } from '@ionic/vue'
+import { IonRadioGroup, IonItem, IonLabel, IonRadio, IonTextarea } from '@ionic/vue'
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePollStore } from '@/stores/poll'
 export default defineComponent({
-  components: { IonRadioGroup, IonItem, IonLabel, IonRadio },
+  components: { IonRadioGroup, IonItem, IonLabel, IonRadio, IonTextarea },
   emits: ['close'],
   setup(props, { emit }) {
     const pollId = computed(() => {
@@ -243,6 +242,8 @@ export default defineComponent({
   left: 50%
   margin-right: -50%
   transform: translate(-50%, -50%)
+  overflow-y: auto
+  overflow-x: hidden
   .content
     padding: 20px
     
@@ -250,7 +251,7 @@ export default defineComponent({
     color: #58595E
     font-size: 18px
     font-weight: 900
-  textarea
+  ion-textarea
     border-bottom: 2px solid #58595E
     width: 100%
     padding: 3px

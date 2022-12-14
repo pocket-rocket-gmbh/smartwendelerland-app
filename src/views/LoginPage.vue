@@ -67,12 +67,13 @@ export default defineComponent({
         localStorage.setItem('auth._token.jwt', jwt)
         localStorage.setItem('email', email.value)          
         userStore.user = result.data.user
+
+        // update relevant data which is now available after login
+        await usePollStore().setPublicPoll()
+
         if (lastPage.value && lastPage.value !== '/password-forgotten') {
           router.push({ path: lastPage.value })
         } else {
-
-          // update relevant data which is now available after login
-          await usePollStore().setPublicPoll()
           router.push({ path: '/' })
         }
       }

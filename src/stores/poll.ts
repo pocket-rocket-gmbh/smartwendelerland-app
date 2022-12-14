@@ -11,6 +11,7 @@ export const usePollStore = defineStore({
   }),
   actions: {
     async setPublicPoll() {
+      console.log("XXXX Set Public Poll")
       if (useUserStore().user) {
         const api = useCollectionApi()
         api.setBaseApi(usePrivateApi())
@@ -19,6 +20,7 @@ export const usePollStore = defineStore({
         if (result.data) {
           this.publicPoll = result.data.resources[0]
         }
+        console.log(result.data.resources[0])
       }
     },
     async setProjectPoll(projectId:string) {

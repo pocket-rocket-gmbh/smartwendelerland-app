@@ -1,18 +1,22 @@
 .poll-box
   background: #FFFFFF
-  width: 270px
-  height: 200px
   position: fixed
   bottom: 10%
-  right: 5%
-  text-align: center
   z-index: 10000
   transition-timing-function: ease-out
   transition: .3s
+  display: grid
+  place-items: center
+  min-height: 90vh
   .icons-top
-    display: grid
-    place-items: center
+    width: 100%
     margin-bottom: 20px
+    margin-top: 80px
+    display: flex
+    justify-content: center
+
+  &.answered
+    min-height: 30vh
 
   .bubble
     background: #015281
@@ -24,7 +28,7 @@
     color: white
     font-size: 40px
     position: absolute
-    top: -30px
+    top: 50px
   .bubble-green
     background: #ABC812
     border-radius: 50%
@@ -35,7 +39,7 @@
     color: white
     font-size: 40px
     position: absolute
-    top: -30px
+    top: 50px
   .headline
     font-weight: 600
     font-size: 20px
