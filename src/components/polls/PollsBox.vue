@@ -30,11 +30,11 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const pollId = computed(() => {
-      usePollStore().publicPoll.id
+      usePollStore().publicPoll?.id
       if (!props.isPublic) {
-        return usePollStore().projectPoll.id
+        return usePollStore().projectPoll?.id
       }
-      return usePollStore().publicPoll.id
+      return usePollStore().publicPoll?.id
     })
 
     const pollLink = computed(() => {

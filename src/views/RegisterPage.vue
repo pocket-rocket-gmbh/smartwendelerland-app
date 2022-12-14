@@ -15,15 +15,18 @@
           <ion-input placeholder="Nachname eintragen" type="text" v-model="item.lastname" class="input"></ion-input>
         </div>
 
-        <div class="policy">
-          <label for="policy" class="ion-padding has-font-face-meta-pro-normal is-narrow custom-checkbox">
-            <input type="checkbox" v-model="policyCheckboxChecked" id="policy" class="ion-margin-right" />
-            <span class="label-text">Die <span @click="isOpen = !isOpen"><u>Datenschutzerklärung</u></span> habe ich zur Kenntnis genommen.</span>
-            <span class="checkmark"></span>
-          </label>
-          <div v-if="showErrorPolicy && !policyCheckboxChecked" class="input-error is-narrow ion-margin-bottom">Sie müssen die Datenschutzerklärung akzeptieren.</div>
+        <div class="field">
+          <div class="policy">
+            <label for="policy" class="ion-padding has-font-face-meta-pro-normal is-narrow custom-checkbox">
+              <input type="checkbox" v-model="policyCheckboxChecked" id="policy" class="ion-margin-right" />
+              <span class="label-text">Die Datenschutzerklärung habe ich zur Kenntnis genommen.</span>
+              <span class="checkmark"></span>
+            </label>
+            <div v-if="showErrorPolicy && !policyCheckboxChecked" class="input-error is-narrow ion-margin-bottom">Sie müssen die Datenschutzerklärung akzeptieren.</div>
+            <span @click="isOpen = !isOpen"><u>Zur Datenschutzerklärung</u></span>
+          </div>
         </div>
-        
+          
         <ion-modal :is-open="isOpen">
           <ion-header>
             <ion-toolbar>

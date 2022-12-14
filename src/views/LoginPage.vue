@@ -38,6 +38,7 @@ import { useRouter } from 'vue-router'
 import { IonInput, IonButton, IonLoading, toastController, onIonViewWillEnter, IonNavLink } from '@ionic/vue'
 import { usePrivateApi } from '@/composables/api/private'
 import { useUserStore } from '@/stores/user'
+import { usePollStore } from '@/stores/poll'
 import { ResultStatus } from '@/types/serverCallResult'
 import LoginLayout from '@/components/general/LoginLayout.vue'
 
@@ -66,9 +67,12 @@ export default defineComponent({
         localStorage.setItem('auth._token.jwt', jwt)
         localStorage.setItem('email', email.value)          
         userStore.user = result.data.user
-        if (lastPage.value && lastPage.value === 'password-forgotten') {
+        if (lastPage.value && lastPage.value !== '/password-forgotten') {
           router.push({ path: lastPage.value })
         } else {
+
+          // update relevant data which is now available after login
+          await usePollStore().setPublicPoll()
           router.push({ path: '/' })
         }
       }

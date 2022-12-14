@@ -32,7 +32,7 @@ export function useServerInterface() {
     }
     catch (error: any) {
       // TODO snackbar with error message
-      return ServerCallResult.error(getErrorMessage(error), error.response?.status)
+      return ServerCallResult.error(getErrorMessage(error), error.response?.status, error.response?.data)
     }
   }
 

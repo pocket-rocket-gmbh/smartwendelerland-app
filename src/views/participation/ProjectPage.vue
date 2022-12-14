@@ -72,6 +72,15 @@
           ref="map"
           :locations="locations"
         />
+        <div align="center" class="ion-margin-top">
+          <ion-button @click="(contactFormModalOpen = true)">Kontaktformular</ion-button>
+        </div>
+
+        <ContactForm
+          v-if="contactFormModalOpen"
+          :project-id="project.id"
+          @close="(contactFormModalOpen = false)"
+        />
         <div class="ion-padding">
           <ion-row>
             <ion-col>
@@ -142,7 +151,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide } from '@ionic/vue'
+import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide, IonButton } from '@ionic/vue'
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import ProjectMapPanel from '@/components/participation/ProjectMapPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -163,10 +172,11 @@ import CommentsReply from '@/components/participation/CommentsReply.vue'
 import { location } from 'ionicons/icons'
 import { usePollStore } from '@/stores/poll'
 import PollsBox from '@/components/polls/PollsBox.vue'
+import ContactForm from '@/components/participation/ContactForm.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox },
+  components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox, ContactForm, IonButton },
   setup() {
 
     const route = useRoute()
@@ -192,6 +202,7 @@ export default defineComponent({
     const totalPages = ref(1)
     const votePanelKey = ref(1)
     const projectPoll = ref(null)
+    const contactFormModalOpen = ref(false)
 
     const loadingInProgress = ref(false)
     
@@ -296,7 +307,8 @@ export default defineComponent({
       votePanelKey,
       route,
       location,
-      projectPoll
+      projectPoll,
+      contactFormModalOpen
     }
   }
 })
