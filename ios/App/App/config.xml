@@ -10,6 +10,10 @@
     <param name="ios-package" value="CDVOrientation"/>
   </feature>
 
+  <feature name="Vibration">
+    <param name="ios-package" value="CDVVibration"/>
+  </feature>
+
   <feature name="OneSignalPush">
     <param name="ios-package" value="OneSignalPush"/>
   </feature>

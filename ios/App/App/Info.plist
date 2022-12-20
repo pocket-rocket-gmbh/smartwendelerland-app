@@ -52,5 +52,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Wir benötigen Deinen Standort um dir persönliche Mitteilungen zu senden</string>
 </dict>
 </plist>

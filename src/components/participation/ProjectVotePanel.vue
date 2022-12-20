@@ -23,6 +23,7 @@ import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { usePrivateApi } from '@/composables/api/private'
 import { IonRow, IonCol } from '@ionic/vue'
+import { Vibration } from '@awesome-cordova-plugins/vibration'
 export default defineComponent({
   emits: ['updateProject'],
   components: { IonRow, IonCol },
@@ -79,7 +80,7 @@ export default defineComponent({
         }
         emit('updateProject')
       }
-
+      Vibration.vibrate(500)
       loading.value = false
     }
 

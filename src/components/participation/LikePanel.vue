@@ -1,6 +1,6 @@
 <template>
   <span class="like-dislike-panel">
-    <span @click="handleComment('upvote')">
+    <span @click="handleLike('upvote')">
       <ion-icon :ios="heart" :md="heart" v-if="commentUpvoted" class="upvoted"></ion-icon>
       <ion-icon :ios="heartOutline" :md="heartOutline" v-else></ion-icon>
     </span>
@@ -14,6 +14,7 @@ import { IonIcon } from '@ionic/vue'
 import { heartOutline, heart } from 'ionicons/icons'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
+import { Vibration } from '@awesome-cordova-plugins/vibration'
 
 export default defineComponent({
   components: { IonIcon },
@@ -57,7 +58,7 @@ export default defineComponent({
       return 'light'
     }
 
-    const handleComment = async (kind: string) => {
+    const handleLike = async (kind: string) => {
       loading.value = true
       if (kind === 'upvote' && commentUpvoted.value || kind === 'downvote' && commentDownvoted.value) {
         api.setEndpoint(`comments/${props.comment.id}/remove_vote`)
@@ -96,6 +97,7 @@ export default defineComponent({
         }
       }
 
+      Vibration.vibrate(500)
       loading.value = false
     }
 
@@ -103,7 +105,7 @@ export default defineComponent({
       heartOutline,
       heart,
       loading,
-      handleComment,
+      handleLike,
       commentUpvoted,
       commentDownvoted,
       upvoteCount,
