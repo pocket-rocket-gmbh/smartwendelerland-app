@@ -26,7 +26,7 @@
             <span @click="isOpen = !isOpen"><u>Zur Datenschutzerklärung</u></span>
           </div>
         </div>
-          
+
         <ion-modal :is-open="isOpen">
           <ion-header>
             <ion-toolbar>
@@ -81,7 +81,7 @@ setup() {
   const policyCheckboxChecked = ref(false)
   const showErrorPolicy = ref(false)
 
-  const item = ref({email: '', firstname: '', lastname: '', role: 'admin', never_expire: true})
+  const item = ref({email: '', firstname: '', lastname: ''})
   const registerInProgress = ref(false)
   const registerSuccessful = ref(false)
   const error = ref(false)
@@ -91,9 +91,9 @@ setup() {
 
     // TODO: outsource in ENV
     // this is the public register token for Landkreis St. Wendel Org
-    publicApi.call('post', `/users/register/LkQ7fagZR4eHTiTDqMYpS9ozZTSWrspKUZMR`, item.value).then(result => {
+    publicApi.call('post', `/users/register/hsvW7eyxvuaRZ25LJaPRMp7TgYGK5dDMyHUB`, item.value).then(result => {
       if (result.status === ResultStatus.SUCCESSFUL) {
-        localStorage.setItem('junghans_login_email', item.value.email) 
+        localStorage.setItem('junghans_login_email', item.value.email)
         registerSuccessful.value = true
         error.value = false
         showErrorPolicy.value = false
@@ -123,7 +123,7 @@ setup() {
   onIonViewWillEnter(() => {
     lastPage.value = router.options.history.state.back
     registerSuccessful.value = false
-  }) 
+  })
 
   return {
     item,
