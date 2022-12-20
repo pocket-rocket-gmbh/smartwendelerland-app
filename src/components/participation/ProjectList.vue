@@ -1,57 +1,53 @@
 <template>
-  <!-- Not in use -->
-  <base-layout>
-    <ion-content>
-      <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
-        <ion-refresher-content></ion-refresher-content>
-      </ion-refresher>
-      <ion-searchbar
-        placeholder="Suchen"
-        v-model="searchQuery"
-        :debounce="500"
-        @ionChange="reloadProjects()"
-        @ionClear="reloadProjects()"
-      />
+  <div>
+    <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <ion-searchbar
+      placeholder="Suchen"
+      v-model="searchQuery"
+      :debounce="500"
+      @ionChange="reloadProjects()"
+      @ionClear="reloadProjects()"
+    />
 
-      <ion-select placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
-        <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name }}</ion-select-option>
-      </ion-select>
+    <ion-select placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
+      <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name }}</ion-select-option>
+    </ion-select>
 
-      <ion-select placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
-        <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name }}</ion-select-option>
-      </ion-select>
+    <ion-select placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
+      <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name }}</ion-select-option>
+    </ion-select>
 
-      <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
-        Keine Projekte gefunden
+    <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
+      Keine Projekte gefunden
+    </div>
+    <div v-else>
+      <div v-for="project in projects" :router-link="`projects/${project.id}`" :key="project.id">
+        <ParticipationProjectListPanel
+          @click="$router.push({path: `/participation/projects/${project.id}`})"
+          :project="project"
+        />
       </div>
-      <div v-else>
-        <div v-for="project in projects" :router-link="`projects/${project.id}`" :key="project.id">
-          <ParticipationProjectListPanel
-            @click="$router.push({path: `/participation/projects/${project.id}`})"
-            :project="project"
-          />
-        </div>
-        <ion-infinite-scroll
-          v-if="currentPage < totalPages"
-          @ionInfinite="loadData($event)"
-        >
-          <ion-infinite-scroll-content>
-          </ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </div>
+      <ion-infinite-scroll
+        v-if="currentPage < totalPages"
+        @ionInfinite="loadData($event)"
+      >
+        <ion-infinite-scroll-content>
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
 
-      <ion-loading
-        :is-open="loadingInProgress"
-        message="Projekte werden geladen..."
-      />
-    </ion-content>
-  </base-layout>
+    <ion-loading
+      :is-open="loadingInProgress"
+      message="Projekte werden geladen..."
+    />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { IonContent, IonSearchbar, IonRefresher, IonRefresherContent, IonLoading, onIonViewWillEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption } from '@ionic/vue'
-import BaseLayout from '@/components/general/BaseLayout.vue'
+import { defineComponent, ref, onMounted } from 'vue'
+import { IonSearchbar, IonRefresher, IonRefresherContent, IonLoading, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption } from '@ionic/vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -59,7 +55,7 @@ import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption },
+  components: { IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption },
   setup() {
 
     const publicApi = usePublicApi()
@@ -86,7 +82,7 @@ export default defineComponent({
 
     const loadingInProgress = ref(false)
 
-    onIonViewWillEnter(() => {
+    onMounted(() => {
       reloadData()
     })
 

@@ -35,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/participation/projects',
-    component: () => import('@/views/participation/ProjectMapPage.vue')
+    component: () => import('@/views/participation/ProjectOverviewPage.vue')
   },
   {
     path: '/participation/projects/:id',

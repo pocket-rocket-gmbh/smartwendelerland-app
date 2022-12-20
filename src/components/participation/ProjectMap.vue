@@ -1,87 +1,83 @@
 <template>
-  <base-layout>
-    <ion-content :fullscreen="true">
-
-      <div class="mapcontainer">
-        <ion-searchbar
-          placeholder="Suchen"
-          v-model="searchQuery"
-          :debounce="1000"
-          @ionChange="reloadProjects()"
-          @ionClear="reloadProjects()"
-        />
-
-        <ion-select v-if="categories.length > 0" placeholder="Kategorien wählen" multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
-          <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name_with_projects_count }}</ion-select-option>
-        </ion-select>
-
-        <ion-select v-if="communities.length > 0" placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
-          <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name_with_projects_count }}</ion-select-option>
-        </ion-select>
-
-
-        <MapWidget
-          ref="map"
-          :locations="locations"
-          :zoomControl=false
-          :center-point="{
-            lng: 7.131735,
-            lat: 49.523656
-          }"
-          :default-zoom=11
-          @markerClick="mapMarkerClick"
-          @scroll="scroll"
-        />
-      </div>
-
-      <ion-modal
-        :is-open="showProjectsList"
-        :initial-breakpoint="0.15"
-        :breakpoints="[0.15, 1.0]"
-        :backdrop-dismiss="false"
-        :backdrop-breakpoint="1.0"
-        @ionBreakpointDidChange="(projectListHeadlineVisible = !projectListHeadlineVisible)"
-      >
-        <div style="height: 40px; background: white;"></div>
-        <div style="height: 60px; background: white; padding-bottom: 15px;" align="center">
-          <span v-if="projectListHeadlineVisible">Projekte in Liste anzeigen</span>
-        </div>
-        <ion-content id="projectList">
-          <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
-            Keine Projekte gefunden
-          </div>
-          <div v-else>
-            <div v-for="(project, index) in projects" :router-link="`projects/${project.id}`" :key="project.id" :class="{ 'last-item' : index === projects.length - 1, 'active' : activeProjectId === project.id, 'not-active' : activeProjectId !== null && activeProjectId !== project.id }">
-              <ParticipationProjectListPanel
-                @click="navigateToProject(project.id)"
-                :project="project"
-                :id="project.id"
-              />
-            </div>
-            <ion-infinite-scroll
-              v-if="currentPage < totalPages"
-              @ionInfinite="loadData($event)"
-            >
-              <ion-infinite-scroll-content>
-              </ion-infinite-scroll-content>
-            </ion-infinite-scroll>
-          </div>
-        </ion-content>
-      </ion-modal>
-
-      <ion-loading
-        :is-open="loadingInProgress"
-        message="Projekte werden geladen..."
+  <div>
+    <div class="mapcontainer">
+      <ion-searchbar
+        placeholder="Suchen"
+        v-model="searchQuery"
+        :debounce="1000"
+        @ionChange="reloadProjects()"
+        @ionClear="reloadProjects()"
       />
-    </ion-content>
-  </base-layout>
+
+      <ion-select v-if="categories.length > 0" placeholder="Kategorien wählen" multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
+        <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name_with_projects_count }}</ion-select-option>
+      </ion-select>
+
+      <ion-select v-if="communities.length > 0" placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
+        <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name_with_projects_count }}</ion-select-option>
+      </ion-select>
+
+
+      <MapWidget
+        ref="map"
+        :locations="locations"
+        :zoomControl=false
+        :center-point="{
+          lng: 7.131735,
+          lat: 49.523656
+        }"
+        :default-zoom=11
+        @markerClick="mapMarkerClick"
+        @scroll="scroll"
+      />
+    </div>
+
+    <ion-modal
+      :is-open="showProjectsList"
+      :initial-breakpoint="0.15"
+      :breakpoints="[0.15, 1.0]"
+      :backdrop-dismiss="false"
+      :backdrop-breakpoint="1.0"
+      @ionBreakpointDidChange="(projectListHeadlineVisible = !projectListHeadlineVisible)"
+    >
+      <div style="height: 40px; background: white;"></div>
+      <div style="height: 60px; background: white; padding-bottom: 15px;" align="center">
+        <span v-if="projectListHeadlineVisible">Projekte in Liste anzeigen</span>
+      </div>
+      <ion-content id="projectList">
+        <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
+          Keine Projekte gefunden
+        </div>
+        <div v-else>
+          <div v-for="(project, index) in projects" :router-link="`projects/${project.id}`" :key="project.id" :class="{ 'last-item' : index === projects.length - 1, 'active' : activeProjectId === project.id, 'not-active' : activeProjectId !== null && activeProjectId !== project.id }">
+            <ParticipationProjectListPanel
+              @click="navigateToProject(project.id)"
+              :project="project"
+              :id="project.id"
+            />
+          </div>
+          <ion-infinite-scroll
+            v-if="currentPage < totalPages"
+            @ionInfinite="loadData($event)"
+          >
+            <ion-infinite-scroll-content>
+            </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+      </ion-content>
+    </ion-modal>
+
+    <ion-loading
+      :is-open="loadingInProgress"
+      message="Projekte werden geladen..."
+    />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from 'vue'
+import { defineComponent, ref, Ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonContent, IonSearchbar, IonLoading, onIonViewDidEnter, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, onIonViewWillLeave } from '@ionic/vue'
-import BaseLayout from '@/components/general/BaseLayout.vue'
+import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal } from '@ionic/vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -91,8 +87,8 @@ import MapWidget from '@/components/MapWidget.vue'
 import L from 'leaflet'
 
 export default defineComponent({
-  name: 'ParticipationProjectListPage',
-  components: { BaseLayout, IonContent, IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal },
+  name: 'ParticipationProjectMapPage',
+  components: { IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal },
   setup() {
 
     const router = useRouter()
@@ -128,14 +124,14 @@ export default defineComponent({
 
     const loadingInProgress = ref(false)
 
-    onIonViewDidEnter(() => {
+    onMounted(() => {
       showProjectsList.value = true
       
       // Give the map time to initialize before loading data.
       setTimeout(() => { reloadData() }, 100)
     })
 
-    onIonViewWillLeave(() => {
+    onUnmounted(() => {
       projectListHeadlineVisible.value = true
       showProjectsList.value = false
     })

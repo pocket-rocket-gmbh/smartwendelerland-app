@@ -176,7 +176,7 @@ import PollsBox from '@/components/polls/PollsBox.vue'
 import ContactForm from '@/components/participation/ContactForm.vue'
 
 export default defineComponent({
-  name: 'ParticipationProjectListPage',
+  name: 'ParticipationProjectPage',
   components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox, ContactForm, IonButton },
   setup() {
 
