@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="base">
     <div class="mapcontainer">
       <ion-searchbar
         placeholder="Suchen"
@@ -17,7 +17,6 @@
         <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name_with_projects_count }}</ion-select-option>
       </ion-select>
 
-
       <MapWidget
         ref="map"
         :locations="locations"
@@ -26,7 +25,8 @@
           lng: 7.131735,
           lat: 49.523656
         }"
-        :default-zoom=11
+        :default-zoom=10
+        :min-zoom=10
         @markerClick="mapMarkerClick"
         @scroll="scroll"
       />
@@ -77,7 +77,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal } from '@ionic/vue'
+import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, IonContent } from '@ionic/vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -88,7 +88,7 @@ import L from 'leaflet'
 
 export default defineComponent({
   name: 'ParticipationProjectMapPage',
-  components: { IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal },
+  components: { IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal, IonContent },
   setup() {
 
     const router = useRouter()
@@ -126,7 +126,7 @@ export default defineComponent({
 
     onMounted(() => {
       showProjectsList.value = true
-      
+
       // Give the map time to initialize before loading data.
       setTimeout(() => { reloadData() }, 100)
     })
@@ -143,12 +143,12 @@ export default defineComponent({
         getPublicProjects(false),
         getPublicCategories(),
         getPublicCommunities()
-      ])      
+      ])
       loadingInProgress.value = false
     }
 
     const reloadProjects = async () => {
-      loadingInProgress.value = true      
+      loadingInProgress.value = true
       currentPage.value = 1
       await getPublicProjects(false)
       loadingInProgress.value = false
@@ -161,14 +161,14 @@ export default defineComponent({
         filters.push({
           field: 'category',
           value: selectedCategoryIds.value.toString()
-        }) 
+        })
       }
 
       if (selectedCommunityIds.value.length > 0) {
         filters.push({
           field: 'community',
           value: selectedCommunityIds.value
-        }) 
+        })
       }
 
       const longitude_min = map.value.getVisibleRectangle()._southWest.lng
@@ -181,17 +181,17 @@ export default defineComponent({
         value: longitude_min + ',' + latitude_min + ',' + longitude_max + ',' + latitude_max
       })
 
-      const options: RetrieveCollectionOptions = { 
-        page: currentPage.value, 
+      const options: RetrieveCollectionOptions = {
+        page: currentPage.value,
         per_page: 100,
-        sort_by: 'created_at', 
-        sort_order: 'DESC', 
-        searchQuery: searchQuery.value, 
-        concat: concat, 
+        sort_by: 'created_at',
+        sort_order: 'DESC',
+        searchQuery: searchQuery.value,
+        concat: concat,
         filters: filters
       }
 
-      await api.retrieveCollection(options)      
+      await api.retrieveCollection(options)
       totalPages.value = api.totalPages.value
 
       updateLocations()
@@ -249,7 +249,7 @@ export default defineComponent({
     }
 
     const navigateToProject = (projectId: string) => {
-      router.push({path: `/participation/projects/${projectId}`})      
+      router.push({path: `/participation/projects/${projectId}`})
     }
 
     const mapMarkerClick = (marker: MapLocation) => {
@@ -265,7 +265,7 @@ export default defineComponent({
       if (!lastLoadedMapBoundaries.contains(map.value.getVisibleRectangle())) {
         lastLoadedMapBoundaries = map.value.getVisibleRectangle()
         reloadProjects()
-      }      
+      }
     }
 
     return {
@@ -295,6 +295,10 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
+
+div.base
+  height: 75%
+
 div.mapcontainer
   width: 100%
   height: 85%
