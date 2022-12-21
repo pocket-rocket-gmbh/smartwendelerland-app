@@ -5,10 +5,11 @@
     </ion-toolbar>
     <ion-content :fullscreen="true">
       <project-list
-        v-if="view === 'list'"
+        v-show="view === 'list'"
       />
       <project-map
-        v-else-if="view === 'map'"
+        :show-modal="view === 'map'"
+        v-show="view === 'map'"
       />
     </ion-content>
   </base-layout>

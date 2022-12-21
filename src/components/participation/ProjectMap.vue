@@ -33,7 +33,7 @@
     </div>
 
     <ion-modal
-      :is-open="showProjectsList"
+      :is-open="showModal"
       :initial-breakpoint="0.15"
       :breakpoints="[0.15, 1.0]"
       :backdrop-dismiss="false"
@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, onMounted, onUnmounted } from 'vue'
+import { defineComponent, ref, Ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, IonContent } from '@ionic/vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
@@ -89,7 +89,13 @@ import L from 'leaflet'
 export default defineComponent({
   name: 'ParticipationProjectMapPage',
   components: { IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal, IonContent },
-  setup() {
+  props: {
+    showModal: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(props) {
 
     const router = useRouter()
 
@@ -125,6 +131,7 @@ export default defineComponent({
     const loadingInProgress = ref(false)
 
     onMounted(() => {
+      console.log("huhu")
       showProjectsList.value = true
 
       // Give the map time to initialize before loading data.
@@ -267,6 +274,13 @@ export default defineComponent({
         reloadProjects()
       }
     }
+
+    watch(() => props.showModal, (first, second) => {
+      if (first === true) {
+        map.value.refreshView()
+        setTimeout(() => { reloadData() }, 100)
+      }
+    });
 
     return {
       loadingInProgress,
