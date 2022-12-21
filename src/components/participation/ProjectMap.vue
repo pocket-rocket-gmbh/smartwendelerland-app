@@ -131,7 +131,6 @@ export default defineComponent({
     const loadingInProgress = ref(false)
 
     onMounted(() => {
-      console.log("huhu")
       showProjectsList.value = true
 
       // Give the map time to initialize before loading data.
