@@ -16,7 +16,7 @@
                 <img :src="image.url"/>
               </ion-slide>
             </ion-slides>
-            
+
             <ProjectVotePanel
               v-if="useUser().loggedIn()"
               :key="votePanelKey"
@@ -206,7 +206,7 @@ export default defineComponent({
     const contactFormModalOpen = ref(false)
 
     const loadingInProgress = ref(false)
-    
+
     const locations = ref<MapLocation[]>([])
     const map = ref(null)
     const mapStyle = ref('')
@@ -251,7 +251,8 @@ export default defineComponent({
           id: location.id,
           longitude: parseFloat(location.longitude),
           latitude: parseFloat(location.latitude),
-          draggable: false
+          draggable: false,
+          tooltipHtml: null
         })
       })
 

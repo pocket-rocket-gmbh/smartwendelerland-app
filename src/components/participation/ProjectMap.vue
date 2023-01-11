@@ -25,10 +25,9 @@
           lng: 7.131735,
           lat: 49.523656
         }"
-        :default-zoom=10
+        :auto-fit=true
         :min-zoom=10
         @markerClick="mapMarkerClick"
-        @scroll="scroll"
       />
     </div>
 
@@ -215,7 +214,8 @@ export default defineComponent({
             id: project.id,
             longitude: parseFloat(location.longitude),
             latitude: parseFloat(location.latitude),
-            draggable: false
+            draggable: false,
+            tooltipHtml: null
           })
         })
       })
@@ -267,13 +267,6 @@ export default defineComponent({
       projectList.scrollToPoint(0, yOffset, 500)
     }
 
-    const scroll = () => {
-      if (!lastLoadedMapBoundaries.contains(map.value.getVisibleRectangle())) {
-        lastLoadedMapBoundaries = map.value.getVisibleRectangle()
-        reloadProjects()
-      }
-    }
-
     watch(() => props.showModal, (first, second) => {
       if (first === true) {
         map.value.refreshView()
@@ -299,7 +292,6 @@ export default defineComponent({
       map,
       locations,
       mapMarkerClick,
-      scroll,
       activeProjectId,
       projectListHeadlineVisible
     }
