@@ -176,6 +176,7 @@ export default defineComponent({
         })
       }
 
+      /* // Filter projects based on current map view windows (disabled to load all projects all the time).
       const longitude_min = map.value.getVisibleRectangle()._southWest.lng
       const latitude_min = map.value.getVisibleRectangle()._southWest.lat
       const longitude_max = map.value.getVisibleRectangle()._northEast.lng
@@ -185,6 +186,7 @@ export default defineComponent({
         field: 'georectangle',
         value: longitude_min + ',' + latitude_min + ',' + longitude_max + ',' + latitude_max
       })
+      */
 
       const options: RetrieveCollectionOptions = {
         page: currentPage.value,
