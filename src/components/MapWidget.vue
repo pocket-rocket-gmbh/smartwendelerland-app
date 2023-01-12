@@ -78,9 +78,6 @@ export default defineComponent({
   ],
   setup(props: any, { emit }) {
 
-    // Timeout for loading the map locations. This ensures that all plugins have been loaded (they are dynamically added to the DOM during mounting).
-    const mapTimeoutBase = 80
-
     const mapMarkerIcon = L.icon({
         iconUrl: '/map-marker-blue.png',
         shadowUrl: null,
@@ -100,7 +97,7 @@ export default defineComponent({
 
     let programmaticScrollInProgress = false
 
-    onMounted(() => {
+    onMounted(async () => {
 
       // Load mask plugin to grey out any area outside the Landkreis.
       const maskPlugin = document.createElement("script")
@@ -163,15 +160,15 @@ export default defineComponent({
         programmaticScrollInProgress = false
       }
 
-      refreshView()
-
-      setTimeout(() => { // Need to wait for the DOM to be completely loaded for the mask plugin to be active.
+      await leafletPluginCall(() => {
         // @ts-ignore:
         L.mask('/LKWND.geojson', { fillOpacity: 0.7 }).addTo(map)
-      }, mapTimeoutBase) // Note: This timeout must be smaller than the timout of the automatic viewport calculation (see below).
+      })
+
+      refreshView()
     })
 
-    const refreshView = () => {
+    const refreshView = async () => {
 
       if (clusterlayer) {
         clusterlayer.clearLayers()
@@ -180,7 +177,7 @@ export default defineComponent({
 
       locationMarkers = []
 
-      setTimeout(() => { // Need to wait for the DOM to be completely loaded for the markercluster plugin to be active.
+      await leafletPluginCall(() => {
 
         // @ts-ignore:
         clusterlayer = L.markerClusterGroup({
@@ -206,10 +203,10 @@ export default defineComponent({
         })
 
         map.addLayer(clusterlayer)
-      }, mapTimeoutBase + 10)
+      })
 
-      // Calculate viewport after timeout to make sure the page is already properly initialized.
-      setTimeout(function () {
+      // Fit all visible locations into view after a timeout to make sure the mask layer does not conflict with this.
+      setTimeout(() => {
         programmaticScrollInProgress = true
         if (props.autoFit && locationMarkers.length > 0) {
           const group: L.FeatureGroup<any> = L.featureGroup(locationMarkers)
@@ -217,7 +214,7 @@ export default defineComponent({
         }
         map.invalidateSize()
         programmaticScrollInProgress = false
-      }, mapTimeoutBase + 20) // Note: The timeout must be larger than the timeout of the mask layer (see above).
+      }, 100)
     }
 
     const getZoom = () => {
@@ -298,6 +295,23 @@ export default defineComponent({
       if (map.tap) {
         map.tap.disable()
       }
+    }
+
+    // Helpers to access plugin functionality (plugins are loaded asynchronously and therefore are available after some time depending on the loading times).
+    // This function tries to load the passed code until it is successful with a limited amount of calls.
+    const leafletPluginCall = async (pluginCall: () => void) => {
+        let tries = 0
+        while (tries < 50)
+        {
+          try {
+            pluginCall()
+            tries = 50
+          }
+          catch (error) {
+            tries += 1
+            await new Promise((r) => setTimeout(r, 50))
+          }
+        }
     }
 
     return {
