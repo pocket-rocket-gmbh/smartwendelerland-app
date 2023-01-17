@@ -71,7 +71,7 @@ export default defineComponent({
         // update relevant data which is now available after login
         await usePollStore().setPublicPoll()
 
-        if (lastPage.value && lastPage.value !== '/password-forgotten') {
+        if (lastPage.value && lastPage.value !== '/password-forgotten' && lastPage.value !== '/register') {
           router.push({ path: lastPage.value })
         } else {
           router.push({ path: '/' })
