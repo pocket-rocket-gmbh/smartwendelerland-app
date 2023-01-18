@@ -1,8 +1,5 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router'
 import { RouteRecordRaw } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { usePrivateApi } from '@/composables/api/private'
-import { ResultStatus } from '@/types/serverCallResult'
 
 const routes: Array<RouteRecordRaw> = [
   {

@@ -74,7 +74,7 @@ export default defineComponent({
         if (lastPage.value && lastPage.value !== '/password-forgotten' && lastPage.value !== '/register') {
           router.push({ path: lastPage.value })
         } else {
-          router.push({ path: '/' })
+          router.push({ path: '/participation/projects' })
         }
       }
       else {
