@@ -66,24 +66,24 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-button @click="closeAccountModalOpen = true" color="danger" class="delete-account-button">Account deaktivieren</ion-button>
+          <ion-button @click="closeAccountModalOpen = true" color="danger" class="delete-account-button">Account löschen</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
     <ion-modal :is-open="closeAccountModalOpen">
       <ion-header>
         <ion-toolbar>
-          <ion-title slot="start">Account deaktivieren</ion-title>
+          <ion-title slot="start">Account löschen</ion-title>
           <ion-buttons slot="end">
             <ion-button @click="closeAccountModalOpen = false">X</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding has-background-white">
-        Bist du sicher, dass Du Deinen Account deaktivieren willst? Dein Fortschritt, deine Kommentare und deine Projektbewertungen gehen damit verloren.
+        Bist du sicher, dass Du Deinen Account löschen willst? Dein Fortschritt, deine Kommentare und deine Projektbewertungen gehen damit verloren.
         <ion-row>
           <ion-col>
-            <ion-button @click="deleteAccount" color="danger" expand="block">Ja, Account deaktivieren</ion-button>
+            <ion-button @click="deleteAccount" color="danger" expand="block">Ja, Account löschen</ion-button>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -160,7 +160,7 @@ export default defineComponent({
 
       const toast = await toastController
         .create({
-          message: 'Dein Account wurde deaktiviert',
+          message: 'Dein Account wurde gelöscht',
           duration: 2000
         })
       return toast.present()
