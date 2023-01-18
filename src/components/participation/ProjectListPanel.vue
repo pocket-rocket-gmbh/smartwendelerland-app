@@ -1,7 +1,7 @@
 <template>
   <ion-card>
     <div class="image-wrapper">
-      <img :src="project.image_url" />
+      <img :src="imageCache.cacheableImageUrl(project.image_url)" />
     </div>
     
     <ion-card-header>
@@ -38,6 +38,7 @@ import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
 import ProjectVotes from '../../components/participation/ProjectVotes.vue'
 import { location } from 'ionicons/icons'
+import { useImageCache } from '@/composables/ui/imageCache'
 
 export default defineComponent({
   name: 'ParticipationProjectListPanel',
@@ -46,10 +47,12 @@ export default defineComponent({
   },
   components: { IonCard, IonCardHeader, IonCardTitle, IonCardContent, ProjectVotes, IonIcon },
   setup() {
+    const imageCache = useImageCache()
     return {
       useDatetime,
       useCurrency,
-      location
+      location,
+      imageCache
     }
   }
 })

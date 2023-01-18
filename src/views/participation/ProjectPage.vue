@@ -17,10 +17,10 @@
               class="item-box swiper"
             >
               <swiper-slide>
-                <img :src="project.image_url"/>
+                <img :src="imageCache.cacheableImageUrl(project.image_url)"/>
               </swiper-slide>
               <swiper-slide v-for="(image, index) in project.sanitized_images" :key="index">
-                <img :src="image.url"/>
+                <img :src="imageCache.cacheableImageUrl(image.url)"/>
               </swiper-slide>
               <div class="pagination" />
             </swiper>
@@ -190,6 +190,7 @@ import { location } from 'ionicons/icons'
 import { usePollStore } from '@/stores/poll'
 import PollsBox from '@/components/polls/PollsBox.vue'
 import ContactForm from '@/components/participation/ContactForm.vue'
+import { useImageCache } from '@/composables/ui/imageCache'
 
 export default defineComponent({
   name: 'ParticipationProjectPage',
@@ -202,6 +203,7 @@ export default defineComponent({
     const privateApi = usePrivateApi()
 
     const projectsApi = useCollectionApi()
+    const imageCache = useImageCache()
 
     projectsApi.setEndpoint('projects')
     const filter = ref('newest')
@@ -340,7 +342,8 @@ export default defineComponent({
       location,
       projectPoll,
       contactFormModalOpen,
-      modules: [Pagination]
+      modules: [Pagination],
+      imageCache
     }
   }
 })
