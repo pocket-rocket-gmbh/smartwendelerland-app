@@ -64,14 +64,42 @@
           <ion-button @click="updatePassword">Passwort ändern</ion-button>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button @click="closeAccountModalOpen = true" color="danger" class="delete-account-button">Account deaktivieren</ion-button>
+        </ion-col>
+      </ion-row>
     </ion-grid>
+    <ion-modal :is-open="closeAccountModalOpen">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title slot="start">Account deaktivieren</ion-title>
+          <ion-buttons slot="end">
+            <ion-button @click="closeAccountModalOpen = false">X</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding has-background-white">
+        Bist du sicher, dass Du Deinen Account deaktivieren willst? Dein Fortschritt, deine Kommentare und deine Projektbewertungen gehen damit verloren.
+        <ion-row>
+          <ion-col>
+            <ion-button @click="deleteAccount" color="danger" expand="block">Ja, Account deaktivieren</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button @click="closeAccountModalOpen = false" expand="block">Abbrechen</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-content>
+    </ion-modal>
   </BackButtonLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonGrid, IonRow, IonCol, IonLabel, IonButton, onIonViewWillEnter, IonInput, IonItem } from '@ionic/vue'
+import { IonGrid, IonRow, IonCol, IonLabel, IonButton, onIonViewWillEnter, IonInput, IonItem, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonContent, toastController } from '@ionic/vue'
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import { useUserStore } from '@/stores/user'
 import { usePrivateApi } from '@/composables/api/private'
@@ -80,7 +108,7 @@ import { ResultStatus } from '@/types/serverCallResult'
 
 export default defineComponent({
   name: 'MePage',
-  components: { BackButtonLayout, IonGrid, IonRow, IonCol, IonLabel, IonButton, IonInput, IonItem },
+  components: { BackButtonLayout, IonGrid, IonRow, IonCol, IonLabel, IonButton, IonInput, IonItem, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonContent },
   setup() {
 
     const router = useRouter()
@@ -89,6 +117,7 @@ export default defineComponent({
     const password = ref('')
     const password_confirmation = ref('')
     const passwordError = ref(null)
+    const closeAccountModalOpen = ref(false)
 
     const api = useCollectionApi()
     api.setBaseApi(usePrivateApi())
@@ -121,20 +150,39 @@ export default defineComponent({
       }
     }
 
+    const deleteAccount = async () => {
+      api.setEndpoint(`users/delete-me`)
+      const result = await api.deleteItem()
+      localStorage.removeItem('auth._token.jwt')
+      userStore.user = null
+      closeAccountModalOpen.value = false
+      router.push('/')
+
+      const toast = await toastController
+        .create({
+          message: 'Dein Account wurde deaktiviert',
+          duration: 2000
+        })
+      return toast.present()
+    }
+
     return {
       userStore,
       updatePassword,
       password_confirmation,
       password,
       passwordError,
-      logout
+      closeAccountModalOpen,
+      logout,
+      deleteAccount
     }
   }
 })
 </script>
 
-<style scoped>
-.headline {
-  font-size: 1.5em;
-}
+<style lang="sass" scoped>
+.headline
+  font-size: 1.5em
+.delete-account-button
+  margin-top: 100px
 </style>
