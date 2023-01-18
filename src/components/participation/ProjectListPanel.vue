@@ -20,11 +20,14 @@
         :project="project"
         :show-vote-count="false"
       />
-      <div :class="['footer', { 'has-vote-count' : project.rating_results_public }]">
+      <div :class="['metrics', { 'has-vote-count' : project.rating_results_public }]">
         <div v-if="project.rating_results_public">{{ project.total_vote_count }} abgegebene Stimmen</div>
         <div><strong>{{ project.comment_count }} Kommentar<span v-if="project.comment_count > 1">e</span></strong></div>
       </div>
     </ion-card-content>
+    <div class="footer">
+      Projekt ansehen
+    </div>
   </ion-card>
 </template>
 
@@ -55,7 +58,7 @@ export default defineComponent({
 .image-wrapper
   position: relative
 
-.footer
+.metrics
   border-top: 2px solid #D3D3D3
   margin: 20px -20px 0 -20px
   padding-top: 20px
@@ -63,5 +66,14 @@ export default defineComponent({
   &.has-vote-count
     display: grid
     grid-template-columns: 50% 50%
-      
+.footer
+  background: #358BBC
+  color: white
+  display: grid
+  place-items: center
+  padding: 25px
+  font-weight: 600
+  font-size: 16px
+  line-height: 22px
+  text-transform: uppercase
 </style>

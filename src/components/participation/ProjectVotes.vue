@@ -2,15 +2,13 @@
   <div>
     <div v-if="totalVoteCount > 0 && project.rating_results_public" :class="{'is-small' : isSmall}">
       <div class="votebar-wrap">
-        <div v-if="upvoteRelation > 0" class="votebar upvote" :style="`width: ${upvoteRelation}%;`">
-          <div class="result">{{ upvoteCount }} dafür</div>
-        </div>
+        <div v-if="upvoteRelation > 0" class="votebar upvote" :style="`width: ${upvoteRelation}%;`" />
+        <div class="result">{{ upvoteCount }} dafür</div>
       </div>
       
       <div class="votebar-wrap">
-        <div v-if="project.rating_kind === 'upvote_downvote' && downvoteRelation > 0" class="votebar downvote" :style="`width: ${downvoteRelation}%;`">
-          <div class="result">{{ downvoteCount }} dagegen</div>
-        </div>
+        <div v-if="project.rating_kind === 'upvote_downvote' && downvoteRelation > 0" class="votebar downvote" :style="`width: ${downvoteRelation}%;`" />
+        <div class="result" v-if="downvoteCount > 0">{{ downvoteCount }} dagegen</div>
       </div>
       
       <div class="ion-margin-top" v-if="showVoteCount">
@@ -71,22 +69,21 @@ export default defineComponent({
   width: 100%
 .votebar
   position: relative
-  height: 40px
+  height: 20px
   transition: 0.5s
   overflow: initial
+  border-radius: 80px
 .votebar.upvote
   background: #ABC812
-  margin-bottom: 10px
 .votebar.downvote
   background: #A42258
       
 .result
-  position: absolute
-  left: 5px
-  top: 8px
-  width: 150px
   font-size: 14px
-  color: white
+  color: #58595E
+  font-style: normal
+  font-weight: 600
+  margin-top: 5 px
 .is-small .result
   top: 10px
 </style>

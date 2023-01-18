@@ -95,26 +95,23 @@ export default defineComponent({
   }
 })
 </script>
-<style scoped>
-.vote-panel {
-  padding-top: 10px;
-  color: rgb(68, 68, 68);
-  border-bottom: 1px solid rgb(229, 229, 229);
-}
-.vote-panel.upvoted {
-  border: none;
-  background: #ABC812;
-}
-.vote-panel.downvoted {
-  color: black;
-  border: none;
-  background: #A42258;
-}
-.your-vote {
-  margin-top: 3px;
-  font-weight: 500;
-}
-.has-text-white {
-  color: white;
-}
+<style lang="sass" scoped>
+.vote-panel
+  padding-top: 10px
+  color: rgb(68, 68, 68)
+  border-bottom: 1px solid rgb(229, 229, 229)
+  border-radius: 20px
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15)
+.vote-panel.upvoted
+  border: none
+  background: #ABC812
+.vote-panel.downvoted
+  color: black
+  border: none
+  background: #A42258
+.your-vote
+  margin-top: 3px
+  font-weight: 500
+.has-text-white
+  color: white
 </style>

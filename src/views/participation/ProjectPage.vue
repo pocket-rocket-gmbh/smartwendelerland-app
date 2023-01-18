@@ -1,6 +1,6 @@
 <template>
   <BackButtonLayout>
-    <ion-content>
+    <ion-content class="ion-padding">
       <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
@@ -8,34 +8,44 @@
       <ion-grid v-if="project" class="expand">
         <ion-row>
           <ion-col>
-            <ion-slides pager="true" :options="slideOpts">
-              <ion-slide>
+            <swiper
+              :slides-per-view="1"
+              :space-between="20"
+              :modules="modules"
+              :pagination="{ el: '.pagination' }"
+              v-if="project.image_url"
+              class="item-box swiper"
+            >
+              <swiper-slide>
                 <img :src="project.image_url"/>
-              </ion-slide>
-              <ion-slide v-for="(image, index) in project.sanitized_images" :key="index">
+              </swiper-slide>
+              <swiper-slide v-for="(image, index) in project.sanitized_images" :key="index">
                 <img :src="image.url"/>
-              </ion-slide>
-            </ion-slides>
+              </swiper-slide>
+              <div class="pagination" />
+            </swiper>
 
-            <ProjectVotePanel
-              v-if="useUser().loggedIn()"
-              :key="votePanelKey"
-              :project="project"
-              @updateProject="reloadData()"
-            />
-            <LoginHint
-              v-else
-              label="Bitte melden Sie sich an um dieses Projekt zu bewerten"
-            />
+            <div class="item-box ion-margin-top">
+              <ProjectVotePanel
+                v-if="useUser().loggedIn()"
+                :key="votePanelKey"
+                :project="project"
+                @updateProject="reloadData()"
+              />
+              <LoginHint
+                v-else
+                label="Bitte melden Sie sich an um dieses Projekt zu bewerten"
+              />
+            </div>
           </ion-col>
         </ion-row>
-        <div class="ion-padding">
+        <div class="item-box ion-padding ion-margin-top">
           <PollsBox
             v-if="projectPoll"
             :is-public="false"
           />
           <ion-row>
-            <ion-col class="header">
+            <ion-col>
               <div class="headline">{{ project.name }}</div>
               <div class="headline ion-margin-top" v-if="project.community && project.zip && project.town">
                 <strong v-if="project.community && project.zip && project.town">
@@ -67,21 +77,23 @@
               />
             </ion-col>
           </ion-row>
-        </div>
-        <ProjectMapPanel
-          ref="map"
-          :locations="locations"
-        />
-        <div align="center" class="ion-margin-top">
-          <ion-button @click="(contactFormModalOpen = true)">Kontaktformular</ion-button>
+
+          <ProjectMapPanel
+            ref="map"
+            :locations="locations"
+          />
+
+          <div align="center" class="ion-margin-top">
+            <ion-button @click="(contactFormModalOpen = true)" class="contact">Kontaktformular</ion-button>
+          </div>
+          <ContactForm
+            v-if="contactFormModalOpen"
+            :project-id="project.id"
+            @close="(contactFormModalOpen = false)"
+          />
         </div>
 
-        <ContactForm
-          v-if="contactFormModalOpen"
-          :project-id="project.id"
-          @close="(contactFormModalOpen = false)"
-        />
-        <div class="ion-padding">
+        <div class="ion-margin-top item-box ion-padding">
           <ion-row>
             <ion-col>
               <ion-label><h1>Kommentare zum Projekt</h1></ion-label>
@@ -150,9 +162,13 @@
 </template>
 
 <script lang="ts">
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Pagination } from 'swiper'
+import 'swiper/css'
+import "swiper/css/pagination"
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonSlides, IonSlide, IonButton } from '@ionic/vue'
+import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonButton } from '@ionic/vue'
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import ProjectMapPanel from '@/components/participation/ProjectMapPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -177,7 +193,7 @@ import ContactForm from '@/components/participation/ContactForm.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectPage',
-  components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, IonSlides, IonSlide, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox, ContactForm, IonButton },
+  components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox, ContactForm, IonButton, Swiper, SwiperSlide },
   setup() {
 
     const route = useRoute()
@@ -323,29 +339,41 @@ export default defineComponent({
       route,
       location,
       projectPoll,
-      contactFormModalOpen
+      contactFormModalOpen,
+      modules: [Pagination]
     }
   }
 })
 </script>
 
-<style scoped>
-.expand {
-  margin-left: -10px;
-  margin-right: -10px;
-  margin-top: -10px;
-}
-.header {
-  line-height: 22px;
-  margin-top: 10px;
-}
+<style lang="sass" scoped>
+.expand
+  margin-left: -10px
+  margin-right: -10px
+  margin-top: -10px
+.header
+  line-height: 22px
+  margin-top: 10px
 
-ion-textarea {
-  --background: #F5F5F5;
-  padding: 5px 10px;
-}
+ion-textarea
+  --background: #F5F5F5
+  padding: 5px 10px
 
-.swiper-slide img {
-  width: 100%;
-}
+.pagination
+  text-align: center
+
+.item-box
+  background: white
+  border-radius: 20px
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15)
+
+.swiper img
+  height: 100%
+  width: 100%
+
+ion-button.contact
+  width: 100%
+  --background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%)
+  --border-radius: 38px
+  height: 30px
 </style>

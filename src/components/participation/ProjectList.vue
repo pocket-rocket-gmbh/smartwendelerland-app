@@ -6,7 +6,7 @@
     <ion-searchbar
       placeholder="Suchen"
       v-model="searchQuery"
-      :debounce="500"
+      :debounce="1000"
       @ionChange="reloadProjects()"
       @ionClear="reloadProjects()"
     />
@@ -19,6 +19,12 @@
       <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name }}</ion-select-option>
     </ion-select>
 
+    <div class="ion-padding">
+      <PollsBox
+        :is-public="true"
+      />
+    </div>
+    
     <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
       Keine Projekte gefunden
     </div>
@@ -52,10 +58,11 @@ import ParticipationProjectListPanel from '@/components/participation/ProjectLis
 import { usePublicApi } from '@/composables/api/public'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
+import PollsBox from '@/components/polls/PollsBox.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption },
+  components: { IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, PollsBox },
   setup() {
 
     const publicApi = usePublicApi()

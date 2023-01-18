@@ -5,10 +5,10 @@
       <span @click="view = 'map'" :class="['toggle-button', {'is-active' : view === 'map'}]">Karte</span>
     </ion-toolbar>
     <ion-content :fullscreen="true">
-      <project-list
+      <ProjectList
         v-show="view === 'list'"
       />
-      <project-map
+      <ProjectMap
         :show-modal="view === 'map'"
         v-show="view === 'map'"
       />

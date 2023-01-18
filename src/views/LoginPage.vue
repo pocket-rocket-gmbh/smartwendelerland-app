@@ -21,7 +21,9 @@
         <ion-nav-link routerLink="/password-forgotten">Password vergessen?</ion-nav-link>
       </div>
       <div class="ion-margin">
-        <ion-nav-link routerLink="/">← zurück</ion-nav-link>
+        <ion-back-button text="zurück" default-href="/">
+          ← zurück
+        </ion-back-button>
       </div>
     </div>
     
@@ -35,7 +37,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonInput, IonButton, IonLoading, toastController, onIonViewWillEnter, IonNavLink } from '@ionic/vue'
+import { IonInput, IonButton, IonLoading, toastController, onIonViewWillEnter, IonNavLink, IonBackButton } from '@ionic/vue'
 import { usePrivateApi } from '@/composables/api/private'
 import { useUserStore } from '@/stores/user'
 import { usePollStore } from '@/stores/poll'
@@ -44,7 +46,7 @@ import LoginLayout from '@/components/general/LoginLayout.vue'
 
 export default defineComponent({
   name: 'LoginPage',
-  components: { LoginLayout, IonInput, IonButton, IonLoading, IonNavLink },
+  components: { LoginLayout, IonInput, IonButton, IonLoading, IonNavLink, IonBackButton },
   setup() {
 
     const router = useRouter()

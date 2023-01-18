@@ -1,6 +1,6 @@
 <template>
   <div class="login-hint" @click="router.push('/login')">
-    <u>{{ label }}</u>
+    {{ label }}
   </div>
 </template>
 <script lang="ts">
@@ -23,7 +23,8 @@ export default defineComponent({
 </script>
 <style lang="sass" scoped>
 .login-hint
-  background: #015281
+  background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%)
   color: white
   padding: 10px
+  border-radius: 20px
 </style>
