@@ -119,7 +119,8 @@ export default defineComponent({
         zoomControl: props.zoomControl
       })
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { // TODO make configurable (e.g. environment varaible)
+      //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { // OpenStreetMaps for testing.
+      L.tileLayer('https://api.maptiler.com/maps/1273b8ef-8485-4e5e-9b5f-0e676ef766c1/256/{z}/{x}/{y}.png?key=5LOef9AwPiOk3xz2XAPf', { // MapTiler Production.
         minZoom: props.minZoom,
         maxZoom: props.maxZoom
       }).addTo(map)
@@ -247,7 +248,7 @@ export default defineComponent({
     }
 
     const createAttribution = () => {
-      map.attributionControl.addAttribution(`<span style="font-size: ${props.attributionFontSize}px">© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</span>`)
+      map.attributionControl.addAttribution(`<span style="font-size: ${props.attributionFontSize}px"><a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></span>`)
       map.attributionControl.setPrefix('')
       map.attributionControl.getContainer().style.height = `${props.attributionFontSize + 4}px`
       map.attributionControl.getContainer().style.paddingRight = '2px'
