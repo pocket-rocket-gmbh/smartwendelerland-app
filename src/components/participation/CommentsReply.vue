@@ -3,22 +3,24 @@
     <span class="is-clickable" @click="replyBoxOpen = !replyBoxOpen" v-if="showReplyHandle">Antworten ({{ repliesCount}})</span>
     <Transition>
       <div class="replies" v-if="replyBoxOpen">
-        <ion-card v-for="comment in comments" :key="comment.id">
-          <CommentPanel
-            :comment="comment"
-            :show-reply="false"
-            @removeComment="removeComment"
-            @setCommentReported="setCommentReported"
-          />
-        </ion-card>
-        <CommentNew
-          v-if="useUser().isAdmin()"
-          placeholder="Auf Kommentar antworten"
-          :project-id="comment.project_id"
-          :parent-id="comment.id"
-          @increaseRepliesCount="repliesCount += 1"
-          @refreshCollection="getItems(false)"
+        <CommentPanel
+          v-for="comment in comments" :key="comment.id"
+          :comment="comment"
+          :show-reply="false"
+          :is-reply="true"
+          @removeComment="removeComment"
+          @setCommentReported="setCommentReported"
         />
+        <div class="reply-box">
+          <CommentNew
+            v-if="useUser().isAdmin()"
+            placeholder="Auf Kommentar antworten"
+            :project-id="comment.project_id"
+            :parent-id="comment.id"
+            @increaseRepliesCount="repliesCount += 1"
+            @refreshCollection="getItems(false)"
+          />
+        </div>
       </div>
     </Transition> 
   </div>
@@ -105,12 +107,11 @@ export default defineComponent({
 })
 </script>
 <style lang="sass" scoped>
-
-.comment-reply
-  margin-left: 20px
 .replies
-  margin-left: 10px
-
+  margin-left: 20px
+  margin-top: 20px
+.reply-box
+  margin-left: -5px
 .v-enter-active,.v-leave-active
   transition: 0.5s
 

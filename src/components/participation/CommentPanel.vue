@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-panel">
+  <div :class="['comment-panel', { 'has-border': isReply }]">
     <ion-icon
       v-if="comment.user.id === user.user.id || user.user.permissions.role === 'root'"
       @click="showContext($event)"
@@ -50,6 +50,10 @@ export default defineComponent({
   props: {
     comment: {
       type: Object
+    },
+    isReply: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['setCommentReported', 'removeComment'],
@@ -109,20 +113,19 @@ export default defineComponent({
   }
 })
 </script>
-<style scoped>
-.comment-panel {
-  position: relative;
-  padding: 10px;
-}
-ion-icon {
-  position: absolute;
-  font-size: 25px;
-  top: 5px;
-  right: 5px;
-}
+<style lang="sass" scoped>
+.comment-panel
+  position: relative
+  padding: 10px
+  &.has-border
+    border-left: 1px solid lightgrey
+ion-icon
+  position: absolute
+  font-size: 25px
+  top: 5px
+  right: 5px
 
-.comment {
-  font-size: 17px;
-  margin: 10px 0;
-}
+.comment
+  font-size: 17px
+  margin: 10px 0
 </style>

@@ -1,6 +1,7 @@
 <template>
   <ion-modal
     :is-open="true"
+    @didDismiss="emitClose"
   >
     <ion-header>
       <ion-toolbar>

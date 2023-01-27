@@ -12,7 +12,7 @@ export function usePrivateApi() {
 
   const serverInterface = useServerInterface()
   // serverInterface.setDomain('http://localhost:3000/v1/')
-  serverInterface.setDomain('https://smartwendelerland-api.herokuapp.com/v1/')
+  serverInterface.setDomain('https://smartwendelerland-api-prod.herokuapp.com/v1/')
   // serverInterface.setDomain('https://smartwendelerland-api-staging.herokuapp.com/v1/')
 
   const call = async (method: Method, url: string, data?: any): Promise<ServerCallResult> => {

@@ -48,7 +48,7 @@
           Keine Projekte gefunden
         </div>
         <div v-else>
-          <div v-for="(project, index) in projects" :router-link="`projects/${project.id}`" :key="project.id" :class="{ 'last-item' : index === projects.length - 1, 'active' : activeProjectId === project.id, 'not-active' : activeProjectId !== null && activeProjectId !== project.id }">
+          <div v-for="(project, index) in filteredProjects" :router-link="`projects/${project.id}`" :key="project.id" :class="{ 'last-item' : index === projects.length - 1, 'active' : activeProjectId === project.id, 'not-active' : activeProjectId !== null && activeProjectId !== project.id }">
             <ParticipationProjectListPanel
               @click="navigateToProject(project.id)"
               :project="project"
@@ -125,6 +125,7 @@ export default defineComponent({
     let lastLoadedMapBoundaries: L.LatLngBounds = null
 
     const projects = api.items
+    const filteredProjects = ref([])
     const showProjectsList = ref(true)
 
     const loadingInProgress = ref(false)
@@ -199,6 +200,7 @@ export default defineComponent({
       }
 
       await api.retrieveCollection(options)
+      filteredProjects.value = api.items.value
       totalPages.value = api.totalPages.value
 
       updateLocations()
@@ -261,12 +263,14 @@ export default defineComponent({
     }
 
     const mapMarkerClick = (marker: MapLocation) => {
-      // Show project list modal and scroll relevant project into view.
+      // Show project list modal and filter project list by marker id
       document.querySelector('ion-modal').setCurrentBreakpoint(1.0)
-      const yOffset = document.getElementById(marker.id).offsetTop
-      const projectList: any = document.querySelector('ion-content#projectList')
-      activeProjectId.value = marker.id
-      projectList.scrollToPoint(0, yOffset, 500)
+      // const yOffset = document.getElementById(marker.id).offsetTop
+      // const projectList: any = document.querySelector('ion-content#projectList')
+      // activeProjectId.value = marker.id
+      filteredProjects.value = projects.value.filter((project:any) => project.id === marker.id)
+
+      // projectList.scrollToPoint(0, yOffset, 500)
     }
 
     watch(() => props.showModal, (first, second) => {
@@ -295,7 +299,8 @@ export default defineComponent({
       locations,
       mapMarkerClick,
       activeProjectId,
-      projectListHeadlineVisible
+      projectListHeadlineVisible,
+      filteredProjects
     }
   }
 })

@@ -77,11 +77,15 @@
               />
             </ion-col>
           </ion-row>
-
-          <ProjectMapPanel
-            ref="map"
-            :locations="locations"
-          />
+          <ion-row>
+            <ion-col>
+              <div class="ion-margin-top ion-margin-bottom"><b>Standorte des Projekts</b></div>
+              <ProjectMapPanel
+                ref="map"
+                :locations="locations"
+              />
+            </ion-col>
+          </ion-row>
 
           <div align="center" class="ion-margin-top">
             <ion-button @click="(contactFormModalOpen = true)" class="contact">Kontaktformular</ion-button>
@@ -92,66 +96,48 @@
             @close="(contactFormModalOpen = false)"
           />
         </div>
-
-        <div class="ion-margin-top item-box ion-padding">
-          <ion-row>
-            <ion-col>
-              <ion-label><h1>Kommentare zum Projekt</h1></ion-label>
-            </ion-col>
-          </ion-row>
-          <div v-if="useUser().loggedIn()">
-            <CommentNew
-              placeholder="Kommentar verfassen ..."
-              :project-id="route.params.id?.toString()"
-              @refreshCollection="reloadComments()"
-            />
-            <ion-row v-if="comments.length === 0">
-              <ion-col>
-                <ion-label>Keine Kommentare gefunden</ion-label>
-              </ion-col>
-            </ion-row>
-            <ion-row v-else>
-              <ion-col size="6">
-                <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter" @ionChange="reloadComments">
-                  <ion-select-option
-                    v-for="(option, index) in filterOptions"
-                    :key="index"
-                    :value="option.id"
-                  >
-                    {{ option.name }}
-                  </ion-select-option>
-                </ion-select>
-              </ion-col>
-              <ion-col size="12">
-                <div v-for="comment in comments" :key="comment.id">
-                  <ion-card>
-                    <CommentPanel
-                      :comment="comment"
-                      @removeComment="removeComment"
-                      @setCommentReported="setCommentReported"
-                    />
-                  </ion-card>
-                  <CommentsReply
-                    v-if="useUser().isAdmin()"
-                    :comment="comment"
-                  />
-                </div>
-                <ion-infinite-scroll
-                  v-if="currentPage < totalPages"
-                  @ionInfinite="loadData($event)"
-                >
-                  <ion-infinite-scroll-content>
-                  </ion-infinite-scroll-content>
-                </ion-infinite-scroll>
-              </ion-col>
-            </ion-row>
-          </div>
-          <LoginHint
-            v-else
-            label="Bitte melden Sie sich an um Kommentare zu sehen"
-          />
-        </div>
       </ion-grid>
+
+      <div class="ion-margin-top item-box ion-padding" v-if="useUser().loggedIn()">
+        <h1>Verfasse Deinen Kommentar</h1>
+        <CommentNew
+          placeholder="Kommentar verfassen ..."
+          :project-id="route.params.id?.toString()"
+          @refreshCollection="reloadComments()"
+        />
+        <div v-if="comments.length === 0">
+          Keine Kommentare gefunden
+        </div>
+      </div>
+      <div class="ion-margin-top item-box ion-padding">
+        <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter" @ionChange="reloadComments" cancel-text="Abbrechen">
+          <ion-select-option
+            v-for="(option, index) in filterOptions"
+            :key="index"
+            :value="option.id"
+          >
+            {{ option.name }}
+          </ion-select-option>
+        </ion-select>
+      </div>
+
+      <div class="ion-margin-top item-box ion-padding" v-for="comment in comments" :key="comment.id">
+        <CommentPanel
+          :comment="comment"
+          @removeComment="removeComment"
+          @setCommentReported="setCommentReported"
+        />
+        <CommentsReply
+          :comment="comment"
+        />
+      </div>
+      <ion-infinite-scroll
+        v-if="currentPage < totalPages"
+        @ionInfinite="loadData($event)"
+      >
+        <ion-infinite-scroll-content>
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
 
       <ion-loading
         :is-open="loadingInProgress"
@@ -168,7 +154,7 @@ import 'swiper/css'
 import "swiper/css/pagination"
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonButton } from '@ionic/vue'
+import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonButton } from '@ionic/vue'
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import ProjectMapPanel from '@/components/participation/ProjectMapPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -194,7 +180,7 @@ import { useImageCache } from '@/composables/ui/imageCache'
 
 export default defineComponent({
   name: 'ParticipationProjectPage',
-  components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLabel, IonLoading, CommentPanel, ProjectVotePanel, IonCard, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox, ContactForm, IonButton, Swiper, SwiperSlide },
+  components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLoading, CommentPanel, ProjectVotePanel, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox, ContactForm, IonButton, Swiper, SwiperSlide },
   setup() {
 
     const route = useRoute()
