@@ -144,7 +144,7 @@ export default defineComponent({
 
     const deleteAccount = async () => {
       api.setEndpoint(`users/delete-me`)
-      const result = await api.deleteItem()
+      await api.deleteItem()
       localStorage.removeItem('auth._token.jwt')
       userStore.user = null
       closeAccountModalOpen.value = false

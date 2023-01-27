@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { IonApp, IonSpinner, IonRouterOutlet, onIonViewWillEnter } from '@ionic/vue'
+import { IonApp, IonSpinner, IonRouterOutlet } from '@ionic/vue'
 import { defineComponent, onMounted } from 'vue'
 import { usePollStore } from '@/stores/poll'
 import { useAppStateStore } from '@/stores/appState'

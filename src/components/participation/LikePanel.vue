@@ -21,7 +21,7 @@ export default defineComponent({
   props: {
     comment: Object
   },
-  setup (props, { emit }) {
+  setup (props) {
     const api = useCollectionApi()
     api.setBaseApi(usePrivateApi())
     const loading = ref(false)

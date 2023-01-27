@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onMounted } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useUser } from '@/composables/user/user'
 import { usePollStore } from '@/stores/poll'
 import { IonNavLink } from '@ionic/vue'
@@ -28,7 +28,7 @@ export default defineComponent({
       default: true
     }
   },
-  setup(props, { emit }) {
+  setup(props) {
     const pollId = computed(() => {
       usePollStore().publicPoll?.id
       if (!props.isPublic) {

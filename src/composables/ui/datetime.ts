@@ -12,7 +12,7 @@ export function useDatetime() {
 
   const parseDatetime = (item:any) => {
     const datetime = DateTime.fromISO(item, { locale: 'de-DE' })
-    return datetime.toFormat('dd.MM.yyyy HH:MM')
+    return datetime.toFormat('dd.MM.yyyy HH:mm')
   }
 
   const parseDate = (item:any) => {

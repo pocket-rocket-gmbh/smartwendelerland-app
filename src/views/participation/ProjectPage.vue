@@ -17,10 +17,10 @@
               class="item-box swiper"
             >
               <swiper-slide>
-                <img :src="imageCache.cacheableImageUrl(project.image_url)"/>
+                <img :src="imageCache.cacheableImageUrl(project.image_url)" class="showroom"/>
               </swiper-slide>
               <swiper-slide v-for="(image, index) in project.sanitized_images" :key="index">
-                <img :src="imageCache.cacheableImageUrl(image.url)"/>
+                <img :src="imageCache.cacheableImageUrl(image.url)" class="showroom"/>
               </swiper-slide>
               <div class="pagination" />
             </swiper>
@@ -121,23 +121,25 @@
         </ion-select>
       </div>
 
-      <div class="ion-margin-top item-box ion-padding" v-for="comment in comments" :key="comment.id">
-        <CommentPanel
-          :comment="comment"
-          @removeComment="removeComment"
-          @setCommentReported="setCommentReported"
-        />
-        <CommentsReply
-          :comment="comment"
-        />
+      <div class="comments-wrap">
+        <div class="ion-margin-top item-box ion-padding" v-for="comment in comments" :key="comment.id">
+          <CommentPanel
+            :comment="comment"
+            @removeComment="removeComment"
+            @setCommentReported="setCommentReported"
+          />
+          <CommentsReply
+            :comment="comment"
+          />
+        </div>
+        <ion-infinite-scroll
+          v-if="currentPage < totalPages"
+          @ionInfinite="loadData($event)"
+        >
+          <ion-infinite-scroll-content>
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
       </div>
-      <ion-infinite-scroll
-        v-if="currentPage < totalPages"
-        @ionInfinite="loadData($event)"
-      >
-        <ion-infinite-scroll-content>
-        </ion-infinite-scroll-content>
-      </ion-infinite-scroll>
 
       <ion-loading
         :is-open="loadingInProgress"
@@ -343,7 +345,11 @@ export default defineComponent({
 .header
   line-height: 22px
   margin-top: 10px
-
+.showroom
+  display: block
+  width: 100%
+  height: 100%
+  object-fit: cover
 ion-textarea
   --background: #F5F5F5
   padding: 5px 10px
@@ -356,6 +362,8 @@ ion-textarea
   border-radius: 20px
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15)
 
+.comments-wrap
+  margin-bottom: 100px
 .swiper img
   height: 100%
   width: 100%

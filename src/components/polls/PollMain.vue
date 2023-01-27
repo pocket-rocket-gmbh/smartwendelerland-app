@@ -177,7 +177,7 @@ export default defineComponent({
 
         await answersArraySanitized.value.forEach(answer => {
           answersApi.setEndpoint(`poll_answers/poll_question/${answer.poll_question_id}`)
-          const result = answersApi.createItem(
+          answersApi.createItem(
             { rating_value: answer.rating_value, text_value: answer.text_value, choices_answers: answer.choices_answers }
           )
         })
