@@ -11,11 +11,11 @@
       @ionClear="reloadProjects()"
     />
 
-    <ion-select placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
+    <ion-select cancel-text="Abbrechen" placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
       <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name }}</ion-select-option>
     </ion-select>
 
-    <ion-select placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
+    <ion-select cancel-text="Abbrechen" placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
       <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name }}</ion-select-option>
     </ion-select>
     

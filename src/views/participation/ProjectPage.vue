@@ -99,7 +99,7 @@
       </ion-grid>
 
       <div class="ion-margin-top item-box ion-padding" v-if="useUser().loggedIn()">
-        <h1>Verfasse Deinen Kommentar</h1>
+        <h1 id="comments">Verfasse Deinen Kommentar</h1>
         <CommentNew
           placeholder="Kommentar verfassen ..."
           :project-id="route.params.id?.toString()"
