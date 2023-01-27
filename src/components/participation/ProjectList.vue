@@ -124,7 +124,6 @@ export default defineComponent({
     }
 
     const getPublicProjects = async (concat = true) => {
-
       const filters = []
       if (selectedCategoryIds.value.length > 0) {
         filters.push({
@@ -150,8 +149,7 @@ export default defineComponent({
         filters: filters 
       }
 
-      
-      if (useUser().loggedIn) {
+      if (useUser().loggedIn()) {
         api.setBaseApi(privateApi)
       } else {
         api.setBaseApi(publicApi)

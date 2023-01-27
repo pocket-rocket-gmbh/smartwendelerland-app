@@ -200,7 +200,7 @@ export default defineComponent({
         filters: filters
       }
 
-      if (useUser().loggedIn) {
+      if (useUser().loggedIn()) {
         api.setBaseApi(privateApi)
       } else {
         api.setBaseApi(publicApi)
