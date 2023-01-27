@@ -2,7 +2,7 @@
   <div class="base">
     <div class="mapcontainer">
       <ion-searchbar
-        placeholder="Name, PLZ, Gemeinde …"
+        placeholder="Name, PLZ …"
         v-model="searchQuery"
         :debounce="2000"
         @ionChange="reloadProjects()"
@@ -37,7 +37,7 @@
       :breakpoints="[0.15, 1.0]"
       :backdrop-dismiss="false"
       :backdrop-breakpoint="1.0"
-      @ionBreakpointDidChange="(projectListHeadlineVisible = !projectListHeadlineVisible)"
+      @ionBreakpointDidChange="handleBreakpointChange"
     >
       <div style="height: 40px; background: white;"></div>
       <div style="height: 60px; background: white; padding-bottom: 15px;" align="center">
@@ -79,6 +79,8 @@ import { useRouter } from 'vue-router'
 import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, IonContent } from '@ionic/vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
+import { usePrivateApi } from '@/composables/api/private'
+import { useUser } from '@/composables/user/user'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 import { MapLocation } from '@/types/MapLocation'
@@ -99,9 +101,8 @@ export default defineComponent({
     const router = useRouter()
 
     const publicApi = usePublicApi()
+    const privateApi = usePrivateApi()
     const api = useCollectionApi()
-    api.setBaseApi(publicApi)
-    api.setEndpoint('projects')
     const searchQuery = ref('')
     const currentPage = ref(1)
     const totalPages = ref(1)
@@ -199,6 +200,13 @@ export default defineComponent({
         filters: filters
       }
 
+      if (useUser().loggedIn) {
+        api.setBaseApi(privateApi)
+      } else {
+        api.setBaseApi(publicApi)
+      }
+      api.setEndpoint('projects')
+
       await api.retrieveCollection(options)
       filteredProjects.value = api.items.value
       totalPages.value = api.totalPages.value
@@ -273,6 +281,13 @@ export default defineComponent({
       // projectList.scrollToPoint(0, yOffset, 500)
     }
 
+    const handleBreakpointChange = (e:any) => {
+      projectListHeadlineVisible.value = !projectListHeadlineVisible.value
+      if (e.detail.breakpoint < 1) {
+        filteredProjects.value = projects.value
+      }
+    }
+
     watch(() => props.showModal, (first, second) => {
       if (first === true) {
         map.value.refreshView()
@@ -300,7 +315,8 @@ export default defineComponent({
       mapMarkerClick,
       activeProjectId,
       projectListHeadlineVisible,
-      filteredProjects
+      filteredProjects,
+      handleBreakpointChange
     }
   }
 })

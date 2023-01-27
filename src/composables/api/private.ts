@@ -1,4 +1,3 @@
-import { useRouter } from 'vue-router'
 import { useServerInterface } from '@/composables/server/interface'
 import { Method } from 'axios'
 import { ServerCallResult } from '@/types/serverCallResult'

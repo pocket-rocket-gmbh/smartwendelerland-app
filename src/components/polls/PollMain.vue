@@ -181,7 +181,6 @@ export default defineComponent({
             { rating_value: answer.rating_value, text_value: answer.text_value, choices_answers: answer.choices_answers }
           )
         })
-        console.log(answersArraySanitized)
         questionAnswered.value = true
 
         localStorage.setItem(`smawela_poll_completed_${pollId.value}`, 'true')

@@ -119,7 +119,6 @@ export default defineComponent({
         showSuccessfullySent()
         emit('close')
       } else {
-        console.log(result.data)
         errors.value = result.data['errors']
       }
     }

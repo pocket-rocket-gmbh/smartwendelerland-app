@@ -2,6 +2,10 @@
   <ion-card>
     <div class="image-wrapper">
       <img :src="imageCache.cacheableImageUrl(project.image_url)" />
+      <div class="voted-up" v-if="project.has_upvoted_project">
+        <img src="@/assets/images/like-white.png" />
+        Gefällt mir
+      </div>
     </div>
     
     <ion-card-header>
@@ -56,6 +60,22 @@ export default defineComponent({
 .image-wrapper
   position: relative
 
+  .voted-up
+    position: absolute
+    top: 0
+    right: 10px
+    z-index: 999
+    padding: 10px
+    border-radius: 30px
+    margin: 20px 5px
+    align-items: center
+    font-weight: 700
+    border: 2px solid #D3D3D3
+    color: white
+    background-color: rgba(171, 200,18,0.5)
+    img
+      width: 16px
+      margin-right: 5px
 .metrics
   border-top: 2px solid #D3D3D3
   margin: 20px -20px 0 -20px

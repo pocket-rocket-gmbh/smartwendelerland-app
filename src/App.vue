@@ -16,7 +16,6 @@ import { defineComponent, onMounted } from 'vue'
 import { usePollStore } from '@/stores/poll'
 import { useAppStateStore } from '@/stores/appState'
 import { useMe } from '@/composables/user/me'
-import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'App',
@@ -28,15 +27,8 @@ export default defineComponent({
   setup() {
 
     const appState = useAppStateStore()
-    const router = useRouter()
 
     onMounted(async () => {
-      const projektplattformTutorialSkipped = localStorage.getItem('projektplattform_tutorial_skipped')
-      if (projektplattformTutorialSkipped) {
-        if (projektplattformTutorialSkipped === 'true') {
-          router.push({ path: '/participation/projects'})
-        }
-      }
       console.log('Loading App...')
       const startTime = Date.now()
 

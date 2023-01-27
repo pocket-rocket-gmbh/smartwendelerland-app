@@ -4,7 +4,7 @@
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <ion-searchbar
-      placeholder="Name, PLZ, Gemeinde …"
+      placeholder="Name, PLZ …"
       v-model="searchQuery"
       :debounce="2000"
       @ionChange="reloadProjects()"
@@ -12,11 +12,11 @@
     />
 
     <ion-select cancel-text="Abbrechen" placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="debounce(reloadProjects)">
-      <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name }}</ion-select-option>
+      <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name_with_projects_count }}</ion-select-option>
     </ion-select>
 
     <ion-select cancel-text="Abbrechen" placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
-      <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name }}</ion-select-option>
+      <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name_with_projects_count }}</ion-select-option>
     </ion-select>
     
     <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
@@ -62,9 +62,11 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { IonSearchbar, IonRefresher, IonRefresherContent, IonLoading, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption } from '@ionic/vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
+import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
 import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 import PollsBox from '@/components/polls/PollsBox.vue'
+import { useUser } from '@/composables/user/user'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
@@ -72,9 +74,8 @@ export default defineComponent({
   setup() {
 
     const publicApi = usePublicApi()
+    const privateApi = usePrivateApi()
     const api = useCollectionApi()
-    api.setBaseApi(publicApi)
-    api.setEndpoint('projects')
     const searchQuery = ref('')
     const currentPage = ref(1)
     const totalPages = ref(1)
@@ -148,6 +149,14 @@ export default defineComponent({
         concat: concat, 
         filters: filters 
       }
+
+      
+      if (useUser().loggedIn) {
+        api.setBaseApi(privateApi)
+      } else {
+        api.setBaseApi(publicApi)
+      }
+      api.setEndpoint('projects')
 
       await api.retrieveCollection(options)      
       totalPages.value = api.totalPages.value
