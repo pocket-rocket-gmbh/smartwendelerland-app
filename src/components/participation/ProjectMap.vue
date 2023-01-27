@@ -2,9 +2,9 @@
   <div class="base">
     <div class="mapcontainer">
       <ion-searchbar
-        placeholder="Suchen"
+        placeholder="Name, PLZ, Gemeinde …"
         v-model="searchQuery"
-        :debounce="1000"
+        :debounce="2000"
         @ionChange="reloadProjects()"
         @ionClear="reloadProjects()"
       />

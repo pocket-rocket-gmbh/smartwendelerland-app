@@ -4,9 +4,9 @@
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <ion-searchbar
-      placeholder="Suchen"
+      placeholder="Name, PLZ, Gemeinde …"
       v-model="searchQuery"
-      :debounce="1000"
+      :debounce="2000"
       @ionChange="reloadProjects()"
       @ionClear="reloadProjects()"
     />
@@ -18,22 +18,28 @@
     <ion-select placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
       <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name }}</ion-select-option>
     </ion-select>
-
-    <div class="ion-padding">
-      <PollsBox
-        :is-public="true"
-      />
-    </div>
     
     <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
       Keine Projekte gefunden
+
+      <div class="ion-padding">
+        <PollsBox
+          :is-public="true"
+        />
+      </div>
     </div>
-    <div v-else>
-      <div v-for="project in projects" :router-link="`projects/${project.id}`" :key="project.id">
+    <div  class="project-list" v-else>
+      <div v-for="(project, index) in projects" :router-link="`projects/${project.id}`" :key="project.id">
         <ParticipationProjectListPanel
           @click="$router.push({path: `/participation/projects/${project.id}`})"
           :project="project"
         />
+
+        <div class="ion-padding" v-if="index === 0">
+          <PollsBox
+            :is-public="true"
+          />
+        </div>
       </div>
       <ion-infinite-scroll
         v-if="currentPage < totalPages"
@@ -195,3 +201,7 @@ export default defineComponent({
   }
 })
 </script>
+<style lang="sass" scoped>
+.project-list
+  margin-bottom: 150px
+</style>

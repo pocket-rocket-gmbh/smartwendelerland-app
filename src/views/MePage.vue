@@ -32,14 +32,6 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-label>Landkreis:</ion-label>
-        </ion-col>
-        <ion-col>
-          <ion-label>{{ userStore.user?.organization.name }}</ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
           <ion-button @click="logout">Abmelden</ion-button>
         </ion-col>
       </ion-row>

@@ -15,11 +15,7 @@
       <div v-if="project.costs">Kosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</div>
       
       <div class="ion-margin-top">{{ project.excerpt }}</div>
-      <div class="ion-margin-top ion-margin-bottom"><b>Abstimmung</b></div>
-      <ProjectVotes
-        :project="project"
-        :show-vote-count="false"
-      />
+
       <div :class="['metrics', { 'has-vote-count' : project.rating_results_public }]">
         <div v-if="project.rating_results_public">{{ project.total_vote_count }} abgegebene Stimmen</div>
         <div><strong>{{ project.comment_count }} Kommentar<span v-if="project.comment_count > 1">e</span></strong></div>
@@ -36,7 +32,6 @@ import { defineComponent } from 'vue'
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon } from '@ionic/vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
-import ProjectVotes from '../../components/participation/ProjectVotes.vue'
 import { location } from 'ionicons/icons'
 import { useImageCache } from '@/composables/ui/imageCache'
 
@@ -45,7 +40,7 @@ export default defineComponent({
   props: {
     project: Object
   },
-  components: { IonCard, IonCardHeader, IonCardTitle, IonCardContent, ProjectVotes, IonIcon },
+  components: { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon },
   setup() {
     const imageCache = useImageCache()
     return {
