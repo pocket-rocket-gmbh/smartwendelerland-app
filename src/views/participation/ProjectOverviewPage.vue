@@ -1,8 +1,13 @@
 <template>
   <base-layout>
     <ion-toolbar>
-      <span @click="view = 'list'" :class="['toggle-button', {'is-active' : view === 'list'}]">Liste</span>
-      <span @click="view = 'map'" :class="['toggle-button', {'is-active' : view === 'map'}]">Karte</span>
+      <ion-nav-link routerLink="/participation/projects">
+        <span :class="['toggle-button', {'is-active' : view === 'list'}]">Liste</span>
+      </ion-nav-link>
+
+      <ion-nav-link routerLink="/participation/projects?view=map">
+        <span :class="['toggle-button', {'is-active' : view === 'map'}]">Karte</span>
+      </ion-nav-link>
     </ion-toolbar>
     <ion-content :fullscreen="true">
       <ProjectList
@@ -17,19 +22,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { IonContent, IonToolbar, onIonViewWillLeave } from '@ionic/vue'
+import { defineComponent, ref, computed } from 'vue'
+import { IonContent, IonToolbar, onIonViewWillLeave, IonNavLink } from '@ionic/vue'
 import ProjectList from '@/components/participation/ProjectList.vue'
 import ProjectMap from '@/components/participation/ProjectMap.vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
+import { useRouter } from 'vue-router'
 export default defineComponent({
-  components: { BaseLayout, IonContent, IonToolbar, ProjectList, ProjectMap },
+  components: { BaseLayout, IonContent, IonToolbar, ProjectList, ProjectMap, IonNavLink },
   setup () {
-    const view = ref('list')
+    const router = useRouter()
 
-    onIonViewWillLeave(() => {
-      view.value = 'list'
-    });
+    const view = computed(() => {
+      if (router.currentRoute.value.query.view === 'map') {
+        return 'map'
+      } else {
+        return 'list'
+      }
+    })
 
     return {
       view
