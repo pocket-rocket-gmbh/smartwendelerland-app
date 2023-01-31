@@ -42,6 +42,7 @@ import { usePrivateApi } from '@/composables/api/private'
 import { useUserStore } from '@/stores/user'
 import { usePollStore } from '@/stores/poll'
 import { ResultStatus } from '@/types/serverCallResult'
+import { useUser } from '@/composables/user/user'
 import LoginLayout from '@/components/general/LoginLayout.vue'
 
 export default defineComponent({
@@ -68,8 +69,9 @@ export default defineComponent({
         const jwt = result.data.jwt_token
         localStorage.setItem('auth._token.jwt', jwt)
         localStorage.setItem('email', email.value)          
-        userStore.user = result.data.user
-
+        userStore.$patch({
+          'user': result.data.resource
+        })
         // update relevant data which is now available after login
         await usePollStore().setPublicPoll()
 
@@ -99,6 +101,11 @@ export default defineComponent({
 
     onIonViewWillEnter(() => {
       lastPage.value = router.options.history.state.back
+
+      // if already logged in, bounce back to project page
+      // if (useUser().loggedIn()) {
+      //   router.push({ path: '/participation/projects'})
+      // }
     }) 
 
     return {

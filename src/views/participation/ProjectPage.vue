@@ -6,39 +6,35 @@
       </ion-refresher>
 
       <ion-grid v-if="project" class="expand">
-        <ion-row>
-          <ion-col>
-            <swiper
-              :slides-per-view="1"
-              :space-between="20"
-              :modules="modules"
-              :pagination="{ el: '.pagination' }"
-              v-if="project.image_url"
-              class="item-box swiper"
-            >
-              <swiper-slide>
-                <img :src="imageCache.cacheableImageUrl(project.image_url)" class="showroom"/>
-              </swiper-slide>
-              <swiper-slide v-for="(image, index) in project.sanitized_images" :key="index">
-                <img :src="imageCache.cacheableImageUrl(image.url)" class="showroom"/>
-              </swiper-slide>
-              <div class="pagination" />
-            </swiper>
+        <swiper
+          :slides-per-view="1"
+          :space-between="20"
+          :modules="modules"
+          :pagination="{ el: '.pagination' }"
+          v-if="project.image_url"
+          class="item-box swiper"
+        >
+          <swiper-slide>
+            <img :src="imageCache.cacheableImageUrl(project.image_url)" class="showroom"/>
+          </swiper-slide>
+          <swiper-slide v-for="(image, index) in project.sanitized_images" :key="index">
+            <img :src="imageCache.cacheableImageUrl(image.url)" class="showroom"/>
+          </swiper-slide>
+          <div class="pagination" />
+        </swiper>
 
-            <div class="item-box ion-margin-top">
-              <ProjectVotePanel
-                v-if="useUser().loggedIn()"
-                :key="votePanelKey"
-                :project="project"
-                @updateProject="reloadData()"
-              />
-              <LoginHint
-                v-else
-                label="Bitte melden Sie sich an um dieses Projekt zu bewerten"
-              />
-            </div>
-          </ion-col>
-        </ion-row>
+        <div class="item-box ion-margin-top">
+          <ProjectVotePanel
+            v-if="useUser().loggedIn()"
+            :key="votePanelKey"
+            :project="project"
+            @updateProject="reloadData()"
+          />
+          <LoginHint
+            v-else
+            label="Bitte melden Sie sich an um dieses Projekt zu bewerten"
+          />
+        </div>
         <div class="item-box ion-padding ion-margin-top">
           <PollsBox
             v-if="projectPoll"
@@ -49,11 +45,13 @@
               <div class="headline">{{ project.name }}</div>
               <div class="headline ion-margin-top" v-if="project.community && project.zip && project.town">
                 <strong v-if="project.community && project.zip && project.town">
-                  <ion-icon :icon="location"></ion-icon> {{ project.community.name }} | {{ project.zip }} - {{ project.town }}
+                  <ion-icon :icon="locationOutline"></ion-icon> {{ project.community.name }} | {{ project.zip }} - {{ project.town }}
                 </strong>
               </div>
-              <div class="ion-margin-top">{{ useDatetime().getTimeRangeString(project) }}</div>
-              <div v-if="project.costs">Kosten: {{ useCurrency().getCurrencyFromNumber(project.costs) }}</div>
+              <div class="ion-margin-top">
+                <ion-icon :icon="calendarOutline"></ion-icon> {{ useDatetime().getTimeRangeString(project) }}
+              </div>
+              <div v-if="project.costs"><ion-icon :icon="cashOutline"></ion-icon> {{ useCurrency().getCurrencyFromNumber(project.costs) }}</div>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -98,7 +96,7 @@
         </div>
       </ion-grid>
 
-      <div class="ion-margin-top item-box ion-padding" v-if="useUser().loggedIn()">
+      <div class="ion-margin-top item-box ion-padding" v-if="project && useUser().loggedIn()">
         <h1 id="comments">Verfasse Deinen Kommentar</h1>
         <CommentNew
           placeholder="Kommentar verfassen ..."
@@ -109,7 +107,13 @@
           Keine Kommentare gefunden
         </div>
       </div>
-      <div class="ion-margin-top item-box ion-padding">
+      <div class="ion-margin-top comments-wrap" v-else-if="project && !useUser().loggedIn()">
+        <LoginHint
+          label="Bitte melden Sie sich an um dieses Projekt zu kommentieren"
+        />
+      </div>
+
+      <div class="ion-margin-top item-box ion-padding" v-if="project && useUser().loggedIn()">
         <ion-select interface="action-sheet" placeholder="Neuste zuerst" v-model="filter" @ionChange="reloadComments" cancel-text="Abbrechen">
           <ion-select-option
             v-for="(option, index) in filterOptions"
@@ -121,7 +125,7 @@
         </ion-select>
       </div>
 
-      <div class="comments-wrap">
+      <div class="comments-wrap" v-if="project && useUser().loggedIn()">
         <div class="ion-margin-top item-box ion-padding" v-for="comment in comments" :key="comment.id">
           <CommentPanel
             :comment="comment"
@@ -174,7 +178,7 @@ import { MapLocation } from '@/types/MapLocation'
 import LoginHint from '@/components/participation/LoginHint.vue'
 import CommentNew from '@/components/participation/CommentNew.vue'
 import CommentsReply from '@/components/participation/CommentsReply.vue'
-import { location } from 'ionicons/icons'
+import { locationOutline, calendarOutline, cashOutline } from 'ionicons/icons'
 import { usePollStore } from '@/stores/poll'
 import PollsBox from '@/components/polls/PollsBox.vue'
 import ContactForm from '@/components/participation/ContactForm.vue'
@@ -223,6 +227,8 @@ export default defineComponent({
     }
 
     onIonViewDidEnter(async () => {
+      loadingInProgress.value = true
+
       if (useUser().loggedIn()) {
         projectsApi.setBaseApi(privateApi)
       } else {
@@ -231,7 +237,17 @@ export default defineComponent({
 
       commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
 
-      reloadData()
+      await reloadData()
+      if (route.query['scroll_to']) {
+        setTimeout(() => {
+          const commentSection: any = document.querySelector('h1#comments')
+          console.log(commentSection)
+          commentSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          })
+        }, 100);
+      }
     })
 
     const doRefresh = (event: RefresherCustomEvent) => {
@@ -327,7 +343,9 @@ export default defineComponent({
       mapStyle,
       votePanelKey,
       route,
-      location,
+      locationOutline,
+      calendarOutline,
+      cashOutline,
       projectPoll,
       contactFormModalOpen,
       modules: [Pagination],
@@ -356,6 +374,9 @@ ion-textarea
 
 .pagination
   text-align: center
+  z-index: 1
+  position: absolute
+  bottom: 0px
 
 .item-box
   background: white

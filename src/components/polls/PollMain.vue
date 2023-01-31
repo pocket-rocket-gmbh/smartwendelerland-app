@@ -11,7 +11,7 @@
           <span v-else-if="usePollStore().projectPoll">{{ usePollStore().projectPoll.name }}</span>
         </div>
         <div class="has-text-primary is-size-small ion-margin">Dauert weniger als 1 Minute</div>
-        <div v-for="pollQuestion in pollQuestions" :key="pollQuestion.id" class="mt-5">
+        <div v-for="pollQuestion in pollQuestions" :key="pollQuestion.id" class="question-box">
           <label align="left">{{ pollQuestion.name }}</label>
           <div v-if="pollQuestion.kind === 'rating'" class="ion-margin">
             <span v-for="i in pollQuestion.max_score_count" :key="i" class="star">
@@ -52,6 +52,8 @@
       <div v-else>
         <p class="headline big has-text-grey">VIELEN DANK</p>
         <p class="headline big has-text-grey">FÜR DEINE MEINUNG</p>
+        
+        <div class="button" @click="emitClose">Zurück</div>
       </div>
       
     </div>
@@ -258,6 +260,7 @@ export default defineComponent({
   .star
     margin: 0 10px
     cursor: pointer
-
+.question-box
+  margin-bottom: 30px
 
 </style>

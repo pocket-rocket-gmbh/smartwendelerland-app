@@ -3,7 +3,7 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-label class="headline">Ihre Daten</ion-label>
+          <ion-label class="headline">Deine Daten</ion-label>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -37,12 +37,16 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-input v-model="password" type="password" placeholder="Neues Passwort"></ion-input>
+          <div class="field is-marginless">
+            <ion-input v-model="password" type="password" placeholder="Neues Passwort"></ion-input>
+          </div>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-input v-model="password_confirmation" type="password" placeholder="Passwort bestätigen"></ion-input>
+          <div class="field is-marginless">
+            <ion-input v-model="password_confirmation" type="password" placeholder="Passwort bestätigen"></ion-input>
+          </div>
           <ion-item v-if="passwordError === true" color="danger">
             Das Passwort muss mindestens 5 Zeichen haben und beide Passwörter müssen übereinstimmen.
           </ion-item>

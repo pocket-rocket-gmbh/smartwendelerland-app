@@ -13,7 +13,6 @@
         />
         <div class="reply-box">
           <CommentNew
-            v-if="useUser().isAdmin()"
             placeholder="Auf Kommentar antworten"
             :project-id="comment.project_id"
             :parent-id="comment.id"
@@ -56,14 +55,8 @@ export default defineComponent({
     const totalPages = ref(1)
 
     const showReplyHandle = computed(() => {
-      if (useUser().isAdmin()) {
-        return true
-      } else {
-        if (comment.value.replies_count > 0) {
-          return true
-        }
-      }
-      return false
+      // placeholder function to restrict replies to e.g. admin
+      return true
     })
 
     watch(replyBoxOpen, () => {

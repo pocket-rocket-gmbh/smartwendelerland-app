@@ -6,9 +6,8 @@
     </ion-col>
     <ion-col>
       <div v-if="votedClass" class="your-vote">
-        <div>Deine Stimme zum Projekt:</div>
-        <div v-if="projectUpvoted" class="has-text-white">gefällt mir</div>
-        <div v-else-if="projectDownvoted" class="has-text-white">gefällt mir nicht</div>
+        <div v-if="projectUpvoted" class="has-text-white">Dir gefällt dieses Projekt</div>
+        <div v-else-if="projectDownvoted" class="has-text-white">Dir gefällt dieses Projekt nicht</div>
       </div>
       <div v-else class="your-vote">Gib Deine Stimme ab</div>
     </ion-col>
@@ -101,7 +100,7 @@ export default defineComponent({
   color: rgb(68, 68, 68)
   border-bottom: 1px solid rgb(229, 229, 229)
   border-radius: 20px
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15)
+
 .vote-panel.upvoted
   border: none
   background: #ABC812
@@ -110,8 +109,8 @@ export default defineComponent({
   border: none
   background: #A42258
 .your-vote
-  margin-top: 3px
-  font-weight: 500
+  margin-top: 13px
+  font-weight: 600
 .has-text-white
   color: white
 </style>

@@ -9,7 +9,9 @@ export function useMe() {
   const fetchMyUser = async () => {
     const result = await privateApi.call('get', '/users/me', null)
     if (result.status === ResultStatus.SUCCESSFUL) {
-      userStore.user = result.data.resource
+      userStore.$patch({
+        'user': result.data.resource
+      })
       return true
     }
   }

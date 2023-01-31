@@ -2,7 +2,7 @@
   <div class="base">
     <div class="mapcontainer">
       <ion-searchbar
-        placeholder="Name, PLZ …"
+        placeholder="Projekte nach PLZ, Gemeinde oder Name suchen …"
         v-model="searchQuery"
         :debounce="2000"
         @ionChange="reloadProjects()"
@@ -39,8 +39,8 @@
       :backdrop-breakpoint="1.0"
       @ionBreakpointDidChange="handleBreakpointChange"
     >
-      <div style="height: 40px; background: white;"></div>
-      <div style="height: 60px; background: white; padding-bottom: 15px;" align="center">
+      <div style="height: 30px; background: white;"></div>
+      <div style="height: 30px; background: white; padding-bottom: 25px;" align="center">
         <span v-if="projectListHeadlineVisible">Projekte in Liste anzeigen</span>
       </div>
       <ion-content id="projectList">
@@ -342,9 +342,9 @@ ion-modal::part(handle)
 
 ion-modal::part(content)
   position: relative
-  bottom: 0px
+  bottom: 0
   height: 100%
-  top: 5.2%
+  top: 0
 
 .last-item
   margin-bottom: 100px

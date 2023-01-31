@@ -1,6 +1,6 @@
 <template>
   <div class="mr-2">
-    <img :class="['is-rounded', size]" v-if="user.image_url" :src="imageCache.cacheableImageUrl(user.image_url)"  />
+    <img :class="['is-rounded', size]" v-if="user && user.image_url" :src="imageCache.cacheableImageUrl(user.image_url)"  />
     <img src="@/assets/images/user-standard.svg" v-else />
   </div>
 </template>

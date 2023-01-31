@@ -3,7 +3,7 @@
     <div class="box">
       <img src="@/assets/images/poll-teaser.svg" class="has-drop-shadow is-fullwidth" />
       <div class="box-headline-right">
-        <span v-if="useUser().loggedIn()">Sag uns Deine Meinung!<br/>Zur aktuellen Umfrage</span>
+        <span v-if="useUser().loggedIn()">Sag uns Deine Meinung!</span>
         <span v-else>Jetzt anmelden um an<br/>Umfragen teilzunehmen</span>
       </div>
     </div>

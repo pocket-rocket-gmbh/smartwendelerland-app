@@ -22,7 +22,7 @@
 
       <div :class="['metrics', { 'has-vote-count' : project.rating_results_public }]">
         <div v-if="project.rating_results_public">{{ project.total_vote_count }} abgegebene Stimmen</div>
-        <div><strong>{{ project.comment_count }} Kommentar<span v-if="project.comment_count > 1">e</span></strong></div>
+        <div @click.stop="goToCommentSection"><strong>{{ project.comment_count }} Kommentar<span v-if="project.comment_count > 1">e</span></strong></div>
       </div>
     </ion-card-content>
     <div class="footer">
@@ -38,20 +38,27 @@ import { useDatetime } from '@/composables/ui/datetime'
 import { useCurrency } from '@/composables/ui/currency'
 import { location } from 'ionicons/icons'
 import { useImageCache } from '@/composables/ui/imageCache'
-
+import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'ParticipationProjectListPanel',
   props: {
-    project: Object
+    project: Object,
   },
   components: { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon },
-  setup() {
+  setup(props) {
     const imageCache = useImageCache()
+    const router = useRouter()
+
+    const goToCommentSection = () => {
+      router.push({path: `/participation/projects/${props.project.id}`, query: { scroll_to: 'comments' }})
+    }
+
     return {
       useDatetime,
       useCurrency,
       location,
-      imageCache
+      imageCache,
+      goToCommentSection
     }
   }
 })

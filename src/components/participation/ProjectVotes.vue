@@ -3,12 +3,12 @@
     <div v-if="totalVoteCount > 0 && project.rating_results_public" :class="{'is-small' : isSmall}">
       <div class="votebar-wrap">
         <div v-if="upvoteRelation > 0" class="votebar upvote" :style="`width: ${upvoteRelation}%;`" />
-        <div class="result">{{ upvoteCount }} dafür</div>
+        <div class="result">{{ upvoteCount }} gefällt dieses Projekt</div>
       </div>
       
       <div class="votebar-wrap">
         <div v-if="project.rating_kind === 'upvote_downvote' && downvoteRelation > 0" class="votebar downvote" :style="`width: ${downvoteRelation}%;`" />
-        <div class="result" v-if="downvoteCount > 0">{{ downvoteCount }} dagegen</div>
+        <div class="result" v-if="downvoteCount > 0">{{ downvoteCount }} gefällt dieses Projekt nicht</div>
       </div>
       
       <div class="ion-margin-top" v-if="showVoteCount">

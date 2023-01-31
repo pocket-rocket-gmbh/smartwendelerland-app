@@ -10,7 +10,7 @@ export function useCurrency() {
         maximumSignificantDigits: 10
       })
 
-      return formatter.format(item)
+      return formatter.format(item).replace(/^(\D+)/, ' ').replace(/\s+/, ' ') //add space before currency symbol
     }
   }
 

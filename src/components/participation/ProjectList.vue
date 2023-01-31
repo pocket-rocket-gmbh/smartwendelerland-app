@@ -4,7 +4,7 @@
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <ion-searchbar
-      placeholder="Name, PLZ …"
+      placeholder="Projekte nach PLZ, Gemeinde oder Name suchen …"
       v-model="searchQuery"
       :debounce="2000"
       @ionChange="reloadProjects()"
