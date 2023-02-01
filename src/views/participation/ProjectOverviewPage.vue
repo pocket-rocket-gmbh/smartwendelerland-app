@@ -36,9 +36,9 @@ export default defineComponent({
     const router = useRouter()
     const projectListKey = ref(0)
 
-    // needed because list does not refresh if coming from me page after logout
+    // needed because list does not refresh if coming from me page
     router.beforeEach((to, from, next) => {
-      if (from.path === '/me' && !useUser().loggedIn()) {
+      if (from.path === '/me') {
         projectListKey.value += 1
       }
       next()

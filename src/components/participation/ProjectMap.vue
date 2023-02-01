@@ -1,5 +1,6 @@
 <template>
   <div class="base">
+    <div class="curtain" v-if="!projectListHeadlineVisible" />
     <div class="mapcontainer">
       <ion-searchbar
         placeholder="Projekt, PLZ oder Gemeinde suchen …"
@@ -33,10 +34,10 @@
 
     <ion-modal
       :is-open="showModal"
-      :initial-breakpoint="0.15"
-      :breakpoints="[0.15, 1.0]"
+      :initial-breakpoint="0.1"
+      :breakpoints="[0.1, 0.8]"
       :backdrop-dismiss="false"
-      :backdrop-breakpoint="1.0"
+      :backdrop-breakpoint="0.8"
       @ionBreakpointDidChange="handleBreakpointChange"
     >
       <div style="height: 30px; background: white;"></div>
@@ -267,12 +268,13 @@ export default defineComponent({
     }
 
     const navigateToProject = (projectId: string) => {
+      projectListHeadlineVisible.value = true
       router.push({path: `/participation/projects/${projectId}`})
     }
 
     const mapMarkerClick = (marker: MapLocation) => {
       // Show project list modal and filter project list by marker id
-      document.querySelector('ion-modal').setCurrentBreakpoint(1.0)
+      document.querySelector('ion-modal').setCurrentBreakpoint(0.8)
       // const yOffset = document.getElementById(marker.id).offsetTop
       // const projectList: any = document.querySelector('ion-content#projectList')
       // activeProjectId.value = marker.id
@@ -283,7 +285,7 @@ export default defineComponent({
 
     const handleBreakpointChange = (e:any) => {
       projectListHeadlineVisible.value = !projectListHeadlineVisible.value
-      if (e.detail.breakpoint < 1) {
+      if (e.detail.breakpoint < 0.7) {
         filteredProjects.value = projects.value
       }
     }
@@ -323,10 +325,16 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-
 div.base
   height: 75%
-
+.curtain
+  background: rgba(0,0,0,0.3)
+  position: absolute
+  top: 0
+  left: 0
+  height: 100vh
+  width: 100vw
+  z-index: 100000000
 div.mapcontainer
   width: 100%
   height: 85%
