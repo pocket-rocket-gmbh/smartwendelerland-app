@@ -212,6 +212,12 @@ export default defineComponent({
         if (props.autoFit && locationMarkers.length > 0) {
           const group: L.FeatureGroup<any> = L.featureGroup(locationMarkers)
           map.fitBounds(group.getBounds())
+
+          // For single locations zoom out to make sure the sourroundings are visible.
+          if (locationMarkers.length == 1) {
+            const currentZoom = map.getZoom()
+            map.setZoom(currentZoom > 0 ? currentZoom - 3 : currentZoom)
+          }
         }
         map.invalidateSize()
         programmaticScrollInProgress = false
