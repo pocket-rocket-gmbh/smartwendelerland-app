@@ -12,8 +12,8 @@ export function usePublicApi() {
 
   const serverInterface = useServerInterface()
 
-  serverInterface.setDomain('http://localhost:3000/v1/public')
-  // serverInterface.setDomain('https://smartwendelerland-api-prod.herokuapp.com/v1/public')
+  // serverInterface.setDomain('http://localhost:3000/v1/public')
+  serverInterface.setDomain('https://smartwendelerland-api-prod.herokuapp.com/v1/public')
   // serverInterface.setDomain('https://smartwendelerland-api-staging.herokuapp.com/v1/public')
 
   serverInterface.setHeaders({
