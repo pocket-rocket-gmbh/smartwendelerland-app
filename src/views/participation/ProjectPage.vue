@@ -40,9 +40,14 @@
             v-if="projectPoll"
             :is-public="false"
           />
+          <ion-row v-if="project.description">
+            <ion-col>
+              <div class="headline ion-margin-bottom">{{ project.name }}</div>
+              <div v-html="project.description" />
+            </ion-col>
+          </ion-row>
           <ion-row>
             <ion-col>
-              <div class="headline">{{ project.name }}</div>
               <div class="headline ion-margin-top" v-if="project.community && project.zip && project.town">
                 <strong v-if="project.community && project.zip && project.town">
                   <ion-icon :icon="locationOutline"></ion-icon> {{ project.community.name }} | {{ project.zip }} - {{ project.town }}
@@ -59,11 +64,6 @@
               <ProjectMilestones
                 :projectId="project.id"
               />
-            </ion-col>
-          </ion-row>
-          <ion-row v-if="project.description">
-            <ion-col>
-              <div v-html="project.description" />
             </ion-col>
           </ion-row>
           <ion-row>

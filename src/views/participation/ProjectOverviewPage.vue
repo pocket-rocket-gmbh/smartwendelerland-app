@@ -12,6 +12,7 @@
     <ion-content :fullscreen="true">
       <ProjectList
         v-show="view === 'list'"
+        :key="projectListKey"
       />
       <ProjectMap
         :show-modal="view === 'map'"
@@ -22,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
-import { IonContent, IonToolbar, onIonViewWillLeave, IonNavLink } from '@ionic/vue'
+import { defineComponent, computed, ref } from 'vue'
+import { IonContent, IonToolbar, IonNavLink, onIonViewDidEnter } from '@ionic/vue'
 import ProjectList from '@/components/participation/ProjectList.vue'
 import ProjectMap from '@/components/participation/ProjectMap.vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
@@ -32,6 +33,12 @@ export default defineComponent({
   components: { BaseLayout, IonContent, IonToolbar, ProjectList, ProjectMap, IonNavLink },
   setup () {
     const router = useRouter()
+    const projectListKey = ref(0)
+
+    onIonViewDidEnter(() => {
+      console.log("entered")
+      projectListKey.value += 1
+    })
 
     const view = computed(() => {
       if (router.currentRoute.value.query.view === 'map') {
@@ -42,7 +49,8 @@ export default defineComponent({
     })
 
     return {
-      view
+      view,
+      projectListKey
     }
   }
 })

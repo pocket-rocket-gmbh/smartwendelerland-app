@@ -128,7 +128,7 @@ export default defineComponent({
     const logout = () => {
       localStorage.removeItem('auth._token.jwt')
       userStore.user = null
-      router.push('/')
+      router.push('/participation/projects')
     }
 
     const updatePassword = async () => {

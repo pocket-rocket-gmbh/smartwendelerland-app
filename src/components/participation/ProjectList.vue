@@ -4,7 +4,7 @@
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <ion-searchbar
-      placeholder="Projekte nach PLZ, Gemeinde oder Name suchen …"
+      placeholder="Projekt, PLZ oder Gemeinde suchen …"
       v-model="searchQuery"
       :debounce="2000"
       @ionChange="reloadProjects()"
@@ -161,11 +161,11 @@ export default defineComponent({
     }
 
     const getPublicCategories = async () => {
-      await categoriesApi.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'name', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
+      await categoriesApi.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'menu_order', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
     }
 
     const getPublicCommunities = async () => {
-      await communitiesApi.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'name', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
+      await communitiesApi.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'menu_order', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
     }
 
     const loadData = (ev: InfiniteScrollCustomEvent) => {

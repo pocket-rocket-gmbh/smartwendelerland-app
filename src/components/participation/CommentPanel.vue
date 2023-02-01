@@ -1,7 +1,6 @@
 <template>
-  <div :class="['comment-panel', { 'has-border': isReply }]">
+  <div :class="['comment-panel', { 'has-border': isReply }]" v-if="user">
     <ion-icon
-      v-if="comment.user.id === user.user.id || user.user.permissions.role === 'root'"
       @click="showContext($event)"
       :ios="ellipsisVerticalOutline"
       :md="ellipsisVerticalSharp">
@@ -24,8 +23,23 @@
       :event="commentContextEvent"
       @didDismiss="closePopover"
     >
-      <div @click="reportComment(comment.id)" v-if="(comment.user.id !== useUser().currentUser().id && !comment.has_already_reported_comment)" align="center" class="ion-margin">Melden</div>
-      <div @click="deleteComment()" align="center" class="ion-margin">Löschen</div>
+      <div
+        @click="reportComment(comment.id)"
+        v-if="(comment.user.id !== useUser().currentUser().id && !comment.has_already_reported_comment)"
+        align="center" class="ion-margin">
+        Melden
+      </div>
+      <div v-if="comment.has_already_reported_comment" align="center" class="ion-margin">
+        Bereits gemeldet
+      </div>
+      <div
+        v-if="comment.user.id === user.user.id || user.user.permissions.role === 'root' || user.user.permissions.role === 'admin'"
+        @click="deleteComment()"
+        align="center"
+        class="ion-margin"
+      >
+        Löschen
+      </div>
     </ion-popover>
 
     <div class="pl-5 has-text-danger" v-if="comment.has_already_reported_comment">Du hast diesen Kommentar gemeldet!</div>
