@@ -6,7 +6,7 @@ import { ServerCallResult } from '@/types/serverCallResult'
 export function usePublicApi() {
 
   const username = "pocketrocket"
-  const password = "123456"
+  const password = "84923!!ndj"
   const token = `${username}:${password}`
   const encodedToken = Buffer.from(token).toString('base64')
 

@@ -58,8 +58,8 @@ setup() {
   }
 
   onIonViewWillEnter(() => {
-    if (localStorage.getItem('junghans_login_email')) {
-      email.value = localStorage.getItem('junghans_login_email')
+    if (localStorage.getItem('smawela_login_email')) {
+      email.value = localStorage.getItem('smawela_login_email')
     }
   }) 
 

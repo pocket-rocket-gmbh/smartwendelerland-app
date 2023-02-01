@@ -56,7 +56,7 @@ export default defineComponent({
 
     const lastPage = ref(null)
 
-    const email = ref(localStorage.getItem('email'))
+    const email = ref(localStorage.getItem('smawela_login_email'))
     const password = ref('')
     const loginInProgress = ref(false)
 
@@ -68,10 +68,8 @@ export default defineComponent({
       if (result.status === ResultStatus.SUCCESSFUL) {
         const jwt = result.data.jwt_token
         localStorage.setItem('auth._token.jwt', jwt)
-        localStorage.setItem('email', email.value)          
-        userStore.$patch({
-          'user': result.data.resource
-        })
+        localStorage.setItem('smawela_login_email', email.value)          
+        userStore.user = result.data.user
         // update relevant data which is now available after login
         await usePollStore().setPublicPoll()
 
@@ -101,11 +99,6 @@ export default defineComponent({
 
     onIonViewWillEnter(() => {
       lastPage.value = router.options.history.state.back
-
-      // if already logged in, bounce back to project page
-      // if (useUser().loggedIn()) {
-      //   router.push({ path: '/participation/projects'})
-      // }
     }) 
 
     return {

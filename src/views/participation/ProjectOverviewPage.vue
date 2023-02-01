@@ -23,21 +23,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
-import { IonContent, IonToolbar, IonNavLink, onIonViewDidEnter } from '@ionic/vue'
+import { defineComponent, computed, ref, } from 'vue'
+import { IonContent, IonToolbar, IonNavLink } from '@ionic/vue'
 import ProjectList from '@/components/participation/ProjectList.vue'
 import ProjectMap from '@/components/participation/ProjectMap.vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, } from 'vue-router'
+import { useUser } from '@/composables/user/user'
 export default defineComponent({
   components: { BaseLayout, IonContent, IonToolbar, ProjectList, ProjectMap, IonNavLink },
   setup () {
     const router = useRouter()
     const projectListKey = ref(0)
 
-    onIonViewDidEnter(() => {
-      console.log("entered")
-      projectListKey.value += 1
+    // needed because list does not refresh if coming from me page after logout
+    router.beforeEach((to, from, next) => {
+      if (from.path === '/me' && !useUser().loggedIn()) {
+        projectListKey.value += 1
+      }
+      next()
+      return false
     })
 
     const view = computed(() => {

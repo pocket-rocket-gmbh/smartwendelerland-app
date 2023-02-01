@@ -90,10 +90,10 @@ setup() {
     registerInProgress.value = true
 
     // TODO: outsource in ENV
-    // this is the public register token for Landkreis St. Wendel Org
+    // this is the public register token for Landkreis St. Wendel Org on production
     publicApi.call('post', `/users/register/hsvW7eyxvuaRZ25LJaPRMp7TgYGK5dDMyHUB`, item.value).then(result => {
       if (result.status === ResultStatus.SUCCESSFUL) {
-        localStorage.setItem('junghans_login_email', item.value.email)
+        localStorage.setItem('smawela_login_email', item.value.email)
         registerSuccessful.value = true
         error.value = false
         showErrorPolicy.value = false
