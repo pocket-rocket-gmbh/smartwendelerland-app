@@ -25,7 +25,7 @@
           lng: 7.131735,
           lat: 49.523656
         }"
-        :auto-fit=true
+        :auto-fit=false
         :min-zoom=10
         @markerClick="mapMarkerClick"
       />
