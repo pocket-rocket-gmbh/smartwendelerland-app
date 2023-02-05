@@ -1,6 +1,5 @@
 <template>
   <div class="base">
-    <div class="curtain" v-if="!projectListHeadlineVisible" />
     <div class="mapcontainer">
       <ion-searchbar
         placeholder="Projekt, PLZ oder Gemeinde suchen …"
@@ -32,23 +31,19 @@
       />
     </div>
 
+    <button class="open-list" @click="showModal = true">Projekte in Liste anzeigen</button>
+
     <ion-modal
       :is-open="showModal"
-      :initial-breakpoint="0.1"
-      :breakpoints="[0.1, 0.8]"
-      :backdrop-dismiss="false"
-      :backdrop-breakpoint="0.8"
-      @ionBreakpointDidChange="handleBreakpointChange"
     >
-      <div style="height: 30px; background: white;"></div>
-      <div style="height: 30px; background: white; padding-bottom: 25px;" align="center">
-        <span v-if="projectListHeadlineVisible">Projekte in Liste anzeigen</span>
-      </div>
       <ion-content id="projectList">
+        <div align="center">
+          <button class="close-button" @click="showModal = false">Schließen</button>
+        </div>
         <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
           Keine Projekte gefunden
         </div>
-        <div v-else>
+        <div class="ion-margin-top" v-else>
           <div v-for="(project, index) in filteredProjects" :router-link="`projects/${project.id}`" :key="project.id" :class="{ 'last-item' : index === projects.length - 1, 'active' : activeProjectId === project.id, 'not-active' : activeProjectId !== null && activeProjectId !== project.id }">
             <ParticipationProjectListPanel
               @click="navigateToProject(project.id)"
@@ -77,7 +72,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, IonContent } from '@ionic/vue'
+import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, IonContent, isPlatform } from '@ionic/vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { usePrivateApi } from '@/composables/api/private'
@@ -91,15 +86,10 @@ import L from 'leaflet'
 export default defineComponent({
   name: 'ParticipationProjectMapPage',
   components: { IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal, IonContent },
-  props: {
-    showModal: {
-      type: Boolean,
-      default: false
-    }
-  },
   setup(props) {
 
     const router = useRouter()
+    const showModal = ref(false)
 
     const publicApi = usePublicApi()
     const privateApi = usePrivateApi()
@@ -107,7 +97,6 @@ export default defineComponent({
     const searchQuery = ref('')
     const currentPage = ref(1)
     const totalPages = ref(1)
-    const projectListHeadlineVisible = ref(true)
 
     const categoriesApi = useCollectionApi()
     categoriesApi.setBaseApi(usePublicApi())
@@ -136,11 +125,11 @@ export default defineComponent({
       showProjectsList.value = true
 
       // Give the map time to initialize before loading data.
-      setTimeout(() => { reloadData() }, 100)
+      setTimeout(() => { reloadData() }, 300)
     })
 
     onUnmounted(() => {
-      projectListHeadlineVisible.value = true
+      showModal.value = false
       showProjectsList.value = false
     })
 
@@ -236,7 +225,7 @@ export default defineComponent({
       // Give the ref some time to update.
       setTimeout(function () {
         map.value.refreshView()
-      }, 10)
+      }, 50)
     }
 
     const getPublicCategories = async () => {
@@ -252,7 +241,7 @@ export default defineComponent({
         currentPage.value += 1
         getPublicProjects(true)
         ev.target.complete()
-      }, 300);
+      }, 500);
     }
 
     // The ionChange event of the ion-select element fires two times for multi item selects.
@@ -263,18 +252,18 @@ export default defineComponent({
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           fnc()
-        }, 10)
+        }, 50)
       }
     }
 
     const navigateToProject = (projectId: string) => {
-      projectListHeadlineVisible.value = true
+      showModal.value = false
       router.push({path: `/participation/projects/${projectId}`})
     }
 
     const mapMarkerClick = (marker: MapLocation) => {
       // Show project list modal and filter project list by marker id
-      document.querySelector('ion-modal').setCurrentBreakpoint(0.8)
+      showModal.value = true
       // const yOffset = document.getElementById(marker.id).offsetTop
       // const projectList: any = document.querySelector('ion-content#projectList')
       // activeProjectId.value = marker.id
@@ -282,20 +271,6 @@ export default defineComponent({
 
       // projectList.scrollToPoint(0, yOffset, 500)
     }
-
-    const handleBreakpointChange = (e:any) => {
-      projectListHeadlineVisible.value = !projectListHeadlineVisible.value
-      if (e.detail.breakpoint < 0.7) {
-        filteredProjects.value = projects.value
-      }
-    }
-
-    watch(() => props.showModal, (first, second) => {
-      if (first === true) {
-        map.value.refreshView()
-        setTimeout(() => { reloadData() }, 100)
-      }
-    });
 
     return {
       loadingInProgress,
@@ -316,9 +291,8 @@ export default defineComponent({
       locations,
       mapMarkerClick,
       activeProjectId,
-      projectListHeadlineVisible,
       filteredProjects,
-      handleBreakpointChange
+      showModal
     }
   }
 })
@@ -327,38 +301,35 @@ export default defineComponent({
 <style lang="sass" scoped>
 div.base
   height: 75%
-.curtain
-  background: rgba(0,0,0,0.3)
-  position: absolute
-  top: 0
-  left: 0
-  height: 100vh
-  width: 100vw
-  z-index: 100000000
 div.mapcontainer
   width: 100%
-  height: 85%
-  position: relative
-
-ion-modal
-  --ion-background-color: #ffffff00
-
-ion-modal::part(handle)
-  background: #007bbe
-  width: 70px
-  height: 7px
-
-ion-modal::part(content)
-  position: relative
-  bottom: 0
   height: 100%
-  top: 0
+  position: relative
+
+.open-list
+  width: 80%
+  padding: 20px
+  border-radius: 20px
+  background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%)
+  color: white
+  font-size: 20px
+  z-index: 1000000
+  position: absolute
+  left: 50%
+  bottom: 15%
+  transform: translateX(-50%)
+.close-button
+  width: 80%
+  padding: 20px
+  font-size: 20px
+  margin-top: 40px
+  border-radius: 20px
+  background: white
+  border: 1px solid grey
+  color: grey
 
 .last-item
   margin-bottom: 100px
-
-// .not-active
-//   opacity: 0.3
 
 #projectList
   background-color: #ffffff

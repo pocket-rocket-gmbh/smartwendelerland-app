@@ -15,8 +15,7 @@
         :key="projectListKey"
       />
       <ProjectMap
-        :show-modal="view === 'map'"
-        v-show="view === 'map'"
+        v-if="view === 'map'"
       />
     </ion-content>
   </base-layout>

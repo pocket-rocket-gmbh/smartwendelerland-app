@@ -18,7 +18,7 @@
         <ion-nav-link routerLink="/register">Noch keinen Account? Jetzt registrieren!</ion-nav-link>
       </div>
       <div class="ion-margin">
-        <ion-nav-link routerLink="/password-forgotten">Password vergessen?</ion-nav-link>
+        <ion-nav-link routerLink="/password-forgotten">Passwort vergessen?</ion-nav-link>
       </div>
       <div class="ion-margin">
         <ion-back-button text="zurück" default-href="/">

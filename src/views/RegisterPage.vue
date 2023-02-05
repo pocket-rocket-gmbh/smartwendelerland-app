@@ -19,7 +19,7 @@
           <div class="policy">
             <label for="policy" class="ion-padding has-font-face-meta-pro-normal is-narrow custom-checkbox">
               <input type="checkbox" v-model="policyCheckboxChecked" id="policy" class="ion-margin-right" />
-              <span class="label-text">Die Datenschutzerklärung habe ich zur Kenntnis genommen.</span>
+              <span class="label-text">Die Datenschutzerklärung (Terms) habe ich zur Kenntnis genommen.</span>
               <span class="checkmark"></span>
             </label>
             <div v-if="showErrorPolicy && !policyCheckboxChecked" class="input-error is-narrow ion-margin-bottom">Sie müssen die Datenschutzerklärung akzeptieren.</div>
@@ -41,7 +41,7 @@
           </ion-content>
         </ion-modal>
         <div class="input-error is-narrow ion-margin-bottom" v-if="error">Fehler beim Registrieren. Benutzer vegeben oder E-Mail nicht korrekt.</div>
-        <ion-button @click="doRegister" color="primary" :disabled="!policyCheckboxChecked">Kostenlos registrieren</ion-button>
+        <ion-button @click="doRegister" color="primary" :disabled="registerButtonDisabled">Kostenlos registrieren</ion-button>
         <div class="ion-margin"><ion-nav-link routerLink="/login">Zum Login</ion-nav-link></div>
       </div>
 
@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { IonButton, IonLoading, toastController, onIonViewWillEnter, IonModal, IonTitle, IonInput, IonNavLink } from '@ionic/vue'
 import { usePublicApi } from '@/composables/api/public'
@@ -85,6 +85,14 @@ setup() {
   const registerInProgress = ref(false)
   const registerSuccessful = ref(false)
   const error = ref(false)
+
+
+  const registerButtonDisabled = computed(() => {
+    if (policyCheckboxChecked.value === false || item.value.email.length < 3) {
+      return true
+    }
+    return false
+  })
 
   const doRegister = async () => {
     registerInProgress.value = true
@@ -136,7 +144,8 @@ setup() {
     isOpen,
     policyCheckboxChecked,
     showErrorPolicy,
-    showErrorPolicyMessage
+    showErrorPolicyMessage,
+    registerButtonDisabled
   }
 }
 })
