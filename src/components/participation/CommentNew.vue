@@ -21,7 +21,10 @@ export default defineComponent({
   components: { IonRow, IonCol, IonTextarea, IonButton },
   emits: ['refreshCollection', 'increaseRepliesCount'],
   props: {
-    projectId: String,
+    projectId: {
+      type: String,
+      required: true
+    },
     parentId: String,
     placeholder: String
   },

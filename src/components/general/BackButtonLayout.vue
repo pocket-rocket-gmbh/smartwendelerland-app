@@ -3,7 +3,10 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button text="" default-href="/" :icon="arrowBackOutline" />
+          <ion-nav-link v-if="forceBack" :routerLink="forceBack">
+            <IonIcon :icon="arrowBackOutline" />
+          </ion-nav-link>
+          <ion-back-button v-else text="" default-href="/" :icon="arrowBackOutline" />
         </ion-buttons>
         <ion-icon v-if="userStore.user === null" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
         <div v-else @click="router.push('/me')" router-link="/me" slot="end">
@@ -22,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonBackButton, IonButtons } from '@ionic/vue'
+import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonBackButton, IonButtons, IonNavLink } from '@ionic/vue'
 import { logInOutline, logInSharp, personCircleOutline, personCircleSharp, arrowBackOutline } from 'ionicons/icons'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
@@ -30,7 +33,10 @@ import UserProfile from '@/components/UserProfile.vue'
 
 export default defineComponent({
   name: 'BaseLayout',
-  components: { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonBackButton, IonButtons, UserProfile },
+  props: {
+    forceBack: String
+  },
+  components: { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonBackButton, IonButtons, UserProfile, IonNavLink },
   setup () {
 
     const router = useRouter()

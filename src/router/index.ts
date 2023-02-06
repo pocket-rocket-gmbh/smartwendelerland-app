@@ -24,7 +24,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/LoginPage.vue'),
     beforeEnter: (to, from, next) => {
       if (useUser().loggedIn()) {
-        next({ path: '/participation/projects' })
+        next({ path: from.path })
       } else {
         next()
       }

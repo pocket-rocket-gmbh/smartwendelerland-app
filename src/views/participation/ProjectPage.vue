@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout>
+  <BackButtonLayout force-back="/participation/projects">
     <ion-content class="ion-padding">
       <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
@@ -99,8 +99,8 @@
       <div class="ion-margin-top item-box ion-padding" v-if="project && useUser().loggedIn()">
         <h1 id="comments">Verfasse Deinen Kommentar</h1>
         <CommentNew
+          :project-id="project.id"
           placeholder="Kommentar verfassen ..."
-          :project-id="route.params.id?.toString()"
           @refreshCollection="reloadComments()"
         />
         <div v-if="comments.length === 0">
@@ -158,7 +158,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper'
 import 'swiper/css'
 import "swiper/css/pagination"
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLoading, onIonViewDidEnter, RefresherCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonButton } from '@ionic/vue'
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
@@ -188,6 +188,10 @@ export default defineComponent({
   name: 'ParticipationProjectPage',
   components: { BackButtonLayout, IonContent, IonRefresher, IonRefresherContent, IonGrid, IonRow, IonCol, IonLoading, CommentPanel, ProjectVotePanel, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, ProjectMapPanel, ProjectMilestones, ProjectVotes, LoginHint, CommentNew, CommentsReply, PollsBox, ContactForm, IonButton, Swiper, SwiperSlide },
   setup() {
+
+    const projectId = computed(() => {
+      return route.params.id?.toString()
+    })
 
     const route = useRoute()
 
@@ -235,7 +239,7 @@ export default defineComponent({
         projectsApi.setBaseApi(publicApi)
       }
 
-      commentsApi.setEndpoint('comments/project/' + route.params.id?.toString())
+      commentsApi.setEndpoint('comments/project/' + projectId.value)
 
       await reloadData()
       if (route.query['scroll_to']) {
@@ -261,11 +265,11 @@ export default defineComponent({
       locations.value = []
 
       await Promise.all([
-        projectsApi.getItem(route.params.id?.toString()),
+        projectsApi.getItem(projectId.value),
         reloadComments()
       ])
 
-      await usePollStore().setProjectPoll(route.params.id?.toString())
+      await usePollStore().setProjectPoll(projectId.value)
       projectPoll.value = usePollStore().projectPoll
 
       project.value.locations?.forEach((location: any) => {
@@ -349,7 +353,8 @@ export default defineComponent({
       projectPoll,
       contactFormModalOpen,
       modules: [Pagination],
-      imageCache
+      imageCache,
+      projectId
     }
   }
 })
