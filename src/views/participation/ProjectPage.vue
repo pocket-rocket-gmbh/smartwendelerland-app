@@ -32,7 +32,7 @@
           />
           <LoginHint
             v-else
-            label="Bitte melden Sie sich an um dieses Projekt zu bewerten"
+            label="Bitte melde dich an, um dieses Projekt zu bewerten"
           />
         </div>
         <div class="item-box ion-padding ion-margin-top">
@@ -75,7 +75,7 @@
               />
             </ion-col>
           </ion-row>
-          <ion-row>
+          <ion-row v-show="locations.length > 0">
             <ion-col>
               <div class="ion-margin-top ion-margin-bottom"><b>Standorte des Projekts</b></div>
               <ProjectMapPanel
@@ -97,7 +97,7 @@
       </ion-grid>
 
       <div class="ion-margin-top item-box ion-padding" v-if="project && useUser().loggedIn()">
-        <h1 id="comments">Verfasse Deinen Kommentar</h1>
+        <h1 id="comments">Verfasse deinen Kommentar</h1>
         <CommentNew
           :project-id="project.id"
           placeholder="Kommentar verfassen ..."
@@ -109,7 +109,7 @@
       </div>
       <div class="ion-margin-top comments-wrap" v-else-if="project && !useUser().loggedIn()">
         <LoginHint
-          label="Bitte melden Sie sich an um dieses Projekt zu kommentieren"
+          label="Bitte melde dich an, um dieses Projekt zu kommentieren"
         />
       </div>
 

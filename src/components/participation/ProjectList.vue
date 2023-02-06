@@ -142,8 +142,8 @@ export default defineComponent({
       const options: RetrieveCollectionOptions = { 
         page: currentPage.value, 
         per_page: 5,
-        sort_by: 'created_at', 
-        sort_order: 'DESC', 
+        sort_by: 'menu_order', 
+        sort_order: 'ASC', 
         searchQuery: searchQuery.value, 
         concat: concat, 
         filters: filters 

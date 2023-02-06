@@ -24,6 +24,12 @@
         <ion-back-button text="zurück" default-href="/">
           ← zurück
         </ion-back-button>
+        <div class="gap-1" />
+        <div class="gap-1" />
+        <div class="gap-1" />
+        <ion-nav-link routerLink="/">
+          ← zur Startseite
+        </ion-nav-link>
       </div>
     </div>
     

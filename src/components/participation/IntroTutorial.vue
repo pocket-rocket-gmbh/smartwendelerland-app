@@ -17,7 +17,7 @@
                 <div class="headline">
                   “Willkommen in der Smart Wendeler App”
                 </div>
-                <p>In diesem Intro erfährst du alles was du in der App machen kannst</p>
+                <p>In diesem Intro erfährst du, was du in der App machen kannst.</p>
               </div>
             </swiper-slide>
             <swiper-slide>

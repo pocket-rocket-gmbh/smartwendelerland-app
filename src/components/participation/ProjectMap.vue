@@ -38,7 +38,7 @@
     >
       <ion-content id="projectList">
         <div align="center">
-          <button class="close-button" @click="showModal = false">Schließen</button>
+          <button class="close-button" @click="showModal = false; filteredProjects = projects;">Schließen</button>
         </div>
         <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
           Keine Projekte gefunden
@@ -183,8 +183,8 @@ export default defineComponent({
       const options: RetrieveCollectionOptions = {
         page: currentPage.value,
         per_page: 100,
-        sort_by: 'created_at',
-        sort_order: 'DESC',
+        sort_by: 'menu_order',
+        sort_order: 'ASC',
         searchQuery: searchQuery.value,
         concat: concat,
         filters: filters
@@ -316,8 +316,10 @@ div.mapcontainer
   z-index: 1000000
   position: absolute
   left: 50%
-  bottom: 15%
+  bottom: 12%
   transform: translateX(-50%)
+  @media (min-height: 800px)
+    bottom: 10%
 .close-button
   width: 80%
   padding: 20px

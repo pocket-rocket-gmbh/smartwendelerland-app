@@ -8,7 +8,7 @@
 
       <div class="input-error is-narrow ion-margin-bottom" v-if="!error && passwordResetSuccessful">Ein neues Passwort wurde per E-Mail geschickt.</div>
       <div class="input-error is-narrow ion-margin-bottom" v-else-if="error">Benutzer nicht gefunden.</div>
-      <ion-button @click="resetPassword" color="primary" :disabled="email === ''" v-if="!passwordResetSuccessful">Neues Passwort anfordern</ion-button>
+      <ion-button @click="resetPassword" color="primary" :disabled="!isValidEmail(email)" v-if="!passwordResetSuccessful">Neues Passwort anfordern</ion-button>
 
       <div class="ion-margin"><ion-nav-link routerLink="/login">Zum Login</ion-nav-link></div>
     </div>
@@ -40,6 +40,11 @@ setup() {
   const error = ref(false)
   const resetInProgress = ref(false)
 
+  const isValidEmail = (email:string) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    return re.test(email);
+  }
+
   const resetPassword = async () => {
     resetInProgress.value = true
     error.value = false
@@ -70,6 +75,7 @@ setup() {
     router,
     resetPassword,
     error,
+    isValidEmail
   }
 }
 })

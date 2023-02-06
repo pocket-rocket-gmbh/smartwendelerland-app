@@ -76,7 +76,7 @@
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding has-background-white">
-        Bist du sicher, dass Du Deinen Account löschen willst? Dein Fortschritt, deine Kommentare und deine Projektbewertungen gehen damit verloren.
+        Bist du sicher, dass du deinen Account löschen willst? Dein Fortschritt, deine Kommentare und deine Projektbewertungen gehen damit verloren.
         <ion-row>
           <ion-col>
             <ion-button @click="deleteAccount" color="danger" expand="block">Ja, Account löschen</ion-button>

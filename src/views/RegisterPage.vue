@@ -19,25 +19,40 @@
           <div class="policy">
             <label for="policy" class="ion-padding has-font-face-meta-pro-normal is-narrow custom-checkbox">
               <input type="checkbox" v-model="policyCheckboxChecked" id="policy" class="ion-margin-right" />
-              <span class="label-text">Die Datenschutzerklärung (Terms) habe ich zur Kenntnis genommen.</span>
+              <span class="label-text">Die Datenschutzerklärung und Nutzungs- bedingungen habe ich zur Kenntnis genommen.</span>
               <span class="checkmark"></span>
             </label>
-            <div v-if="showErrorPolicy && !policyCheckboxChecked" class="input-error is-narrow ion-margin-bottom">Sie müssen die Datenschutzerklärung akzeptieren.</div>
-            <span @click="isOpen = !isOpen"><u>Zur Datenschutzerklärung</u></span>
+            <div v-if="showErrorPolicy && !policyCheckboxChecked" class="input-error is-narrow ion-margin-bottom">Sie müssen die Datenschutzerklärung und Nutzungsbedingungen akzeptieren.</div>
+            <span @click="privacyOpen = true"><u>Zur Datenschutzerklärung</u></span><br/>
+            <span @click="termsOpen = true"><u>Zu den Nutzungsbedingungen</u></span>
           </div>
         </div>
 
-        <ion-modal :is-open="isOpen">
+        <ion-modal :is-open="privacyOpen">
           <ion-header>
             <ion-toolbar>
               <ion-title slot="start">Datenschutzerklärung</ion-title>
               <ion-buttons slot="end">
-                <ion-button @click="isOpen = !isOpen">X</ion-button>
+                <ion-button @click="privacyOpen = false">X</ion-button>
               </ion-buttons>
             </ion-toolbar>
           </ion-header>
           <ion-content class="ion-padding has-background-white">
             <PrivacyPolicy />
+          </ion-content>
+        </ion-modal>
+
+        <ion-modal :is-open="termsOpen">
+          <ion-header>
+            <ion-toolbar>
+              <ion-title slot="start">Nutzungsbedingungen</ion-title>
+              <ion-buttons slot="end">
+                <ion-button @click="termsOpen = false">X</ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content class="ion-padding has-background-white">
+            <TermsConditions />
           </ion-content>
         </ion-modal>
         <div class="input-error is-narrow ion-margin-bottom" v-if="error">Fehler beim Registrieren. Benutzer vegeben oder E-Mail nicht korrekt.</div>
@@ -47,7 +62,7 @@
 
       <div v-else class="ion-padding has-font-face-meta-pro-normal is-narrow">
         <div class="headline-manrope">Registrierung erfolgreich</div><br />
-        Bitte schau in Dein E-Mail Postfach. Wir haben Dir ein temporäres Passwort zum Anmelden geschickt.
+        Bitte schau in dein E-Mail Postfach. Wir haben Dir ein temporäres Passwort zum Anmelden geschickt.
         <ion-button routerLink="/login" expand="full" class="cta ion-margin-top">Zum Login</ion-button>
       </div>
     </div>
@@ -66,9 +81,10 @@ import { usePublicApi } from '@/composables/api/public'
 import { ResultStatus } from '@/types/serverCallResult'
 import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
 import LoginLayout from '@/components/general/LoginLayout.vue'
+import TermsConditions from '@/components/TermsConditions.vue'
 export default defineComponent({
 name: 'LoginPage',
-components: { LoginLayout, PrivacyPolicy, IonButton, IonLoading, IonModal, IonTitle, IonInput, IonNavLink },
+components: { LoginLayout, PrivacyPolicy, IonButton, IonLoading, IonModal, IonTitle, IonInput, IonNavLink, TermsConditions },
 setup() {
 
   const router = useRouter()
@@ -77,7 +93,8 @@ setup() {
   const lastPage = ref(null)
 
   const modalOpen = ref(false)
-  const isOpen = ref(false)
+  const privacyOpen = ref(false)
+  const termsOpen = ref(false)
   const policyCheckboxChecked = ref(false)
   const showErrorPolicy = ref(false)
 
@@ -86,9 +103,13 @@ setup() {
   const registerSuccessful = ref(false)
   const error = ref(false)
 
+  const isValidEmail = (email:string) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    return re.test(email);
+  }
 
   const registerButtonDisabled = computed(() => {
-    if (policyCheckboxChecked.value === false || item.value.email.length < 3) {
+    if (policyCheckboxChecked.value === false || !isValidEmail(item.value.email)) {
       return true
     }
     return false
@@ -141,11 +162,12 @@ setup() {
     registerSuccessful,
     error,
     modalOpen,
-    isOpen,
+    privacyOpen,
     policyCheckboxChecked,
     showErrorPolicy,
     showErrorPolicyMessage,
-    registerButtonDisabled
+    registerButtonDisabled,
+    termsOpen
   }
 }
 })

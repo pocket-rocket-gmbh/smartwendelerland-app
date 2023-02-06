@@ -10,6 +10,10 @@
       </ion-nav-link>
     </ion-toolbar>
     <ion-content :fullscreen="true">
+      <div class="gap-1" />
+      <div class="gap-1" />
+      <div class="gap-1" />
+      <div class="gap-1" />
       <ProjectList
         v-show="view === 'list'"
         :key="projectListKey"
@@ -65,6 +69,7 @@ ion-toolbar
   --background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%)
   text-align: center
   color: white
+  position: fixed
 .toggle-button
   border: 1px solid white
   padding: 1px 8px

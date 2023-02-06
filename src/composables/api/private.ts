@@ -2,6 +2,7 @@ import { useServerInterface } from '@/composables/server/interface'
 import { Method } from 'axios'
 import { ServerCallResult } from '@/types/serverCallResult'
 import { useUserStore } from '@/stores/user'
+import { isPlatform } from '@ionic/vue'
 
 export function usePrivateApi() {
 
@@ -14,9 +15,23 @@ export function usePrivateApi() {
   serverInterface.setDomain('https://smartwendelerland-api-prod.herokuapp.com/v1/')
   // serverInterface.setDomain('https://smartwendelerland-api-staging.herokuapp.com/v1/')
 
+  let platform = 'unknown'
+
+  if (isPlatform('ios')) {
+    platform = 'ios'
+  } else if (isPlatform('android')) {
+    platform = 'android'
+  }
+
   const call = async (method: Method, url: string, data?: any): Promise<ServerCallResult> => {
     // Reset authorization header each time to account for an auth token that is set after creation.
-    serverInterface.setHeaders({ Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN)}` })
+    serverInterface.setHeaders(
+      {
+        Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN)}`,
+        'Request-Source': 'app',
+        'Request-Platform': platform
+      }
+    )
 
     const result = await serverInterface.call(method, url, data)
 

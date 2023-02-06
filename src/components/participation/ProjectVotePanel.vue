@@ -9,7 +9,7 @@
         <div v-if="projectUpvoted" class="has-text-white">Dir gefällt dieses Projekt</div>
         <div v-else-if="projectDownvoted" class="has-text-white">Dir gefällt dieses Projekt nicht</div>
       </div>
-      <div v-else class="your-vote">Gib Deine Stimme ab</div>
+      <div v-else class="your-vote">Gib deine Stimme ab</div>
     </ion-col>
     <ion-col>
       <img src="@/assets/images/like.png" @click="handleVote('upvote')" v-if="projectUpvoted" />

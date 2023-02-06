@@ -39,7 +39,7 @@
       <div class="field">
         <ion-textarea
           v-model="item.message"
-          placeholder="Ihre Nachricht *"
+          placeholder="Deine Nachricht *"
         />
       </div>
       <div class="field">

@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { Method } from 'axios'
 import { useServerInterface } from '@/composables/server/interface'
 import { ServerCallResult } from '@/types/serverCallResult'
-
+import { isPlatform } from '@ionic/vue'
 export function usePublicApi() {
 
   const username = "pocketrocket"
@@ -16,8 +16,18 @@ export function usePublicApi() {
   serverInterface.setDomain('https://smartwendelerland-api-prod.herokuapp.com/v1/public')
   // serverInterface.setDomain('https://smartwendelerland-api-staging.herokuapp.com/v1/public')
 
+  let platform = 'unknown'
+
+  if (isPlatform('ios')) {
+    platform = 'ios'
+  } else if (isPlatform('android')) {
+    platform = 'android'
+  }
+
   serverInterface.setHeaders({
-    Authorization: `Basic ${encodedToken}`
+    Authorization: `Basic ${encodedToken}`,
+    'Request-Source': 'app',
+    'Request-Platform': platform
   })
 
   const call = async (method: Method, url: string, data?: any): Promise<ServerCallResult> => {
