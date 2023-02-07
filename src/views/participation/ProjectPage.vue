@@ -43,7 +43,7 @@
           <ion-row v-if="project.description">
             <ion-col>
               <div class="headline ion-margin-bottom">{{ project.name }}</div>
-              <div v-html="project.description" />
+              <div v-html="project.description" class="text-wrap" />
             </ion-col>
           </ion-row>
           <ion-row>
@@ -399,4 +399,7 @@ ion-button.contact
   --background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%)
   --border-radius: 38px
   height: 30px
+
+.text-wrap
+  text-align: justify
 </style>
