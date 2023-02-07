@@ -7,7 +7,8 @@
         </div>
         <div class="bottom">
           <div class="font-weight-bold">{{ milestone.name }}</div>
-          <div>bis {{ useDatetime().parseDate(milestone.timestamp) }}</div>
+          <div v-if="milestone.timestamp">bis {{ useDatetime().parseDate(milestone.timestamp) }}</div>
+          <div v-else>Noch kein Datum festgelegt</div>
         </div>
       </div>
     </div>
