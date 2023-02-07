@@ -14,6 +14,7 @@
       <div class="gap-1" />
       <div class="gap-1" />
       <div class="gap-1" />
+      <div class="gap-1" />
       <ProjectList
         v-show="view === 'list'"
         :key="projectListKey"
