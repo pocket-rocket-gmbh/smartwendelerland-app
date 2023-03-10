@@ -12,6 +12,13 @@
       <div class="field">
         <ion-input v-model="password" type="password" placeholder="Passwort" />
       </div>
+
+      <ion-list lines="none">
+        <ion-item>
+          <ion-checkbox slot="start" v-model="neverExpire"></ion-checkbox>
+          <ion-label>Dauerhaft anmelden</ion-label>
+        </ion-item>
+      </ion-list>
     
       <ion-button @click="doLogin" color="primary">Anmelden</ion-button>
       <div class="ion-margin">
@@ -43,22 +50,22 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonInput, IonButton, IonLoading, toastController, onIonViewWillEnter, IonNavLink, IonBackButton } from '@ionic/vue'
+import { IonInput, IonButton, IonLoading, toastController, onIonViewWillEnter, IonNavLink, IonBackButton, IonList, IonItem, IonCheckbox, IonLabel } from '@ionic/vue'
 import { usePrivateApi } from '@/composables/api/private'
 import { useUserStore } from '@/stores/user'
 import { usePollStore } from '@/stores/poll'
 import { ResultStatus } from '@/types/serverCallResult'
-import { useUser } from '@/composables/user/user'
 import LoginLayout from '@/components/general/LoginLayout.vue'
 
 export default defineComponent({
   name: 'LoginPage',
-  components: { LoginLayout, IonInput, IonButton, IonLoading, IonNavLink, IonBackButton },
+  components: { LoginLayout, IonInput, IonButton, IonLoading, IonNavLink, IonBackButton, IonList, IonItem, IonCheckbox, IonLabel },
   setup() {
 
     const router = useRouter()
     const privateApi = usePrivateApi()
     const userStore = useUserStore()
+    const neverExpire = ref(false)
 
     const lastPage = ref(null)
 
@@ -68,7 +75,7 @@ export default defineComponent({
 
     const doLogin = async () => {
       loginInProgress.value = true
-      const data = { email: email.value, password: password.value }
+      const data = { email: email.value, password: password.value, never_expire: neverExpire.value }
 
       const result = await privateApi.call('post', '/auth', data)
       if (result.status === ResultStatus.SUCCESSFUL) {
@@ -111,7 +118,8 @@ export default defineComponent({
       email,
       password,
       loginInProgress,
-      doLogin
+      doLogin,
+      neverExpire
     }
   }
 })
