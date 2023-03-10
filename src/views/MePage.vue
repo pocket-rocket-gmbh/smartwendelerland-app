@@ -62,6 +62,12 @@
       </ion-row>
       <ion-row>
         <ion-col>
+          <hr>
+          <ion-button @click="showTutorial">Intro erneut anzeugen</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
           <ion-button @click="closeAccountModalOpen = true" color="danger" class="delete-account-button">Account löschen</ion-button>
         </ion-col>
       </ion-row>
@@ -146,6 +152,11 @@ export default defineComponent({
       }
     }
 
+    const showTutorial = () => {
+      localStorage.removeItem('projektplattform_tutorial_skipped')
+      router.push('/')
+    }
+
     const deleteAccount = async () => {
       api.setEndpoint(`users/delete-me`)
       await api.deleteItem()
@@ -170,7 +181,8 @@ export default defineComponent({
       passwordError,
       closeAccountModalOpen,
       logout,
-      deleteAccount
+      deleteAccount,
+      showTutorial
     }
   }
 })
