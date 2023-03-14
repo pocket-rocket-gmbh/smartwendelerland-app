@@ -63,6 +63,7 @@ setup() {
   }
 
   onIonViewWillEnter(() => {
+    passwordResetSuccessful.value = false
     if (localStorage.getItem('smawela_login_email')) {
       email.value = localStorage.getItem('smawela_login_email')
     }
