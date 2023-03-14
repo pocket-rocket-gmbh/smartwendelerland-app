@@ -1,128 +1,72 @@
 <template>
   <BackButtonLayout>
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <ion-label class="headline">Deine Daten</ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-label>Vorname:</ion-label>
-        </ion-col>
-        <ion-col>
-          <ion-label>{{ userStore.user?.firstname }}</ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-label>Nachname:</ion-label>
-        </ion-col>
-        <ion-col>
-          <ion-label>{{ userStore.user?.lastname }}</ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-label>E-Mail:</ion-label>
-        </ion-col>
-        <ion-col>
-          <ion-label>{{ userStore.user?.email }}</ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-button @click="logout">Abmelden</ion-button>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <div class="field is-marginless">
-            <ion-input v-model="password" type="password" placeholder="Neues Passwort"></ion-input>
-          </div>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <div class="field is-marginless">
-            <ion-input v-model="password_confirmation" type="password" placeholder="Passwort bestätigen"></ion-input>
-          </div>
-          <ion-item v-if="passwordError === true" color="danger">
-            Das Passwort muss mindestens 5 Zeichen haben und beide Passwörter müssen übereinstimmen.
-          </ion-item>
-          <ion-item v-else-if="passwordError === false" color="success">
-            Passwort erfolgreich geändert.
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-button @click="updatePassword">Passwort ändern</ion-button>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <hr>
-          <ion-button @click="showTutorial">Intro erneut anzeugen</ion-button>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-button @click="closeAccountModalOpen = true" color="danger" class="delete-account-button">Account löschen</ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    <ion-modal :is-open="closeAccountModalOpen">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title slot="start">Account löschen</ion-title>
-          <ion-buttons slot="end">
-            <ion-button @click="closeAccountModalOpen = false">X</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding has-background-white">
-        Bist du sicher, dass du deinen Account löschen willst? Dein Fortschritt, deine Kommentare und deine Projektbewertungen gehen damit verloren.
-        <ion-row>
-          <ion-col>
-            <ion-button @click="deleteAccount" color="danger" expand="block">Ja, Account löschen</ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-button @click="closeAccountModalOpen = false" expand="block">Abbrechen</ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-content>
-    </ion-modal>
+    <ion-accordion-group>
+      <ion-accordion value="first">
+        <ion-item slot="header" color="light">
+          <ion-icon :icon="person" slot="start"></ion-icon>
+          <ion-label>Persönliche Daten</ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <PersonalData />
+        </div>
+      </ion-accordion>
+      <ion-accordion value="second">
+        <ion-item slot="header" color="light">
+          <ion-icon :icon="pencil" slot="start"></ion-icon>
+          <ion-label>Regeln</ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <p>
+            Wir wollen dir auf dieser Plattform ein respektvolles und konstruktives Miteinander ermöglichen. Um dies zu gewährleisten, bitten wir, dass du dich an den folgenden Richtlinien und Empfehlungen orientierst. Die Netiquette versteht sich als Erweiterung der allgemeinen Nutzungsbedingungen, welche immer in letzter Instanz gelten.
+          </p>
+
+          <p>
+            <strong>Kommentare:</strong><br/>
+            Wir freuen uns über zahlreiche Kommentare und Beiträge zu allen gezeigten Projekten. Diese Funktion dient dem konstruktiven Austausch untereinander. Für veröffentlichte Inhalte ist immer die Person verantwortlich, die den Kommentar verfasst hat.
+          </p>
+        </div>
+      </ion-accordion>
+      <ion-accordion value="third">
+        <ion-item slot="header" color="light">
+          <ion-icon :icon="trophy" slot="start"></ion-icon>
+          <ion-label>Erfolge</ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          Third Content
+        </div>
+      </ion-accordion>
+      <ion-accordion value="fourth" toggleIcon="">
+        <ion-item slot="header" color="light" @click="showTutorial">
+          <ion-icon :icon="easelOutline" slot="start"></ion-icon>
+          <ion-label>Tutorial</ion-label>
+        </ion-item>
+      </ion-accordion>
+      <ion-accordion value="fifth" toggleIcon="">
+        <ion-item slot="header" color="light" @click="logout">
+          <ion-icon :icon="logOutOutline" slot="start"></ion-icon>
+          <ion-label>Logout</ion-label>
+        </ion-item>
+      </ion-accordion>
+    </ion-accordion-group>
   </BackButtonLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonGrid, IonRow, IonCol, IonLabel, IonButton, onIonViewWillEnter, IonInput, IonItem, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonContent, toastController } from '@ionic/vue'
+import { IonLabel, onIonViewWillEnter, IonItem, IonAccordionGroup, IonAccordion, IonIcon } from '@ionic/vue'
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import { useUserStore } from '@/stores/user'
-import { usePrivateApi } from '@/composables/api/private'
-import { useCollectionApi } from '@/composables/api/collectionApi'
-import { ResultStatus } from '@/types/serverCallResult'
+import { person, pencil, easelOutline, trophy, logOutOutline } from 'ionicons/icons'
+import PersonalData from '@/components/me/PersonalData.vue'
 
 export default defineComponent({
   name: 'MePage',
-  components: { BackButtonLayout, IonGrid, IonRow, IonCol, IonLabel, IonButton, IonInput, IonItem, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonContent },
+  components: { BackButtonLayout, IonLabel, IonItem, IonAccordionGroup, IonAccordion, PersonalData, IonIcon },
   setup() {
 
     const router = useRouter()
     const userStore = useUserStore()
-
-    const password = ref('')
-    const password_confirmation = ref('')
-    const passwordError = ref(null)
-    const closeAccountModalOpen = ref(false)
-
-    const api = useCollectionApi()
-    api.setBaseApi(usePrivateApi())
 
     onIonViewWillEnter(() => {
       if (userStore.user === null) {
@@ -137,60 +81,24 @@ export default defineComponent({
       router.push('/participation/projects')
     }
 
-    const updatePassword = async () => {
-      passwordError.value = false
-      api.setEndpoint(`users/${userStore.user.id}/update-password`)
-      const data = {
-        password: password.value,
-        password_confirmation: password_confirmation.value
-      }
-      const result = await api.updateItem(data)
-      if (result.status === ResultStatus.SUCCESSFUL) {
-        passwordError.value = false
-      } else {
-        passwordError.value = true
-      }
-    }
-
     const showTutorial = () => {
       localStorage.removeItem('projektplattform_tutorial_skipped')
       router.push('/')
     }
 
-    const deleteAccount = async () => {
-      api.setEndpoint(`users/delete-me`)
-      await api.deleteItem()
-      localStorage.removeItem('auth._token.jwt')
-      userStore.user = null
-      closeAccountModalOpen.value = false
-      router.push('/')
-
-      const toast = await toastController
-        .create({
-          message: 'Dein Account wurde gelöscht',
-          duration: 2000
-        })
-      return toast.present()
-    }
-
     return {
       userStore,
-      updatePassword,
-      password_confirmation,
-      password,
-      passwordError,
-      closeAccountModalOpen,
       logout,
-      deleteAccount,
-      showTutorial
+      showTutorial,
+      person,
+      pencil,
+      easelOutline,
+      trophy,
+      logOutOutline
     }
   }
 })
 </script>
 
 <style lang="sass" scoped>
-.headline
-  font-size: 1.5em
-.delete-account-button
-  margin-top: 100px
 </style>
