@@ -32,7 +32,7 @@
           <ion-label>Erfolge</ion-label>
         </ion-item>
         <div class="ion-padding" slot="content">
-          Third Content
+          <TrophiesMain />
         </div>
       </ion-accordion>
       <ion-accordion value="fourth" toggleIcon="">
@@ -59,10 +59,11 @@ import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import { useUserStore } from '@/stores/user'
 import { person, pencil, easelOutline, trophy, logOutOutline } from 'ionicons/icons'
 import PersonalData from '@/components/me/PersonalData.vue'
+import TrophiesMain from '@/components/trophies/TrophiesMain.vue'
 
 export default defineComponent({
   name: 'MePage',
-  components: { BackButtonLayout, IonLabel, IonItem, IonAccordionGroup, IonAccordion, PersonalData, IonIcon },
+  components: { BackButtonLayout, IonLabel, IonItem, IonAccordionGroup, IonAccordion, PersonalData, IonIcon, TrophiesMain },
   setup() {
 
     const router = useRouter()
