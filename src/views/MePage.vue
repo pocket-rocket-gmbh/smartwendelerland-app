@@ -16,14 +16,7 @@
           <ion-label>Regeln</ion-label>
         </ion-item>
         <div class="ion-padding" slot="content">
-          <p>
-            Wir wollen dir auf dieser Plattform ein respektvolles und konstruktives Miteinander ermöglichen. Um dies zu gewährleisten, bitten wir, dass du dich an den folgenden Richtlinien und Empfehlungen orientierst. Die Netiquette versteht sich als Erweiterung der allgemeinen Nutzungsbedingungen, welche immer in letzter Instanz gelten.
-          </p>
-
-          <p>
-            <strong>Kommentare:</strong><br/>
-            Wir freuen uns über zahlreiche Kommentare und Beiträge zu allen gezeigten Projekten. Diese Funktion dient dem konstruktiven Austausch untereinander. Für veröffentlichte Inhalte ist immer die Person verantwortlich, die den Kommentar verfasst hat.
-          </p>
+          <PlatformRules />
         </div>
       </ion-accordion>
       <ion-accordion value="third">
@@ -32,7 +25,9 @@
           <ion-label>Erfolge</ion-label>
         </ion-item>
         <div class="ion-padding" slot="content">
-          <TrophiesMain />
+          <TrophiesMain
+            :key="trophiesKey"
+          />
         </div>
       </ion-accordion>
       <ion-accordion value="fourth" toggleIcon="">
@@ -54,20 +49,22 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonLabel, onIonViewWillEnter, IonItem, IonAccordionGroup, IonAccordion, IonIcon } from '@ionic/vue'
+import { IonLabel, onIonViewWillEnter, IonItem, IonAccordionGroup, IonAccordion, IonIcon, onIonViewDidEnter } from '@ionic/vue'
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import { useUserStore } from '@/stores/user'
 import { person, pencil, easelOutline, trophy, logOutOutline } from 'ionicons/icons'
 import PersonalData from '@/components/me/PersonalData.vue'
 import TrophiesMain from '@/components/trophies/TrophiesMain.vue'
+import PlatformRules from '@/components/me/PlatformRules.vue'
 
 export default defineComponent({
   name: 'MePage',
-  components: { BackButtonLayout, IonLabel, IonItem, IonAccordionGroup, IonAccordion, PersonalData, IonIcon, TrophiesMain },
+  components: { BackButtonLayout, IonLabel, IonItem, IonAccordionGroup, IonAccordion, PersonalData, IonIcon, TrophiesMain, PlatformRules },
   setup() {
 
     const router = useRouter()
     const userStore = useUserStore()
+    const trophiesKey = ref(1)
 
     onIonViewWillEnter(() => {
       if (userStore.user === null) {
@@ -87,6 +84,10 @@ export default defineComponent({
       router.push('/')
     }
 
+    onIonViewDidEnter(() => {
+      trophiesKey.value += 1
+    })
+
     return {
       userStore,
       logout,
@@ -95,7 +96,8 @@ export default defineComponent({
       pencil,
       easelOutline,
       trophy,
-      logOutOutline
+      logOutOutline,
+      trophiesKey
     }
   }
 })
