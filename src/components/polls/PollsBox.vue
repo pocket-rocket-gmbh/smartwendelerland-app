@@ -1,5 +1,5 @@
 <template>
-  <ion-nav-link :routerLink="pollLink">
+  <ion-nav-link :routerLink="pollLink" v-if="pollId">
     <div class="box">
       <img src="@/assets/images/poll-teaser.svg" class="has-drop-shadow is-fullwidth" />
       <div class="box-headline-right">
@@ -47,7 +47,8 @@ export default defineComponent({
 
     return {
       useUser,
-      pollLink
+      pollLink,
+      pollId
     }
   },
 })
