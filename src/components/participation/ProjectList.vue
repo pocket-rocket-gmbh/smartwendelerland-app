@@ -18,8 +18,10 @@
     <ion-select cancel-text="Abbrechen" placeholder="Gemeinden wählen" :multiple="true" v-model="selectedCommunityIds" @ionChange="debounce(reloadProjects)">
       <ion-select-option v-for="(community, index) in communities" :key="index" :value="community.id">{{ community.name_with_projects_count }}</ion-select-option>
     </ion-select>
-    
-    <div v-if="!loadingInProgress && projects.length <= 0" class="ion-text-center ion-padding-top">
+    <div v-if="loadingProjects" class="ion-text-center ion-padding-top">
+      Es wird nach Projekten gesucht…
+    </div>
+    <div v-else-if="!loadingProjects && projects.length === 0" class="ion-text-center ion-padding-top">
       Keine Projekte gefunden
 
       <div class="ion-padding">
@@ -28,7 +30,7 @@
         />
       </div>
     </div>
-    <div  class="project-list" v-else>
+    <div class="project-list" v-else>
       <div v-for="(project, index) in projects" :router-link="`projects/${project.id}`" :key="project.id">
         <ParticipationProjectListPanel
           @click="$router.push({path: `/participation/projects/${project.id}`})"
@@ -95,6 +97,7 @@ export default defineComponent({
     const projects = api.items
 
     const loadingInProgress = ref(false)
+    const loadingProjects = ref(false)
 
     onMounted(() => {
       reloadData()
@@ -106,24 +109,22 @@ export default defineComponent({
     }
 
     const reloadData = async () => {
-      loadingInProgress.value = true
       currentPage.value = 1
       Promise.all([
         getPublicProjects(false),
         getPublicCategories(),
         getPublicCommunities()
       ])      
-      loadingInProgress.value = false
     }
 
     const reloadProjects = async () => {
-      loadingInProgress.value = true
       currentPage.value = 1
       await getPublicProjects(false)
-      loadingInProgress.value = false
     }
 
     const getPublicProjects = async (concat = true) => {
+      loadingInProgress.value = true
+      loadingProjects.value = true
       const filters = []
       if (selectedCategoryIds.value.length > 0) {
         filters.push({
@@ -158,14 +159,20 @@ export default defineComponent({
 
       await api.retrieveCollection(options)      
       totalPages.value = api.totalPages.value
+      loadingInProgress.value = false
+      loadingProjects.value = false
     }
 
     const getPublicCategories = async () => {
+      loadingInProgress.value = true
       await categoriesApi.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'menu_order', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
+      loadingInProgress.value = false
     }
 
     const getPublicCommunities = async () => {
+      loadingInProgress.value = true
       await communitiesApi.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'menu_order', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
+      loadingInProgress.value = false
     }
 
     const loadData = (ev: InfiniteScrollCustomEvent) => {
@@ -192,6 +199,7 @@ export default defineComponent({
 
     return {
       loadingInProgress,
+      loadingProjects,
       doRefresh,
       projects,
       searchQuery,
