@@ -1,5 +1,8 @@
 <template>
-  <div class="mapwidget" :id="mapWidgetId"></div>
+  <div class="mapwidget" :id="mapWidgetId">
+    <div class="copyright-custom">©️ GeoBasis-DE / BKG ({{ new Date().getFullYear() }})</div>
+  </div>
+  
 </template>
 
 <script lang="ts">
@@ -332,19 +335,26 @@ export default defineComponent({
 })
 </script>
 
-<style>
-div.mapwidget {
-  width: 100%;
-  height: 100%;
-}
-div.clustericon {
-  width: 40px;
-  height: 40px;
-  background-color: #2b79c2;
-  padding-top: 2px;
-  text-align: center;
-  font-size: 24px;
-  border-radius: 25px;
-  color: white;
-}
+<style lang="sass">
+div.mapwidget
+  width: 100%
+  height: 100%
+div.clustericon
+  width: 40px
+  height: 40px
+  background-color: #2b79c2
+  padding-top: 2px
+  text-align: center
+  font-size: 24px
+  border-radius: 25px
+  color: white
+
+.leaflet-control-attribution
+  display: none
+.copyright-custom
+  position: fixed
+  bottom: 0px
+  right: 10px
+  background: white
+  z-index: 10000
 </style>
