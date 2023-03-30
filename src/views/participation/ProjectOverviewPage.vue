@@ -33,7 +33,6 @@ import ProjectList from '@/components/participation/ProjectList.vue'
 import ProjectMap from '@/components/participation/ProjectMap.vue'
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import { useRouter, } from 'vue-router'
-import { useUser } from '@/composables/user/user'
 export default defineComponent({
   components: { BaseLayout, IonContent, IonToolbar, ProjectList, ProjectMap, IonNavLink },
   setup () {

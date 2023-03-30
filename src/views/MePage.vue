@@ -43,6 +43,9 @@
         </ion-item>
       </ion-accordion>
     </ion-accordion-group>
+
+    <div class="ion-padding"><PinboardBox /></div>
+    
   </BackButtonLayout>
 </template>
 
@@ -56,10 +59,11 @@ import { person, pencil, easelOutline, trophy, logOutOutline } from 'ionicons/ic
 import PersonalData from '@/components/me/PersonalData.vue'
 import TrophiesMain from '@/components/trophies/TrophiesMain.vue'
 import PlatformRules from '@/components/me/PlatformRules.vue'
+import PinboardBox from '@/components/pinboards/PinboardBox.vue'
 
 export default defineComponent({
   name: 'MePage',
-  components: { BackButtonLayout, IonLabel, IonItem, IonAccordionGroup, IonAccordion, PersonalData, IonIcon, TrophiesMain, PlatformRules },
+  components: { BackButtonLayout, IonLabel, IonItem, IonAccordionGroup, IonAccordion, PersonalData, IonIcon, TrophiesMain, PlatformRules, PinboardBox },
   setup() {
 
     const router = useRouter()
