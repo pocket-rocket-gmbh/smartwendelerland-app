@@ -3,7 +3,7 @@
     <div class="box">
       <div><img src="@/assets/images/bulp.svg" /></div>
       <div class="box-headline-right">
-        Ideenpinnwand
+        Teile deine Ideen
       </div>
     </div>
   </ion-nav-link>

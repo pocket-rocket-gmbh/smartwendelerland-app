@@ -1,5 +1,5 @@
 <template>
-  <ion-nav-link :routerLink="pollLink" v-if="pollId">
+  <ion-nav-link :routerLink="pollLink" v-if="pollId && !pollCompleted">
     <div class="box">
       <img src="@/assets/images/poll-teaser.svg" class="has-drop-shadow is-fullwidth" />
       <div class="box-headline-right">
@@ -29,6 +29,11 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const pollCompleted = computed(() => {
+      const completed = localStorage.getItem(`smawela_poll_completed_${pollId.value}`)
+      return completed === 'true'
+    })
+
     const pollId = computed(() => {
       usePollStore().publicPoll?.id
       if (!props.isPublic) {
@@ -48,7 +53,8 @@ export default defineComponent({
     return {
       useUser,
       pollLink,
-      pollId
+      pollId,
+      pollCompleted
     }
   },
 })

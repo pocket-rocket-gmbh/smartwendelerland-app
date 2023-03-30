@@ -100,7 +100,7 @@ export default defineComponent({
 
     const categoriesApi = useCollectionApi()
     categoriesApi.setBaseApi(usePublicApi())
-    categoriesApi.setEndpoint(`categories`)
+    categoriesApi.setEndpoint(`categories?scope=project`)
     const categories = categoriesApi.items
     const selectedCategoryIds = ref([])
     const activeProjectId = ref(null)

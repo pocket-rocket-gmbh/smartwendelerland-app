@@ -38,9 +38,10 @@
         />
 
         <div class="ion-padding" v-if="index === 0">
-          <PollsBox
-            :is-public="true"
-          />
+            <PollsBox
+              :is-public="true"
+            />
+            <PinboardBox />
         </div>
       </div>
       <ion-infinite-scroll
@@ -69,10 +70,11 @@ import { useCollectionApi } from '@/composables/api/collectionApi'
 import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 import PollsBox from '@/components/polls/PollsBox.vue'
 import { useUser } from '@/composables/user/user'
+import PinboardBox from '../pinboards/PinboardBox.vue'
 
 export default defineComponent({
   name: 'ParticipationProjectListPage',
-  components: { IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, PollsBox },
+  components: { IonSearchbar, IonRefresher, IonRefresherContent, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, PollsBox, PinboardBox },
   setup() {
 
     const publicApi = usePublicApi()
@@ -84,7 +86,7 @@ export default defineComponent({
 
     const categoriesApi = useCollectionApi()
     categoriesApi.setBaseApi(usePublicApi())
-    categoriesApi.setEndpoint(`categories`)
+    categoriesApi.setEndpoint(`categories?scope=project`)
     const categories = categoriesApi.items
     const selectedCategoryIds = ref([])
 
