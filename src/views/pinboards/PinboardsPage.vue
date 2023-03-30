@@ -1,12 +1,12 @@
 <template>
   <BackButtonLayout>
-    <PublicPinboard />
+    <PublicPinboards />
   </BackButtonLayout>
 </template>
 
 <script setup lang="ts">
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue';
-import PublicPinboard from '@/components/pinboards/PublicPinboard.vue';
+import PublicPinboards from '@/components/pinboards/PublicPinboards.vue';
 </script>
 
 <style lang="sass" scoped>

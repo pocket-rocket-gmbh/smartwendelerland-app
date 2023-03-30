@@ -5,7 +5,7 @@
     Zu jeder Pinnwand kannst du deine eigene Idee beitragen oder die Ideen 
     von anderen Nutzern lesen.</p>
     <div v-if="pinboards.length > 0">
-      <ion-nav-link v-for="(pinboard, index ) in pinboards" :key="index" :routerLink="`/public/pinboards/${pinboard.id}`">
+      <ion-nav-link v-for="(pinboard, index ) in pinboards" :key="index" :routerLink="`/pinboards/${pinboard.id}`" class="pinboard-box">
         <div class="content ion-margin-bottom" v-if="pinboard.is_active" :class="[(!useDatetime().isInPast(pinboard.end_time) ? 'bg-white is-clickable' : 'bg-inactive')]">
           <h3>{{ pinboard.headline }}</h3>
           <p class="my-3" v-html="pinboard.content"></p>
@@ -64,33 +64,4 @@ onMounted(() => {
 </script>
 
 <style lang="sass" scoped>
-.categories
-  background-color: rgb(53, 139, 188, 0.3)
-  border-radius: 20px
-
-.content
-  box-shadow: 2px 4px 15px 5px rgba(4, 50, 70, 0.26)
-  border-radius: 20px
-  background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%)
-  color: white
-  padding: 5px 10px
-
-.divider
-  margin: 15px 0px
-  border: 1px solid #358BBC
-.chip
-  border: 1px solid #FFFFFF
-  border-radius: 50px
-  padding: 5px 10px
-
-.bg-inactive
-  background: #D2D1D3
-  color: grey
-
-.chips
-  color: #58595E
-  background-color: rgb(88, 89, 94, 0.1)
-
-.filter-categories
-  display: table-caption
 </style>

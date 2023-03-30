@@ -106,7 +106,7 @@ export default defineComponent({
 
     const reportComment = async (commentId:string) => {
       reportApi.setEndpoint(`comment_reports/comments/${commentId}`)
-      await reportApi.createItem({})
+      await reportApi.createItem({}, 'Erfolgreich gemeldet')
       popoverOpen.value = false
       emit('setCommentReported', commentId)
     }

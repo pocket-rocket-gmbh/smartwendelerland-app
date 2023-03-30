@@ -41,7 +41,7 @@ export default defineComponent({
       const result = await commentsApi.createItem({
         parent_id: props.parentId,
         comment: newComment.value
-      })
+      }, 'Kommentar erfolgreich erstellt')
 
       if (result.status === ResultStatus.SUCCESSFUL) {
         newComment.value = ''

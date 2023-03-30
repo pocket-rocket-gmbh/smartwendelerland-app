@@ -65,6 +65,10 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/pinboards',
+    component: () => import('@/views/pinboards/PinboardsPage.vue')
+  },
+  {
+    path: '/pinboards/:id',
     component: () => import('@/views/pinboards/PinboardPage.vue')
   },
   {

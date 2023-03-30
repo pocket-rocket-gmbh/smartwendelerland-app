@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { toastController } from '@ionic/vue'
 import { ResultStatus, ServerCallResult } from '@/types/serverCallResult'
 import { RetrieveCollectionOptions } from '@/types/retrieveCollectionOptions'
 
@@ -61,11 +62,11 @@ export function useCollectionApi() {
     return result
   }
 
-  const createItem = async (data: any) => {
+  const createItem = async (data: any, message:string) => {
     const result: ServerCallResult = await baseApi.call('post', `${endpoint}`, data)
 
-    if (result.status === ResultStatus.SUCCESSFUL) {
-      // TODO snackbar
+    if (result.status === ResultStatus.SUCCESSFUL && message.length > 0) {
+      showToast(message, 'bottom', 'success')
     }
     return result
   }
@@ -105,6 +106,23 @@ export function useCollectionApi() {
       // TODO snackbar
     }
     return result
+  }
+
+  const showToast = async (message: string, position: 'top' | 'middle' | 'bottom', kind: string) => {
+    const toast = await toastController
+      .create({
+        message: message,
+        duration: 5000,
+        position: position,
+        cssClass: kind,
+        buttons: [
+          {
+            text: 'Ok',
+            role: 'cancel'
+          }
+        ]
+      })
+    toast.present()
   }
 
   return {
