@@ -3,10 +3,10 @@
     <ion-header>
       <ion-toolbar>
         <img @click="$router.push({path: `/participation/projects`})" src="@/assets/images/logo.png" class="logo" slot="start"/>
-        <ion-icon v-if="userStore.user === null" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
+        <ion-icon v-if="!useUser().loggedIn()" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
         <div v-else @click="router.push('/me')" router-link="/me" slot="end">
           <UserProfile
-            :user="userStore.user"
+            :user="useUser().currentUser()"
           />
         </div>
       </ion-toolbar>
@@ -18,32 +18,15 @@
   </ion-page>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from '@ionic/vue'
 import { logInOutline, logInSharp, personCircleOutline, personCircleSharp } from 'ionicons/icons'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
 import UserProfile from '@/components/UserProfile.vue'
+import { useUser } from '@/composables/user/user'
 
-export default defineComponent({
-  name: 'BaseLayout',
-  components: { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, UserProfile },
-  setup () {
+const router = useRouter()
 
-    const router = useRouter()
-    const userStore = useUserStore()
-
-    return {
-      logInOutline,
-      logInSharp,
-      personCircleOutline,
-      personCircleSharp,
-      router,
-      userStore
-    }
-  }
-})
 </script>
 
 <style lang="sass" scoped>

@@ -79,10 +79,14 @@ export default defineComponent({
 
       const result = await privateApi.call('post', '/auth', data)
       if (result.status === ResultStatus.SUCCESSFUL) {
+        console.table(result)
         const jwt = result.data.jwt_token
         localStorage.setItem('auth._token.jwt', jwt)
         localStorage.setItem('smawela_login_email', email.value)          
         userStore.user = result.data.user
+        userStore.$patch({
+          user: result.data.user
+        })
         // update relevant data which is now available after login
         await usePollStore().setPublicPoll()
 

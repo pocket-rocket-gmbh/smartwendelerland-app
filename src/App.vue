@@ -7,45 +7,41 @@
       </div>
     </div>
     <ion-router-outlet v-else />
+    <div class="staging-batch" v-if="isStaging" @click="toggleEnv">Testsystem verlassen</div>
   </ion-app>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { IonApp, IonSpinner, IonRouterOutlet } from '@ionic/vue'
-import { defineComponent, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { usePollStore } from '@/stores/poll'
 import { useAppStateStore } from '@/stores/appState'
 import { useMe } from '@/composables/user/me'
+import { useEnvStore } from './stores/env'
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    IonApp,
-    IonSpinner,
-    IonRouterOutlet
-  },
-  setup() {
+const appState = useAppStateStore()
 
-    const appState = useAppStateStore()
+const isStaging = computed(() => {
+  return useEnvStore().env === 'staging'
+})
 
-    onMounted(async () => {
-      console.log('Loading App...')
-      const startTime = Date.now()
+const toggleEnv = () => {
+  localStorage.removeItem('smawela--env')
+  window.location.reload()
+}
 
-      await useMe().fetchMyUser()
-      useAppStateStore().setAppLoadingProgress(0.5)
-      await usePollStore().setPublicPoll()
-      useAppStateStore().setAppLoadingProgress(1.0)
-      console.log('App loaded - duration: ' + (Date.now() - startTime) + ' ms')
-      useAppStateStore().setAppLoading(false)
+onMounted(async () => {
+  console.log('Loading App...')
+  const startTime = Date.now()
 
-      
-    })
+  await useMe().fetchMyUser()
+  useAppStateStore().setAppLoadingProgress(0.5)
+  await usePollStore().setPublicPoll()
+  useAppStateStore().setAppLoadingProgress(1.0)
+  console.log('App loaded - duration: ' + (Date.now() - startTime) + ' ms')
+  useAppStateStore().setAppLoading(false)
 
-    return {
-      appState
-    }
-  }
+  
 })
 </script>
 
@@ -55,4 +51,13 @@ export default defineComponent({
   align-items: center
   justify-content: center
   height: 100%
+.staging-batch
+  position: fixed
+  bottom: 20px
+  right: 20px
+  background: orange
+  color: white
+  border-radius: 20px
+  font-size: 20px
+  padding: 10px
 </style>

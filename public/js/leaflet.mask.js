@@ -113,10 +113,10 @@
             var latlngs = this.coordsToLatLngs(this._maskPolygonCoords);
             var layer = new L.Polygon(latlngs, this.options);
             this.addLayer(layer);
-            if (this.options.fitBounds) {
+            if (this._map && this.options.fitBounds) {
                 this._map.fitBounds(this._bounds);
             }
-            if (this.options.restrictBounds) {
+            if (this._map && this.options.restrictBounds) {
                 this._map.setMaxBounds(this._bounds);
             }
         },
