@@ -4,7 +4,7 @@
     <p>Hier findest du aktuelle Themen und Anregungen aus dem Landkreis. 
     Zu jeder Pinnwand kannst du deine eigene Idee beitragen oder die Ideen 
     von anderen Nutzern lesen.</p>
-    <ion-select class="ion-margin-bottom" cancel-text="Abbrechen" placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="getItems">
+    <ion-select v-if="categories.length > 0" class="ion-margin-bottom" cancel-text="Abbrechen" placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="getItems">
       <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name_with_pinboards_count }}</ion-select-option>
     </ion-select>
     <ion-grid v-if="pinboards.length > 0">
