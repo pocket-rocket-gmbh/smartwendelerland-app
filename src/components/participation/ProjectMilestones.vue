@@ -41,7 +41,7 @@ export default defineComponent({
 
     const getItems = async () => {
       loading.value = true
-      await api.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'timestamp', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
+      await api.retrieveCollection({ page: 1, per_page: 1000, sort_by: 'menu_order', sort_order: 'ASC', searchQuery: null, concat: false, filters: null })
       loading.value = false
     }
 
