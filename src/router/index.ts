@@ -5,7 +5,28 @@ import { useUser } from '@/composables/user/user'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    component: () => import('@/views/LandingPage.vue'),
+    component: () => import('@/views/LandingPage.vue')
+  },
+  {
+    path: '/landing/health',
+    component: () => import('@/views/landing/HealthPage.vue'),
+    // activate when tutorial is done
+    // beforeEnter: (to, from, next) => {
+    //   const gesundheitsplattformTutorialSkipped = localStorage.getItem('gesundheitsplattform_tutorial_skipped')
+    //   if (gesundheitsplattformTutorialSkipped) {
+    //     if (gesundheitsplattformTutorialSkipped === 'true') {
+    //       next({ path: '/participation/projects'})
+    //     } else {
+    //       next()
+    //     }
+    //   } else {
+    //     next()
+    //   }
+    // }
+  },
+  {
+    path: '/landing/participation',
+    component: () => import('@/views/landing/ParticipationPage.vue'),
     beforeEnter: (to, from, next) => {
       const projektplattformTutorialSkipped = localStorage.getItem('projektplattform_tutorial_skipped')
       if (projektplattformTutorialSkipped) {
@@ -86,7 +107,15 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/participation/projects/:id',
     component: () => import('@/views/participation/ProjectPage.vue')
-  }
+  },
+  {
+    path: '/health',
+    redirect: '/health/categories'
+  },
+  {
+    path: '/health/categories',
+    component: () => import('@/views/health/CategoriesPage.vue')
+  },
 ]
 
 const router = createRouter({
