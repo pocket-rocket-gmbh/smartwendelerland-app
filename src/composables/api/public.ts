@@ -3,6 +3,7 @@ import { Method } from 'axios'
 import { useServerInterface } from '@/composables/server/interface'
 import { ServerCallResult } from '@/types/serverCallResult'
 import { isPlatform } from '@ionic/vue'
+import { useEnvStore } from '@/stores/env'
 export function usePublicApi() {
 
   const username = "pocketrocket"
@@ -10,11 +11,20 @@ export function usePublicApi() {
   const token = `${username}:${password}`
   const encodedToken = Buffer.from(token).toString('base64')
 
-  const serverInterface = useServerInterface()
+  
+  const envStore = useEnvStore()
+  let baseUrl = 'https://smartwendelerland-api-prod.herokuapp.com'
 
-  // serverInterface.setDomain('http://localhost:3000/v1/public')
-  serverInterface.setDomain('https://smartwendelerland-api-prod.herokuapp.com/v1/public')
-  // serverInterface.setDomain('https://smartwendelerland-api-staging.herokuapp.com/v1/public')
+  if (localStorage.getItem('smawela--env') && localStorage.getItem('smawela--env') === 'staging') {
+    baseUrl = 'https://smartwendelerland-api-staging.herokuapp.com'
+    envStore.$patch({
+      env: 'staging'
+    })
+  }
+
+  const serverInterface = useServerInterface()
+  // base_url = 'http://localhost:3000'
+  serverInterface.setDomain(`${baseUrl}/v1/public/`)
 
   let platform = 'unknown'
 

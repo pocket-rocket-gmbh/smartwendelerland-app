@@ -113,7 +113,7 @@ export default defineComponent({
     const send = async () => {
       createApi.setEndpoint(`messages`)
       loading.value = true
-      const result = await createApi.createItem(item.value)
+      const result = await createApi.createItem(item.value, 'Vielen Dank für deine Kontaktaufnahme')
       loading.value = false
       if (result.status === ResultStatus.SUCCESSFUL) {
         showSuccessfullySent()

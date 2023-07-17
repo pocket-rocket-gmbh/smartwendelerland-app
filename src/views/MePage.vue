@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout>
+  <BackButtonLayout v-if="useUser().currentUser()">
     <ion-accordion-group>
       <ion-accordion value="first">
         <ion-item slot="header" color="light">
@@ -36,70 +36,73 @@
           <ion-label>Tutorial</ion-label>
         </ion-item>
       </ion-accordion>
-      <ion-accordion value="fifth" toggleIcon="">
+      <ion-accordion value="fifth" toggleIcon="" v-if="useUser().isAdmin() && useEnvStore().env === 'production'">
+        <ion-item slot="header" color="light" @click="toggleEnv">
+          <ion-icon :icon="cogOutline" slot="start"></ion-icon>
+          <ion-label>
+            Zum Testsystem wechseln
+          </ion-label>
+        </ion-item>
+      </ion-accordion>
+      <ion-accordion value="sixth" toggleIcon="">
         <ion-item slot="header" color="light" @click="logout">
           <ion-icon :icon="logOutOutline" slot="start"></ion-icon>
           <ion-label>Logout</ion-label>
         </ion-item>
       </ion-accordion>
     </ion-accordion-group>
+    <div class="ion-padding"><PinboardBox /></div>
   </BackButtonLayout>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { IonLabel, onIonViewWillEnter, IonItem, IonAccordionGroup, IonAccordion, IonIcon, onIonViewDidEnter } from '@ionic/vue'
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import { useUserStore } from '@/stores/user'
-import { person, pencil, easelOutline, trophy, logOutOutline } from 'ionicons/icons'
+import { person, pencil, easelOutline, trophy, logOutOutline, cogOutline } from 'ionicons/icons'
 import PersonalData from '@/components/me/PersonalData.vue'
 import TrophiesMain from '@/components/trophies/TrophiesMain.vue'
 import PlatformRules from '@/components/me/PlatformRules.vue'
+import PinboardBox from '@/components/pinboards/PinboardBox.vue'
+import { useUser } from '@/composables/user/user'
+import { useEnvStore } from '@/stores/env'
 
-export default defineComponent({
-  name: 'MePage',
-  components: { BackButtonLayout, IonLabel, IonItem, IonAccordionGroup, IonAccordion, PersonalData, IonIcon, TrophiesMain, PlatformRules },
-  setup() {
+const router = useRouter()
+const userStore = useUserStore()
+const trophiesKey = ref(1)
+const envStore = useEnvStore()
 
-    const router = useRouter()
-    const userStore = useUserStore()
-    const trophiesKey = ref(1)
-
-    onIonViewWillEnter(() => {
-      if (userStore.user === null) {
-        router.push('/login')
-      }
-    }) 
-
-    // We only remove the local JWT/user to prevent logout from wiiir-frontend.
-    const logout = () => {
-      localStorage.removeItem('auth._token.jwt')
-      userStore.user = null
-      router.push('/participation/projects')
-    }
-
-    const showTutorial = () => {
-      localStorage.removeItem('projektplattform_tutorial_skipped')
-      router.push('/')
-    }
-
-    onIonViewDidEnter(() => {
-      trophiesKey.value += 1
-    })
-
-    return {
-      userStore,
-      logout,
-      showTutorial,
-      person,
-      pencil,
-      easelOutline,
-      trophy,
-      logOutOutline,
-      trophiesKey
-    }
+onIonViewWillEnter(() => {
+  if (userStore.user === null) {
+    router.push('/login')
   }
+}) 
+
+// We only remove the local JWT/user to prevent logout from wiiir-frontend.
+const logout = () => {
+  console.log("logout")
+  localStorage.removeItem('auth._token.jwt')
+  userStore.user = null
+  userStore.$patch({
+    user: null
+  })
+  router.push('/participation/projects')
+}
+
+const showTutorial = () => {
+  localStorage.removeItem('projektplattform_tutorial_skipped')
+  router.push('/')
+}
+
+const toggleEnv = () => {
+  localStorage.setItem('smawela--env', 'staging')
+  window.location.reload()
+}
+
+onIonViewDidEnter(() => {
+  trophiesKey.value += 1
 })
 </script>
 

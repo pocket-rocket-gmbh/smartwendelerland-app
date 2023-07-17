@@ -16,7 +16,7 @@ import { useRouter } from 'vue-router'
 export default defineComponent({
   components: { BackButtonLayout, PollMain },
   emits: ['close'],
-  setup (props, { emit }) {
+  setup () {
 
     const router = useRouter()
 

@@ -70,9 +70,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, onMounted, onUnmounted, watch } from 'vue'
+import { defineComponent, ref, Ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, IonContent, isPlatform } from '@ionic/vue'
+import { IonSearchbar, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonSelect, IonSelectOption, IonModal, IonContent } from '@ionic/vue'
 import ParticipationProjectListPanel from '@/components/participation/ProjectListPanel.vue'
 import { usePublicApi } from '@/composables/api/public'
 import { usePrivateApi } from '@/composables/api/private'
@@ -86,7 +86,7 @@ import L from 'leaflet'
 export default defineComponent({
   name: 'ParticipationProjectMapPage',
   components: { IonSearchbar, ParticipationProjectListPanel, IonLoading, IonInfiniteScroll, IonInfiniteScrollContent, IonSelect, IonSelectOption, MapWidget, IonModal, IonContent },
-  setup(props) {
+  setup() {
 
     const router = useRouter()
     const showModal = ref(false)
@@ -100,7 +100,7 @@ export default defineComponent({
 
     const categoriesApi = useCollectionApi()
     categoriesApi.setBaseApi(usePublicApi())
-    categoriesApi.setEndpoint(`categories`)
+    categoriesApi.setEndpoint(`categories?scope=project`)
     const categories = categoriesApi.items
     const selectedCategoryIds = ref([])
     const activeProjectId = ref(null)

@@ -37,18 +37,20 @@ export default defineComponent({
 
     const currentCountByKindAndThreshold = (kind:string, threshold:number) => {
       let current = 0
-      if (kind === 'login') {
-        current = user.value.login_count
-      } else if (kind === 'rating') {
-        current = user.value.project_ratings_count
-      } else if (kind === 'poll') {
-        current = user.value.poll_answers_count
-      } else if (kind === 'comment') {
-        current = user.value.comments_count
-      }
+      if (user.value) {
+        if (kind === 'login') {
+          current = user.value.login_count
+        } else if (kind === 'rating') {
+          current = user.value.project_ratings_count
+        } else if (kind === 'poll') {
+          current = user.value.poll_answers_count
+        } else if (kind === 'comment') {
+          current = user.value.comments_count
+        }
 
-      if (current > threshold) {
-        current = threshold
+        if (current > threshold) {
+          current = threshold
+        }
       }
 
       return current

@@ -15,7 +15,11 @@
 
     <div class="comment">{{ comment.comment }}</div>
 
-    <LikePanel :comment="comment" />
+    <LikePanel
+      :item="comment"
+      :endpoint="`comments/${comment.id}`"
+      scope="comment"
+    />
     
     <ion-popover
       :is-open="popoverOpen"
@@ -52,7 +56,7 @@ import { IonIcon } from '@ionic/vue'
 import { IonPopover } from '@ionic/vue'
 import { ellipsisVerticalOutline, ellipsisVerticalSharp } from 'ionicons/icons'
 import { useUser } from '@/composables/user/user'
-import LikePanel from '@/components/participation/LikePanel.vue'
+import LikePanel from '@/components/LikePanel.vue'
 import { useDatetime } from '@/composables/ui/datetime'
 import { usePrivateApi } from '@/composables/api/private'
 import { useCollectionApi } from '@/composables/api/collectionApi'
@@ -106,7 +110,7 @@ export default defineComponent({
 
     const reportComment = async (commentId:string) => {
       reportApi.setEndpoint(`comment_reports/comments/${commentId}`)
-      await reportApi.createItem({})
+      await reportApi.createItem({}, 'Erfolgreich gemeldet')
       popoverOpen.value = false
       emit('setCommentReported', commentId)
     }
