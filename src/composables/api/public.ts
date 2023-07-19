@@ -4,16 +4,24 @@ import { useServerInterface } from '@/composables/server/interface'
 import { ServerCallResult } from '@/types/serverCallResult'
 import { isPlatform } from '@ionic/vue'
 import { useEnvStore } from '@/stores/env'
-export function usePublicApi() {
-
-  const username = "pocketrocket"
-  const password = "84923!!ndj"
+export function usePublicApi(scope = 'project') {
+  let username = ''
+  let password = ''
+  if (scope === 'health') {
+    username = "pocketrocket_health"
+    password = "7891011"
+  } else if (scope === 'project') {
+    username = "pocketrocket"
+    password = "84923!!ndj"
+  }
+  
   const token = `${username}:${password}`
   const encodedToken = Buffer.from(token).toString('base64')
 
   
   const envStore = useEnvStore()
-  let baseUrl = 'https://smartwendelerland-api-prod.herokuapp.com'
+  // let baseUrl = 'https://smartwendelerland-api-prod.herokuapp.com'
+  let baseUrl = 'https://smartwendelerland-api-staging.herokuapp.com'
 
   if (localStorage.getItem('smawela--env') && localStorage.getItem('smawela--env') === 'staging') {
     baseUrl = 'https://smartwendelerland-api-staging.herokuapp.com'

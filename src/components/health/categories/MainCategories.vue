@@ -1,0 +1,82 @@
+<template>
+  <ion-grid>
+    <ion-row>
+      <ion-col v-for="category in categories" :key="category.id" size-xs="6" size-sm="4" size-lg="3">
+        <div class="health-category-box">
+          <div align="center">
+            <img src="@/assets/images/prevention.svg" v-if="category.name.includes('Prävention')" />
+            <img src="@/assets/images/sick.svg" v-else />
+          </div>
+          <div class="headline">{{ category.name }}</div>
+        </div>
+      </ion-col>
+      <ion-col size-xs="6" size-sm="4" size-lg="3">
+        <div class="health-category-box">
+          <div align="center">
+            <img src="@/assets/images/calendar.svg" />
+          </div>
+          <div class="headline">Kurse & Veranstaltungen</div>
+        </div>
+      </ion-col>
+      <ion-col size-xs="6" size-sm="4" size-lg="3">
+        <div class="health-category-box">
+          <div align="center">
+            <img src="@/assets/images/given-heart.svg" />
+          </div>
+          <div class="headline">Anbieter</div>
+        </div>
+      </ion-col>
+      <ion-col size-xs="6" size-sm="4" size-lg="3">
+        <div class="health-category-box">
+          <div align="center">
+            <img src="@/assets/images/news.svg" />
+          </div>
+          <div class="headline">Beiträge</div>
+        </div>
+      </ion-col>
+      <ion-col size-xs="6" size-sm="4" size-lg="3">
+        <div class="health-category-box">
+          <div align="center">
+            <img src="@/assets/images/help.svg" />
+          </div>
+          <div class="headline">Hilfe</div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-loading
+    :is-open="loading"
+    message="Kategorien werden geladen..."
+  />
+</template>
+
+<script setup lang="ts">
+import { IonGrid, IonRow, IonCol, IonLoading } from '@ionic/vue';
+import { ref } from 'vue';
+import { useCollectionApi } from '@/composables/api/collectionApi';
+import { usePublicApi } from '@/composables/api/public';
+import { onMounted } from 'vue';
+
+const loading = ref(false)
+const categories = ref([])
+const categoriesApi = useCollectionApi()
+categoriesApi.setBaseApi(usePublicApi('health'))
+
+const getCategories = async () => {
+  loading.value = true
+  categoriesApi.setEndpoint(`categories`)
+  const options = { page: 1, per_page: 25, sort_by: 'menu_order', sort_order: 'ASC', searchQuery: null, concat: false, filters: [] }
+  await categoriesApi.retrieveCollection(options)
+  categories.value = categoriesApi.items.value
+  loading.value = false
+}
+
+onMounted(() => {
+  getCategories()
+})
+</script>
+
+<style lang="sass" scoped>
+ion-col
+  padding: 2px
+</style>

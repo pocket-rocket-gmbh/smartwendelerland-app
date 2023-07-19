@@ -5,7 +5,7 @@
         <ion-col size-sm="12" size-md="6" size-lg="3">
           <ion-nav-link routerLink="/landing/health">
             <div class="pile" align="center">
-              <img src="@/assets/images/health.png" />
+              <img src="@/assets/images/health.jpg" />
               <div class="headline">Gesundheitsplattform</div>
             </div>
           </ion-nav-link>
