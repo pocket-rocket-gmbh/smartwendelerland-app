@@ -2,7 +2,7 @@
   <ion-grid>
     <ion-row>
       <ion-col v-for="category in categories" :key="category.id" size-xs="6" size-sm="4" size-lg="3">
-        <div class="health-category-box">
+        <div class="health-category-box" @click="router.push({ path: `/health/categories/${category.id}`})">
           <div align="center">
             <img src="@/assets/images/prevention.svg" v-if="category.name.includes('Prävention')" />
             <img src="@/assets/images/sick.svg" v-else />
@@ -56,7 +56,9 @@ import { ref } from 'vue';
 import { useCollectionApi } from '@/composables/api/collectionApi';
 import { usePublicApi } from '@/composables/api/public';
 import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const loading = ref(false)
 const categories = ref([])
 const categoriesApi = useCollectionApi()
