@@ -10,8 +10,8 @@
       placeholder="Suchbgeriff eingeben"
       v-model="searchQuery"
       :debounce="2000"
-      @ionChange="emitSearch"
-      @ionClear="emitSearch"
+      @ionChange="goToSearchPage"
+      @ionClear="clearSearch"
     />
   </div>
 </template>
@@ -19,11 +19,18 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
 import { IonSearchbar } from '@ionic/vue';
-const emit = defineEmits(['search'])
+import { useRouter } from 'vue-router';
+const router = useRouter()
 const searchQuery = ref("")
 
-const emitSearch = () => {
-  emit('search', searchQuery.value)
+const goToSearchPage = () => {
+  if (searchQuery.value.length > 0) {
+    router.push({ path: '/health/search', query: { search: searchQuery.value }})
+  }
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
 }
 </script>
 
