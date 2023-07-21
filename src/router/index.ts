@@ -113,10 +113,13 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/health/categories'
   },
   {
+    path: '/health/search',
+    component: () => import('@/views/health/SearchPage.vue')
+  },
+  {
     path: '/health/categories',
     component: () => import('@/views/health/CategoriesPage.vue')
   },
-  ,
   {
     path: '/health/categories/:id',
     component: () => import('@/views/health/CategoryPage.vue')

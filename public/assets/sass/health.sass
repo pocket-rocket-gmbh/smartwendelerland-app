@@ -19,17 +19,38 @@
     display: grid
     place-items: center
 
+.health-sub-category-box
+  border-radius: 10px
+  background: #F5F5F5
+  display: grid
+  grid-template-columns: 140px auto
+  margin: 20px 10px
+  overflow: hidden
+  .content-right
+    padding: 10px
+    min-height: 100px
+    color: #636362
+    .description
+      font-size: 12px !important
+    .cta
+      font-weight: bold
+      font-size: 12px
+      margin-top: 10px
+
 .health-top-panel
   background: linear-gradient(66deg, #91A80D 0%, #BAC323 46.88%, #9EA100 95.31%)
-  padding: 40px 20px
-  display: grid
-  place-items: center
-  color: #FFF
-  font-size: 18px
-  font-style: normal
-  font-weight: 600
-  line-height: normal
-  text-transform: uppercase
+  padding: 10px
+  .headline
+    color: #FFF
+    font-size: 18px
+    font-style: normal
+    font-weight: 600
+    line-height: normal
+    text-transform: uppercase
+  &.is-headline
+    padding: 40px 20px
+    display: grid
+    place-items: center
   
 .health-category-tags
   width: 100%
@@ -51,3 +72,22 @@
     font-style: normal
     font-weight: 600
     line-height: 22px
+    &.is-active
+      background: #636362
+      color: white
+
+ion-button.transparent
+  --background: transparent
+  color: white
+  border: 1px solid white
+  border-radius: 30px
+ion-button.white
+  --background: white
+  color: black
+  --border-radius: 30px
+  &.has-border
+    border: 1px solid #636362
+    border-radius: 30px
+  &.is-active
+    --background: #636362
+    color: white
