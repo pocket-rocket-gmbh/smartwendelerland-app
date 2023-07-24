@@ -316,7 +316,7 @@ div.mapcontainer
   z-index: 1000000
   position: absolute
   left: 50%
-  bottom: 12%
+  bottom: 20%
   transform: translateX(-50%)
   @media (min-height: 800px)
     bottom: 10%
@@ -324,7 +324,7 @@ div.mapcontainer
   width: 80%
   padding: 20px
   font-size: 20px
-  margin-top: 40px
+  margin-top: 60px
   border-radius: 20px
   background: white
   border: 1px solid grey
