@@ -15,11 +15,22 @@
         <span v-else class="placeholder">Filter wählen</span>
       </div>
 
-      <div class="label font-size-small">Gemeinde</div>
-      <CommunityFilter
-        ref="communityFilterRef"
-        @selectCommunityFilter="selectCommunityFilter"
-      />
+      <div class="grid-2">
+        <div>
+          <div class="label font-size-small">Gemeinde</div>
+          <CommunityFilter
+            ref="communityFilterRef"
+            @selectCommunityFilter="selectCommunityFilter"
+          />
+        </div>
+        <div>
+          <div class="label font-size-small">x</div>
+          <div class="filter-button">
+            Weitere Filter
+          </div>
+        </div>
+
+      </div>
 
       <div class="buttons">
         <ion-button class="transparent" expand="block" @click="resetFilter">Auswahl zurücksetzen</ion-button>
@@ -33,7 +44,8 @@
     </div>
 
     <div class="ion-padding">
-      <FacilityList />
+      <FacilityList v-if="view === 'list'"/>
+      <FacilityMap v-else-if="view === 'map'"/>
     </div>
 
     <ion-loading
@@ -49,6 +61,7 @@ import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import BasicFilterModal from '../../components/health/BasicFilterModal.vue';
 import CommunityFilter from '@/components/health/CommunityFilter.vue';
 import FacilityList from '@/components/health/FacilityList.vue';
+import FacilityMap from '@/components/health/FacilityMap.vue';
 import { useFilterStore } from '@/stores/health/searchFilter';
 import { IonLoading } from '@ionic/vue';
 
@@ -92,8 +105,11 @@ const startSearch = async () => {
 .label
   font-weight: bold
   color: white
+.grid-2
+  display: grid
+  grid-template-columns: 59% 39%
+  gap: 2%
 .filter-button
-  margin-top: 5px
   border-radius: 7px
   background: #FFF
   padding: 10px 20px
@@ -101,7 +117,7 @@ const startSearch = async () => {
     color: var(--placeholder-color)
     opacity: 0.33
   border: 1px solid black
-  height: 41px
+  height: 43.5px
   margin-bottom: 10px
   &.is-active
     color: black
