@@ -5,6 +5,12 @@
       @close="basicFilterModalOpen = false"
       @selectBasicFilter="selectBasicFilter"
     />
+    <AdvancedFilterModal
+      v-if="advancedFilterModalOpen"
+      filter-kind="facility"
+      @close="advancedFilterModalOpen = false"
+      @selectBasicFilter="selectAdvancedFilter"
+    />
     <div class="health-top-panel">
       <div class="headline">Suche nach passenden Anbietern</div>
       <div class="gap-1" />
@@ -24,10 +30,11 @@
           />
         </div>
         <div>
-          <div class="label font-size-small">x</div>
-          <div class="filter-button">
-            Weitere Filter
-          </div>
+          <div class="label font-size-small">&nbsp;</div>
+          <button class="filter-button is-fullwidth" @click="advancedFilterModalOpen = true">
+            weitere Filter
+            <img src="@/assets/images/filter.svg" class="icon" />
+          </button>
         </div>
 
       </div>
@@ -59,6 +66,7 @@
 import { ref } from 'vue';
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import BasicFilterModal from '../../components/health/BasicFilterModal.vue';
+import AdvancedFilterModal from '../../components/health/AdvancedFilterModal.vue';
 import CommunityFilter from '@/components/health/CommunityFilter.vue';
 import FacilityList from '@/components/health/FacilityList.vue';
 import FacilityMap from '@/components/health/FacilityMap.vue';
@@ -66,8 +74,10 @@ import { useFilterStore } from '@/stores/health/searchFilter';
 import { IonLoading } from '@ionic/vue';
 
 const filterStore = useFilterStore()
+const advancedFilterModalOpen = ref(false)
 const basicFilterModalOpen = ref(false)
 const basicFilter = ref(null)
+const advancedFilter = ref(null)
 const communityFilter = ref(null)
 const communityFilterRef = ref(null)
 const view = ref('map')
@@ -77,6 +87,10 @@ const selectBasicFilter = (filter:any) => {
   basicFilter.value = filter
   // currently supporting only one filter
   filterStore.currentTags = [filter]
+}
+
+const selectAdvancedFilter = (filter:any) => {
+  console.log(filter)
 }
 
 const selectCommunityFilter = (filter:any) => {
@@ -107,12 +121,13 @@ const startSearch = async () => {
   color: white
 .grid-2
   display: grid
-  grid-template-columns: 59% 39%
+  grid-template-columns: 64% 34%
   gap: 2%
 .filter-button
   border-radius: 7px
   background: #FFF
   padding: 10px 20px
+  position: relative
   .placeholder
     color: var(--placeholder-color)
     opacity: 0.33
@@ -121,13 +136,19 @@ const startSearch = async () => {
   margin-bottom: 10px
   &.is-active
     color: black
+  .icon
+    position: absolute
+    right: 7px
+    top: 14px
+    width: 15px
+    height: 15px
 
 .buttons
   display: flex
+  gap: 10px
   margin-top: 15px
   justify-content: space-between
   ion-button
     flex: 1
-    margin-right: 10px
 
 </style>
