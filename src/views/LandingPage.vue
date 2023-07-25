@@ -3,7 +3,7 @@
     <ion-grid>
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="12" size-md="6" size-lg="3">
-          <ion-nav-link routerLink="/landing/health">
+          <ion-nav-link routerLink="/health/categories">
             <div class="pile" align="center">
               <img src="@/assets/images/health.jpg" />
               <div class="headline">Gesundheitsplattform</div>
