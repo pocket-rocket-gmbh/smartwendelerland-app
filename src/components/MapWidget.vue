@@ -27,6 +27,10 @@ class LocationMarker extends L.Marker {
 export default defineComponent({
   name: 'MapWidget',
   props: {
+    theme: {
+      type: String,
+      default: 'project'
+    },
     zoomControl: {
       type: Boolean,
       default: true
@@ -82,7 +86,7 @@ export default defineComponent({
   setup(props: any, { emit }) {
 
     const mapMarkerIcon = L.icon({
-        iconUrl: '/map-marker-blue.png',
+        iconUrl: props.theme === 'blue' ? '/map-marker-blue.png' : '/map-marker-green.svg',
         shadowUrl: null,
 
         iconSize:     [60, 60], // size of the icon
@@ -186,7 +190,7 @@ export default defineComponent({
         // @ts-ignore:
         clusterlayer = L.markerClusterGroup({
           iconCreateFunction: function (cluster: any) {
-            return L.divIcon({ html: cluster.getAllChildMarkers().length.toString(), className: 'clustericon', iconSize: L.point(40, 40) });
+            return L.divIcon({ html: cluster.getAllChildMarkers().length.toString(), className: props.theme==='blue' ?'clustericon' : 'clustericon green', iconSize: L.point(40, 40) });
           },
           showCoverageOnHover: false
         })
@@ -348,6 +352,9 @@ div.clustericon
   font-size: 24px
   border-radius: 25px
   color: white
+
+  &.green
+    background-color: #007344
 
 .leaflet-control-attribution
   display: none

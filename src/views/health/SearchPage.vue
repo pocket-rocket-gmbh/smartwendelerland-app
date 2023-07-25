@@ -95,6 +95,7 @@ const resetFilter = () => {
 
 const startSearch = async () => {
   loading.value = true
+  filterStore.currentKinds = ["facility"]
   await filterStore.loadAllResults()
   loading.value = false
 }
