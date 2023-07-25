@@ -148,7 +148,7 @@ export const useFilterStore = defineStore({
       };
 
       const api = useCollectionApi();
-      api.setBaseApi(usePublicApi('health'));
+      api.setBaseApi(usePublicApi("health"));
       api.setEndpoint(`care_facilities`);
       if (this.currentKinds && this.currentKinds.length) {
         api.setEndpoint(`care_facilities?kind=${this.currentKinds.join(",")}`);
@@ -183,7 +183,7 @@ export const useFilterStore = defineStore({
 
           const bestResult = data[0];
 
-          return [bestResult.lat, bestResult.lon];
+          return [bestResult.lat, bestResult.lon] as [string, string];
         } catch (err) {
           console.error(err);
           return null;
@@ -191,18 +191,19 @@ export const useFilterStore = defineStore({
       };
 
       if (this.currentKinds.includes("facility")) {
-        for (const facility of this.allResults) {
-          if (facility.zip && facility.street) {
-            const response = await getLatLngFromZipCodeAndStreet(facility.zip, facility.street);
-
-            if (response) {
-              const [lat, lon] = response;
-
-              facility.latitude = lat;
-              facility.longitude = lon;
-            }
+        const newLocationLatLongsPromises = this.allResults.map((facility) => {
+          if (!facility.zip || !facility.street) {
+            return null;
           }
-        }
+          return getLatLngFromZipCodeAndStreet(facility.zip, facility.street);
+        });
+
+        const newLocationLatLongs = await Promise.all(newLocationLatLongsPromises);
+        newLocationLatLongs.forEach((item, index) => {
+          if (!item) return;
+          this.allResults[index].latitude = item[0];
+          this.allResults[index].longitude = item[1];
+        });
       }
 
       this.loading = false;
