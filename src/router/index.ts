@@ -124,6 +124,10 @@ const routes: Array<RouteRecordRaw> = [
     path: '/health/categories/:id',
     component: () => import('@/views/health/CategoryPage.vue')
   },
+  {
+    path: '/health/care_facilities/:id',
+    component: () => import('@/views/health/CareFacilityPage.vue')
+  },
 ]
 
 const router = createRouter({

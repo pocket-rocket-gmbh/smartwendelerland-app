@@ -11,7 +11,11 @@
       @selectBasicFilter="selectAdvancedFilter"
     />
     <div class="health-top-panel">
-      <div class="headline">Suche nach passenden Anbietern</div>
+      <div class="headline">Suche nach passenden
+        <span v-if="facilityKind === 'facility'">Anbietern</span>
+        <span v-else-if="facilityKind === 'event'">Kursen</span>
+        <span v-else-if="facilityKind === 'news'">Beiträgen</span>
+      </div>
       <div class="gap-1" />
       <div class="gap-1" />
       <div class="label font-size-small">Suchbegriff</div>
@@ -50,7 +54,7 @@
     </div>
 
     <div class="ion-padding">
-      <FacilityList v-if="view === 'list'"/>
+      <FacilityList v-if="view === 'list'" :facility-kind="facilityKind" />
       <FacilityMap v-else-if="view === 'map'"/>
     </div>
 
@@ -62,15 +66,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import BasicFilterModal from '../../components/health/BasicFilterModal.vue';
 import AdvancedFilterModal from '../../components/health/AdvancedFilterModal.vue';
 import CommunityFilter from '@/components/health/CommunityFilter.vue';
 import FacilityList from '@/components/health/FacilityList.vue';
 import FacilityMap from '@/components/health/FacilityMap.vue';
-import { useFilterStore } from '@/stores/health/searchFilter';
+import { useFilterStore, FilterKind } from '@/stores/health/searchFilter';
 import { IonLoading, onIonViewWillEnter, IonButton } from '@ionic/vue';
+import { useRoute } from 'vue-router';
 
 const filterStore = useFilterStore()
 const advancedFilterModalOpen = ref(false)
@@ -81,6 +86,7 @@ const communityFilter = ref(null)
 const communityFilterRef = ref(null)
 const view = ref('list')
 const loading = ref(false)
+const route = useRoute()
 
 const selectBasicFilter = (filter:any) => {
   basicFilter.value = filter
@@ -108,10 +114,14 @@ const resetFilter = () => {
 
 const startSearch = async () => {
   loading.value = true
-  filterStore.currentKinds = ["facility"]
+  filterStore.currentKinds = [facilityKind.value]
   await filterStore.loadAllResults()
   loading.value = false
 }
+
+const facilityKind = computed(() => {
+  return route.query.kind as FilterKind
+})
 
 onIonViewWillEnter(() => {
   startSearch()
