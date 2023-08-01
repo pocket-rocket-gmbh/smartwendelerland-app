@@ -10,7 +10,7 @@
     </ion-header>
     <ion-content>
       <div v-if="!loadingFilters" class="filters">
-        <div v-for="filter in mainFilters" :key="filter.id">
+        <div v-for="filter in basicFilters" :key="filter.id">
           <div class="filter-name">
             {{ filter.name }}
           </div>
@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import { ResultStatus } from '@/types/serverCallResult'
-import { FilterKind, FilterType } from "@/stores/health/searchFilter";
+import { FilterKind, FilterType, useFilterStore } from "@/stores/health/searchFilter";
 import { defineEmits, onMounted, ref, watch } from 'vue';
 import { IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonLoading } from '@ionic/vue';
 import { useCollectionApi } from '@/composables/api/collectionApi';
@@ -55,64 +55,19 @@ const emitClose = () => {
 }
 const filterOptions = ref<FilterOption[]>([]);
 
-const getMainFilters = async (filterType: FilterType, filterKind: FilterKind) => {
-  const api = useCollectionApi();
-  api.setBaseApi(usePublicApi('health'));
-  api.setEndpoint(`tag_categories`);
-
-  const response = await api.retrieveCollection();
-  if (response.status === ResultStatus.FAILED) {
-    throw response;
-  }
-
-  const filters: any[] = response?.data?.resources || [];
-  const relevantFilter = filters.find(
-    (filter) =>
-      filter.filter_type === filterType &&
-      (filterKind === "course" || filterKind === "event"
-        ? filter.kind === "course" || filter.kind === "event"
-        : filter.kind === filterKind)
-  );
-
-  if (!relevantFilter) return [];
-
-  return await getFilters(relevantFilter.id);
-};
-
-const getFilters = async (parentId: string) => {
-  const api = useCollectionApi();
-  api.setBaseApi(usePublicApi('health'));
-  api.setEndpoint(`tag_categories?parent_id=${parentId}`);
-
-  const relevantFilterResponse = await api.retrieveCollection({
-    page: 1,
-    per_page: 999,
-    sort_by: "menu_order",
-    sort_order: "asc",
-    searchQuery: null as any,
-    concat: false,
-    filters: [] as any,
-  });
-  if (relevantFilterResponse.status === ResultStatus.FAILED) {
-    throw relevantFilterResponse;
-  }
-  const filterItemOptions: any[] = relevantFilterResponse?.data?.resources || [];
-  return filterItemOptions;
-};
-
 const loadingFilters = ref(false)
-const mainFilters = ref([]);
+const basicFilters = ref([]);
 
 onMounted(async () => {
   loadingFilters.value = true;
-  mainFilters.value = await getMainFilters('filter_facility', 'facility');
+  basicFilters.value = useFilterStore().basicFilters
 
-  const allOptionsPromises = mainFilters.value.map((filter) => getFilters(filter.id));
+  const allOptionsPromises = basicFilters.value.map((filter) => useFilterStore().getFilters(filter.id));
   const allOptions = await Promise.all(allOptionsPromises);
 
   allOptions.forEach((options, index) => {
     filterOptions.value.push({
-      parentId: mainFilters.value[index].id,
+      parentId: basicFilters.value[index].id,
       options,
     });
   });
