@@ -7,7 +7,6 @@
     />
     <AdvancedFilterModal
       v-if="advancedFilterModalOpen"
-      filter-kind="facility"
       @close="advancedFilterModalOpen = false"
       @selectBasicFilter="selectAdvancedFilter"
     />
@@ -46,8 +45,8 @@
     </div>
 
     <div class="buttons ion-padding">
-      <ion-button :class="['white has-border', { 'is-active' : view === 'map' }]" expand="block" @click="view = 'map'">Kartenansicht</ion-button>
       <ion-button :class="['white has-border', { 'is-active' : view === 'list' }]" expand="block" @click="view = 'list'">Listenansicht</ion-button>
+      <ion-button :class="['white has-border', { 'is-active' : view === 'map' }]" expand="block" @click="view = 'map'">Kartenansicht</ion-button>
     </div>
 
     <div class="ion-padding">
@@ -63,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import BasicFilterModal from '../../components/health/BasicFilterModal.vue';
 import AdvancedFilterModal from '../../components/health/AdvancedFilterModal.vue';
@@ -71,7 +70,7 @@ import CommunityFilter from '@/components/health/CommunityFilter.vue';
 import FacilityList from '@/components/health/FacilityList.vue';
 import FacilityMap from '@/components/health/FacilityMap.vue';
 import { useFilterStore } from '@/stores/health/searchFilter';
-import { IonLoading } from '@ionic/vue';
+import { IonLoading, onIonViewWillEnter, IonButton } from '@ionic/vue';
 
 const filterStore = useFilterStore()
 const advancedFilterModalOpen = ref(false)
@@ -80,7 +79,7 @@ const basicFilter = ref(null)
 const advancedFilter = ref(null)
 const communityFilter = ref(null)
 const communityFilterRef = ref(null)
-const view = ref('map')
+const view = ref('list')
 const loading = ref(false)
 
 const selectBasicFilter = (filter:any) => {
@@ -113,6 +112,10 @@ const startSearch = async () => {
   await filterStore.loadAllResults()
   loading.value = false
 }
+
+onIonViewWillEnter(() => {
+  startSearch()
+})
 
 </script>
 
