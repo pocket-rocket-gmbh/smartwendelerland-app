@@ -10,7 +10,7 @@
           <div class="headline">{{ category.name }}</div>
         </div>
       </ion-col>
-      <ion-col size-xs="6" size-sm="4" size-lg="3">
+      <ion-col size-xs="6" size-sm="4" size-lg="3" @click="router.push({ path: `/health/search`, query: { kind: 'event' }})">
         <div class="health-category-box">
           <div align="center">
             <img src="@/assets/images/calendar.svg" />
@@ -19,7 +19,7 @@
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3">
-        <div class="health-category-box">
+        <div class="health-category-box" @click="router.push({ path: `/health/search`, query: { kind: 'facility' }})">
           <div align="center">
             <img src="@/assets/images/given-heart.svg" />
           </div>
@@ -27,7 +27,7 @@
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3">
-        <div class="health-category-box">
+        <div class="health-category-box" @click="router.push({ path: `/health/search`, query: { kind: 'news' }})">
           <div align="center">
             <img src="@/assets/images/news.svg" />
           </div>
