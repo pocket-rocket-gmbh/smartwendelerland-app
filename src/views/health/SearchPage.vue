@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <div class="buttons ion-padding">
+    <div class="buttons ion-padding" v-if="facilityKind !== 'news'">
       <ion-button :class="['white has-border', { 'is-active' : view === 'list' }]" expand="block" @click="view = 'list'">Listenansicht</ion-button>
       <ion-button :class="['white has-border', { 'is-active' : view === 'map' }]" expand="block" @click="view = 'map'">Kartenansicht</ion-button>
     </div>
