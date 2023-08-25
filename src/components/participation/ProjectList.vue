@@ -30,7 +30,7 @@
         />
       </div>
     </div>
-    <div class="project-list" v-else>
+    <div class="project-list">
       <div v-for="(project, index) in projects" :router-link="`projects/${project.id}`" :key="project.id">
         <ParticipationProjectListPanel
           @click="$router.push({path: `/participation/projects/${project.id}`})"
