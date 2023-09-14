@@ -8,6 +8,8 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+  --ion-color-health: #8AB61D;
+  --ion-color-project: #4CC2F1;
   --ion-font-family: "remora-sans-w1", sans-serif;
   /** primary **/
   --ion-color-primary: #015281;

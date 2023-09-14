@@ -86,6 +86,7 @@ const setItemsAndGo = (subCategory:any) => {
 }
 
 const handleClick = async (subSubCategory:any) => {
+  console.log(subSubCategory)
   if (subSubCategory.url_kind === 'external') {
     await Browser.open({ url: subSubCategory.url })
   }

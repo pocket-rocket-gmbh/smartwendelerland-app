@@ -15,7 +15,15 @@
           <div align="center">
             <img src="@/assets/images/calendar.svg" />
           </div>
-          <div class="headline">Kurse & Veranstaltungen</div>
+          <div class="headline">Veranstaltungen</div>
+        </div>
+      </ion-col>
+      <ion-col size-xs="6" size-sm="4" size-lg="3" @click="router.push({ path: `/health/search`, query: { kind: 'course' }})">
+        <div class="health-category-box">
+          <div align="center">
+            <img src="@/assets/images/courses.svg" />
+          </div>
+          <div class="headline">Kurse</div>
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3">

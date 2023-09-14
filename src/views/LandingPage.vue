@@ -3,20 +3,20 @@
     <ion-grid>
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="12" size-md="6" size-lg="3">
-          <ion-nav-link routerLink="/health/categories">
-            <div class="pile" align="center">
-              <img src="@/assets/images/health.jpg" />
-              <div class="headline">Gesundheitsplattform</div>
+          <ion-nav-link routerLink="/landing/participation">
+            <div class="pile has-background-project" align="center">
+              <img src="@/assets/images/panel_project.svg" alt="project" />
+              <div class="headline">Projektplattform</div>
             </div>
           </ion-nav-link>
         </ion-col>
       </ion-row>
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="12" size-md="6" size-lg="3">
-          <ion-nav-link routerLink="/landing/participation">
-            <div class="pile" align="center">
-              <img src="@/assets/images/participation.png" />
-              <div class="headline">Projektplattform</div>
+          <ion-nav-link routerLink="/health/categories">
+            <div class="pile has-background-health" align="center">
+              <img src="@/assets/images/panel_health.svg" alt="health" />
+              <div class="headline">Gesundheitsplattform</div>
             </div>
           </ion-nav-link>
         </ion-col>
@@ -57,6 +57,8 @@ onMounted(() => {
 <style lang="sass" scoped>
 .pile
   width: 80%
+  padding: 20px
+  border-radius: 20px
   margin: 0 auto
   position: relative
 
@@ -64,14 +66,16 @@ onMounted(() => {
   flex-direction: column
   justify-content: center
   align-items: center
-  img
-    border-radius: 20px
-    width: 100%
+
+  font-size: 35px
+  font-style: normal
+  line-height: 35px
+  letter-spacing: 2.25px
+  text-transform: uppercase
+
   .headline
     text-transform: uppercase
     color: white
-    position: absolute
-    bottom: 15px
-    transform: translateX(-50%)
-    left: 50%
+    text-align: center
+    margin-top: 20px
 </style>
