@@ -31,7 +31,7 @@ const router = useRouter()
 
 <style lang="sass" scoped>
 .logo
-  height: 40px
+  width: 80px
   margin-left: 10px
 ion-icon
   font-size: 32px

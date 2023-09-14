@@ -10,6 +10,7 @@ export function usePublicApi(scope = 'project') {
   if (scope === 'health') {
     username = "pocketrocket_health"
     password = "7891011"
+    // password = "723bdzsng!__ffn"
   } else if (scope === 'project') {
     username = "pocketrocket"
     password = "84923!!ndj"
@@ -22,6 +23,7 @@ export function usePublicApi(scope = 'project') {
   const envStore = useEnvStore()
   // let baseUrl = 'https://smartwendelerland-api-prod.herokuapp.com'
   let baseUrl = 'https://smartwendelerland-api-staging.herokuapp.com'
+  // let baseUrl = 'http://localhost:3000'
 
   if (localStorage.getItem('smawela--env') && localStorage.getItem('smawela--env') === 'staging') {
     baseUrl = 'https://smartwendelerland-api-staging.herokuapp.com'
