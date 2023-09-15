@@ -1,6 +1,6 @@
 <template>
   <div v-for="facility in filterStore.filteredResults" :key="facility.id" class="facility-box" @click="router.push({ path: `/health/care_facilities/${facility.id}`})">
-    <div class="headline">{{ facility.name }}</div>
+    <div class="headline">{{ facility.name }} <span class="kind">{{ formatFacilityKind(facility.kind) }}</span></div>
     <div class="has-text-health font-size-small tags">
       <span v-for="tag in facility.tags" :key="tag.id">{{ tag.name }}</span>
     </div>
@@ -34,9 +34,35 @@ const router = useRouter()
 const filterStore = useFilterStore();
 
 defineProps(['facilityKind'])
+
+const formatFacilityKind = (facilityKind:string) => {
+  switch (facilityKind) {
+    case 'facility':
+      return 'Anbieter'
+    case 'news':
+      return 'News'
+    case 'event':
+      return 'Veranstaltung'
+    case 'course':
+      return 'Kurs'
+    default:
+      return ''
+  }
+}
 </script>
 
 <style lang="sass" scoped>
+.kind
+  background: lightgrey
+  color: white
+  padding: 3px 7px
+  font-style: normal
+  font-size: 12px
+  font-weight: 600
+  line-height: normal
+  text-transform: none
+  border-radius: 30px
+  margin-left: 10px
 .facility-box
   padding: 10px
   border-radius: 10px

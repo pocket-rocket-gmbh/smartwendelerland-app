@@ -6,57 +6,32 @@
       </div>
       <div class="font-size-small has-text-white" align="center">Finde Informationen zu Gesundheitsthemen, Präventionsmaßnahmen sowie umfangreiche Pflegeangebote.</div>
 
-      <div class="wrap">
-        <ion-searchbar
-          class="has-background-white"
-          placeholder="Suchbegriff eingeben"
-          v-model="searchQuery"
-          :debounce="2000"
-          @ionChange="goToSearchPage"
-          @ionClear="clearSearch"
-        />
-        <div class="popover" v-if="showPopover">
-          hallo
-        </div>
-      </div>
+      <SearchBar
+        @handleSearch="handleSearch"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
-import { IonSearchbar } from '@ionic/vue';
+import { useFilterStore } from '@/stores/health/searchFilter';
 import { useRouter } from 'vue-router';
-const router = useRouter()
-const searchQuery = ref("")
-const showPopover = ref(false)
+import SearchBar from '@/components/health/SearchBar.vue'
 
-const goToSearchPage = () => {
-  if (searchQuery.value.length > 0) {
-    router.push({ path: '/health/search', query: { search: searchQuery.value }})
+const router = useRouter()
+
+const filterStore = useFilterStore()
+
+const handleSearch = async () => {
+  filterStore.currentKinds = [];
+  filterStore.onlySearchInTitle = false;
+  if (filterStore.currentSearchTerm.length > 0) {
+    await filterStore.loadAllResults();
+    router.push({ path: '/health/search' })
   }
 }
 
-const clearSearch = () => {
-  searchQuery.value = ''
-}
 </script>
 
 <style lang="sass" scoped>
-.search-panel
-  .wrap
-    position: relative
-    .popover
-      position: absolute
-      bottom: 300px
-      height: 200px
-      background: white
-      width: 100%
-ion-searchbar
-  background-color: white
-  padding: 0
-  margin: 0
-  margin-top: 20px
-  height: 35px
-  border-radius: 58px
 </style>
