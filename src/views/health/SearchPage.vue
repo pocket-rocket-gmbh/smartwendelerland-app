@@ -11,14 +11,17 @@
       @selectBasicFilter="selectAdvancedFilter"
     />
     <div class="health-top-panel">
-      <div class="headline">Suche nach passenden
+      <div class="headline">
+        <span v-if="facilityKind">Suche nach passenden </span>
+        <span v-else>Allgemeine Suche</span>
+
         <span v-if="facilityKind === 'facility'">Anbietern</span>
         <span v-else-if="facilityKind === 'event'">Kursen</span>
         <span v-else-if="facilityKind === 'news'">Beiträgen</span>
       </div>
       <div class="gap-1" />
       <div class="gap-1" />
-      <div class="label font-size-small">Suchbegriff</div>
+      <div class="label font-size-small">Filter</div>
       <div :class="['filter-button', { 'is-active' : basicFilter !== null }]" @click="basicFilterModalOpen = true">
         <span v-if="basicFilter">{{ basicFilter.name }}</span>
         <span v-else class="placeholder">Filter wählen</span>
@@ -39,7 +42,13 @@
             <img src="@/assets/images/filter.svg" class="icon" />
           </button>
         </div>
+      </div>
 
+      <div class="label font-size-small pull-up">Spezifische Suche</div>
+      <div class="search-wrap">
+        <SearchBar
+          @handleSearch="handleSearch"
+        />
       </div>
 
       <div class="buttons">
@@ -76,6 +85,7 @@ import FacilityMap from '@/components/health/FacilityMap.vue';
 import { useFilterStore, FilterKind } from '@/stores/health/searchFilter';
 import { IonLoading, onIonViewWillEnter, IonButton } from '@ionic/vue';
 import { useRoute } from 'vue-router';
+import SearchBar from '@/components/health/SearchBar.vue';
 
 const filterStore = useFilterStore()
 const advancedFilterModalOpen = ref(false)
@@ -92,6 +102,7 @@ const selectBasicFilter = (filter:any) => {
   basicFilter.value = filter
   // currently supporting only one filter
   filterStore.currentTags = [filter]
+  startSearch()
 }
 
 const selectAdvancedFilter = (filter:any) => {
@@ -101,6 +112,7 @@ const selectAdvancedFilter = (filter:any) => {
 const selectCommunityFilter = (filter:any) => {
   communityFilter.value = filter
   filterStore.currentZip = filter.zip
+  startSearch()
 }
 
 const resetFilter = () => {
@@ -123,8 +135,16 @@ const facilityKind = computed(() => {
   return route.query.kind as FilterKind
 })
 
-onIonViewWillEnter(() => {
-  startSearch()
+const handleSearch = () => {
+  filterStore.onlySearchInTitle = false
+  filterStore.loadFilteredResults()
+}
+
+onIonViewWillEnter(async () => {
+  if (facilityKind.value) {
+    filterStore.filteredResults = []
+    await startSearch()
+  }
 })
 
 </script>
@@ -133,6 +153,8 @@ onIonViewWillEnter(() => {
 .label
   font-weight: bold
   color: white
+.search-wrap
+  margin-top: -15px
 .grid-2
   display: grid
   grid-template-columns: 64% 34%

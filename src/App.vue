@@ -18,7 +18,7 @@ import { usePollStore } from '@/stores/poll'
 import { useAppStateStore } from '@/stores/appState'
 import { useMe } from '@/composables/user/me'
 import { useEnvStore } from './stores/env'
-import { useFilterStore } from './stores/health/searchFilter'
+import { useFilterStore } from '@/stores/health/searchFilter'
 
 const appState = useAppStateStore()
 
@@ -36,14 +36,15 @@ onMounted(async () => {
   const startTime = Date.now()
 
   await useMe().fetchMyUser()
-  useAppStateStore().setAppLoadingProgress(0.5)
+  useAppStateStore().setAppLoadingProgress(0.3)
   await usePollStore().setPublicPoll()
   
   // trigger load filters for health scope
   await useFilterStore().getMainFilters('filter_facility', 'facility')
   useAppStateStore().setAppLoadingProgress(0.75)
   await useFilterStore().getItems('facility')
-
+  useAppStateStore().setAppLoadingProgress(0.90)
+  await useFilterStore().loadAllResults();
   useAppStateStore().setAppLoadingProgress(1.0)
   console.log('App loaded - duration: ' + (Date.now() - startTime) + ' ms')
   useAppStateStore().setAppLoading(false)

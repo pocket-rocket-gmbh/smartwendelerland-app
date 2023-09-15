@@ -1,7 +1,8 @@
 <template>
   <BaseLayout>
     <ion-content class="ion-padding">
-      <SearchPanel />
+      <SearchPanel
+      />
       <div class="gap-1" />
       <div class="gap-1" />
       <MainCategories />
@@ -14,6 +15,7 @@ import { IonContent } from '@ionic/vue';
 import BaseLayout from '@/components/general/BaseLayout.vue'
 import SearchPanel from '@/components/health/categories/SearchPanel.vue'
 import MainCategories from '../../components/health/categories/MainCategories.vue';
+
 </script>
 
 <style lang="sass" scoped>

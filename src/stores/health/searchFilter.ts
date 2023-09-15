@@ -174,7 +174,6 @@ export const useFilterStore = defineStore({
       return Promise.all(nextLayerWave);
     },
 
-
     async getMainFilters(filterType: FilterType, filterKind: FilterKind) {
       const api = useCollectionApi();
       api.setBaseApi(usePublicApi('health'));
@@ -280,7 +279,7 @@ export const useFilterStore = defineStore({
 
       const options = {
         page: 1,
-        per_page: 25,
+        per_page: 1000,
         sort_by: "name",
         sort_order: this.filterSort == "Aufsteigend" ? "ASC" : "DESC",
         searchQuery: null as any,
@@ -351,9 +350,8 @@ export const useFilterStore = defineStore({
 
       this.loadFilteredResults();
     },
-    loadFilteredResults() {
+    async loadFilteredResults() {
       if (this.loading || !this.allResults) return;
-
       const filteredResults: Facility[] = this.allResults
         .filter((result) => {
           return result.zip && this.currentZip ? result.zip === this.currentZip : true;
