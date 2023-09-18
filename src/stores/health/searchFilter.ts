@@ -33,6 +33,11 @@ export type Facility = {
   email?: string;
   url?: string;
   image_url?: string;
+  mail?: string,
+  created_at?: string,
+  user?: {
+    name: string,
+  }
 };
 
 export type Filter = {
@@ -57,6 +62,7 @@ type FilterResponse = {
   id: string;
   name: string;
   menu_order: number;
+  parent_id: string;
 };
 
 
@@ -94,6 +100,26 @@ export const useFilterStore = defineStore({
     },
   },
   actions: {
+    async getAllFilters () {
+      const api = useCollectionApi();
+      api.setBaseApi(usePublicApi('health'));
+      api.setEndpoint(`tag_categories?show_all=${true}`);
+      const response = await api.retrieveCollection({
+        page: 1,
+        per_page: 999,
+        sort_by: "menu_order",
+        sort_order: "asc",
+        searchQuery: null as any,
+        concat: false,
+        filters: [] as any,
+      });
+
+      if (response.status === ResultStatus.FAILED) {
+        throw response;
+      }
+
+      return (response?.data?.resources || []) as any[];
+    },
     async getItems (filterKind: string) {
       const api = useCollectionApi();
       api.setBaseApi(usePublicApi('health'));
@@ -121,31 +147,20 @@ export const useFilterStore = defineStore({
         console.error("No filters!");
         return;
       }
-    
+
       const serviceFilters = filters.filter((filter) => filter.filter_type === "filter_service");
+      const allFilters = await this.getAllFilters();
     
       const tmpItemsForServiceList: CollapsibleListItem[] = [];
     
-      const nextLayerWavePromisesService = serviceFilters.map((filter) =>
-        this.getItemsAndNext(filter, tmpItemsForServiceList, 0)
-      );
-      await Promise.all([...nextLayerWavePromisesService]);
-    
+      serviceFilters.forEach((filter) => this.getItemsAndNext(filter, tmpItemsForServiceList, 0, allFilters));
+
       this.advancedFilters = [...tmpItemsForServiceList];
     },
-    async getItemsAndNext (filter: FilterResponse, arrayToAdd: CollapsibleListItem[], layer: number) {
-      const api = useCollectionApi();
-      api.setBaseApi(usePublicApi('health'));
-      api.setEndpoint(`tag_categories?parent_id=${filter.id}`);
-      const options = {
-        page: 1,
-        per_page: 999,
-        sort_by: "menu_order",
-        sort_order: "asc",
-        searchQuery: null as any,
-        concat: false,
-        filters: [] as any,
-      };
+    async getItemsAndNext (filter: FilterResponse, arrayToAdd: CollapsibleListItem[], layer: number, allFilters: FilterResponse[]) {
+      if (layer === 4) {
+        return;
+      }
     
       const filterItem: CollapsibleListItem = {
         id: filter.id,
@@ -157,21 +172,13 @@ export const useFilterStore = defineStore({
     
       arrayToAdd.push(filterItem);
     
-      const response = await api.retrieveCollection(options);
-      if (response.status === ResultStatus.FAILED) {
-        console.error(response);
-        throw "Api failure";
-      }
-      const filterItems: FilterResponse[] = response?.data?.resources;
-      if (!filterItems) {
-        console.error("No filterItems!");
-        return false;
+      const childFilterItems: FilterResponse[] = allFilters.filter((item) => item.parent_id === filter.id);
+    
+      if (!childFilterItems.length) {
+        return;
       }
     
-      const nextLayerWave: any[] = filterItems.map((filterItemFromResponse) =>
-        this.getItemsAndNext(filterItemFromResponse, filterItem.next || [], layer + 1)
-      );
-      return Promise.all(nextLayerWave);
+      childFilterItems.forEach((childFilterItem) => this.getItemsAndNext(childFilterItem, filterItem.next || [], layer + 1, allFilters));
     },
 
     async getMainFilters(filterType: FilterType, filterKind: FilterKind) {
@@ -187,10 +194,7 @@ export const useFilterStore = defineStore({
       const filters: any[] = response?.data?.resources || [];
       const relevantFilter = filters.find(
         (filter) =>
-          filter.filter_type === filterType &&
-          (filterKind === "course" || filterKind === "event"
-            ? filter.kind === "course" || filter.kind === "event"
-            : filter.kind === filterKind)
+          filter.filter_type === filterType && filter.kind === filterKind
       );
     
       if (!relevantFilter) return [];
@@ -294,22 +298,14 @@ export const useFilterStore = defineStore({
         api.setEndpoint(`care_facilities?kind=${this.currentKinds.join(",")}`);
       }
 
-      await api.retrieveCollection(options as any);
+      const response = await api.retrieveCollection(options as any);
 
-      const allResultsFromApi: Facility[] = api.items.value;
+      if (response.status !== ResultStatus.SUCCESSFUL) {
+        console.error(response);
+        return;
+      }
 
-      const enrichedPossibleResultsPromised = allResultsFromApi.map((result) => {
-        api.setEndpoint(`care_facilities/${result.id}`);
-        return api.retrieveCollection();
-      });
-
-      this.allResults = await Promise.all(enrichedPossibleResultsPromised).then((responses) => {
-        return responses
-          .map((response) =>
-            response.status !== ResultStatus.SUCCESSFUL ? null : (response.data.resource as Facility)
-          )
-          .filter(Boolean);
-      });
+      this.allResults = response.data.resources as any[];
 
       const getLatLngFromZipCodeAndStreet = async (zipCode: string, street: string) => {
         try {

@@ -14,31 +14,20 @@
           <div v-for="item in filter.next" :key="item.id">
             <div v-if="item.next.length" class="filter-name">{{ item.title }}</div>
             <div class="filter-options">
-              <div
-                v-for="subItem in item.next"
-                :key="subItem.id"
-              >
-                <label
-                  class="option is-fullwidth"
-                  :for="subItem.id"
-                >
-                  <input type="checkbox" :value="subItem" v-model="selectedFilters" :id="subItem.id">
-                  {{ subItem.title }} <span v-if="subItem.next.length > 0" class="font-size-small">(Weitere Einträge)</span>
+              <div v-for="subItem in item.next" :key="subItem.id">
+                <label class="option is-fullwidth" :for="subItem.id" @click.prevent="toggleSelection(subItem)">
+                  <input
+                    type="checkbox"
+                    :checked="selectedFilters.includes(subItem.id)"
+                    :id="subItem.id"
+                    :class="[!subItem?.next?.length ? '' : 'invisible']"
+                  />
+                  {{ subItem.title }}
                 </label>
 
-                <div v-if="subItem.next.length > 0 && selectedFilters.includes(subItem)">
-                  <label
-                    v-for="tag in subItem.next"
-                    class="option indent is-fullwidth"
-                    :for="tag.id"
-                    :key="tag.id"
-                  >
-                    <input
-                      type="checkbox"
-                      v-model="filterStore.currentTags"
-                      :value="tag.id"
-                      :id="tag.id"
-                    />{{ tag.title }}
+                <div v-if="subItem.next.length > 0">
+                  <label v-for="tag in subItem.next" class="option indent is-fullwidth" :for="tag.id" :key="tag.id" @click.prevent="toggleSelection(tag)">
+                    <input type="checkbox" :checked="selectedFilters.includes(tag.id)" :value="tag.id" :id="tag.id" />{{ tag.title }}
                   </label>
                 </div>
               </div>
@@ -46,37 +35,33 @@
           </div>
         </div>
       </div>
-      <ion-loading
-        :is-open="loadingFilters"
-        message="Filter werden geladen..."
-      />
+      <ion-loading :is-open="loadingFilters" message="Filter werden geladen..." />
     </ion-content>
   </ion-modal>
 </template>
 
 <script setup lang="ts">
 import { FilterKind, useFilterStore } from "@/stores/health/searchFilter";
-import { defineEmits, defineProps, ref, watch, computed } from 'vue';
-import { IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonLoading } from '@ionic/vue';
-import { CollapsibleListItem, EmitAction } from "../../../types/collapsibleList";
+import { defineEmits, defineProps, ref, watch, computed, onMounted } from "vue";
+import { IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonLoading, onIonViewDidEnter } from "@ionic/vue";
+import { CollapsibleListItem } from "@/types/collapsibleList";
 
-const filterStore = useFilterStore()
+const props = defineProps<{
+  modelValue: string[];
+  filterKind: FilterKind;
+}>();
+
 const advancedFilters = computed(() => {
-  return useFilterStore().advancedFilters
-})
+  return useFilterStore().advancedFilters;
+});
 const expandedItemIds = ref([]);
 
-const selectedFilters = ref([])
-const emit = defineEmits(["selectAdvancedFilter", "close"])
-
-// use filter kind later to get the correct filter
-// const props = defineProps<{
-//   filterKind: FilterKind;
-// }>();
+const selectedFilters = ref([]);
+const emit = defineEmits(["update:modelValue", "close"]);
 
 const emitClose = () => {
-  emit('close')
-}
+  emit("close");
+};
 
 const toggleSelection = (item: CollapsibleListItem) => {
   if (item.next?.length) {
@@ -91,22 +76,27 @@ const toggleSelection = (item: CollapsibleListItem) => {
   }
 
   if (isSelected(item.id)) {
-    filterStore.currentTags = filterStore.currentTags.filter((id) => id !== item.id);
+    selectedFilters.value = selectedFilters.value.filter((id) => id !== item.id);
   } else {
-    filterStore.currentTags.push(item.id);
+    selectedFilters.value.push(item.id);
   }
+
+  emit("update:modelValue", selectedFilters.value);
 };
 
 const isSelected = (itemId: string) => {
-  return filterStore.currentTags.includes(itemId);
+  return selectedFilters.value.includes(itemId);
 };
 
-const loadingFilters = ref(false)
+const loadingFilters = ref(false);
 
-watch(selectedFilters, () => {
-  emit('selectAdvancedFilter', selectedFilters.value)
-})
+// watch(selectedFilters, () => {
+//   emit('update:modelValue', selectedFilters.value)
+// })
 
+onMounted(() => {
+  selectedFilters.value = [...props.modelValue];
+});
 </script>
 
 <style lang="sass" scoped>
@@ -114,6 +104,11 @@ watch(selectedFilters, () => {
   display: block
   padding: 0px 10px 11px 10px
   margin-top: 10px
+
+  .invisible
+    opacity: 0
+    width: 0
+
   &.indent
     margin-left: 10%
     width: 90%

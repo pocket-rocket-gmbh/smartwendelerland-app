@@ -1,17 +1,21 @@
 <template>
   <BackButtonLayout force-back="/health/categories">
     <BasicFilterModal
+      :filter-kind="facilityKind"
+      v-model="filterStore.currentTags"
       v-if="basicFilterModalOpen"
       @close="basicFilterModalOpen = false"
       @selectBasicFilter="selectBasicFilter"
     />
     <AdvancedFilterModal
       v-if="advancedFilterModalOpen"
+      v-model="filterStore.currentTags"
+      :filter-kind="facilityKind"
       @close="advancedFilterModalOpen = false"
-      @selectBasicFilter="selectAdvancedFilter"
     />
     <div class="health-top-panel">
       <div class="headline">
+        {{ facilityKind }}
         <span v-if="facilityKind">Suche nach passenden </span>
         <span v-else>Allgemeine Suche</span>
 
@@ -21,30 +25,38 @@
       </div>
       <div class="gap-1" />
       <div class="gap-1" />
-      <div class="label font-size-small">Filter</div>
-      <div :class="['filter-button', { 'is-active' : basicFilter !== null }]" @click="basicFilterModalOpen = true">
-        <span v-if="basicFilter">{{ basicFilter.name }}</span>
-        <span v-else class="placeholder">Filter wählen</span>
-      </div>
-
-      <div class="grid-2">
-        <div>
-          <div class="label font-size-small">Gemeinde</div>
-          <CommunityFilter
-            ref="communityFilterRef"
-            @selectCommunityFilter="selectCommunityFilter"
-          />
+      <template v-if="facilityKind">
+        <div class="label font-size-small">Filter</div>
+        <div :class="['filter-button', { 'is-active' : basicFilter !== null }]" @click="basicFilterModalOpen = true">
+          <span v-if="basicFilter">{{ basicFilter.name }}</span>
+          <span v-else class="placeholder">Filter wählen</span>
         </div>
-        <div>
-          <div class="label font-size-small">&nbsp;</div>
-          <button class="filter-button is-fullwidth" @click="advancedFilterModalOpen = true">
-            weitere Filter
-            <img src="@/assets/images/filter.svg" class="icon" />
-          </button>
-        </div>
-      </div>
 
-      <div class="label font-size-small pull-up">Spezifische Suche</div>
+        <div class="grid-2">
+          <div>
+            <div class="label font-size-small">Gemeinde</div>
+            <CommunityFilter
+              ref="communityFilterRef"
+              @selectCommunityFilter="selectCommunityFilter"
+            />
+          </div>
+          <div>
+            <div class="label font-size-small">&nbsp;</div>
+            <button class="filter-button is-fullwidth" @click="advancedFilterModalOpen = true">
+              weitere Filter
+              <img src="@/assets/images/filter.svg" class="icon" />
+            </button>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="buttons flex-wrap">
+          <button v-for="kind in filteredKinds" :key="kind" class="filter-button" @click="setFacilityKind(kind)">{{ getMappedKindName(kind) }}</button>
+        </div>
+      </template>
+      
+
+      <div class="label font-size-small pull-up">{{ facilityKind ? 'Spezifische' : 'Allgemeine' }} Suche</div>
       <div class="search-wrap">
         <SearchBar
           @handleSearch="handleSearch"
@@ -75,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import BasicFilterModal from '../../components/health/BasicFilterModal.vue';
 import AdvancedFilterModal from '../../components/health/AdvancedFilterModal.vue';
@@ -83,9 +95,10 @@ import CommunityFilter from '@/components/health/CommunityFilter.vue';
 import FacilityList from '@/components/health/FacilityList.vue';
 import FacilityMap from '@/components/health/FacilityMap.vue';
 import { useFilterStore, FilterKind } from '@/stores/health/searchFilter';
-import { IonLoading, onIonViewWillEnter, IonButton } from '@ionic/vue';
+import { IonLoading, onIonViewWillEnter, IonButton, onIonViewWillLeave } from '@ionic/vue';
 import { useRoute } from 'vue-router';
 import SearchBar from '@/components/health/SearchBar.vue';
+import { debounce } from "@/utils/global.utils";
 
 const filterStore = useFilterStore()
 const advancedFilterModalOpen = ref(false)
@@ -98,15 +111,55 @@ const view = ref('list')
 const loading = ref(false)
 const route = useRoute()
 
-const selectBasicFilter = (filter:any) => {
-  basicFilter.value = filter
-  // currently supporting only one filter
-  filterStore.currentTags = [filter]
+watch(
+  () => filterStore.currentTags,
+  debounce(() => {
+    filterStore.loadAllResults();
+  }),
+  {
+    deep: true,
+  }
+);
+
+const addParamsToLocation = (params: any) => {
+  history.pushState(
+    {},
+    null,
+    route.path +
+      '?' +
+      Object.keys(params)
+        .map(key => {
+          return (
+            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+          )
+        })
+        .join('&')
+  )
+}
+
+const setFacilityKind = (kind: FilterKind) => {
+  facilityKind.value = kind
+  filterStore.currentKinds = [kind]
+  addParamsToLocation({ kind })
   startSearch()
 }
 
-const selectAdvancedFilter = (filter:any) => {
-  console.log(filter)
+const filteredKinds = computed(() => {
+  return Array.from(new Set(filterStore.filteredResults.map((result) => result.kind)));
+});
+
+const getMappedKindName = (kind: "facility" | "news" | "event" | "course") => {
+  if (kind === "facility") return "Zu den Einrichtungen";
+  if (kind === "news") return "Zu den Beiträgen";
+  if (kind === "course") return "Zu den Kursen";
+  if (kind === "event") return "Zu den Veranstaltungen";
+};
+
+const selectBasicFilter = (filter:any) => {
+  basicFilter.value = filter
+  // currently supporting only one filter
+  // filterStore.currentTags = [filter.id]
+  // startSearch()
 }
 
 const selectCommunityFilter = (filter:any) => {
@@ -126,14 +179,14 @@ const resetFilter = () => {
 
 const startSearch = async () => {
   loading.value = true
-  filterStore.currentKinds = [facilityKind.value]
+  if (facilityKind.value) {
+    filterStore.currentKinds = [facilityKind.value]
+  }
   await filterStore.loadAllResults()
   loading.value = false
 }
 
-const facilityKind = computed(() => {
-  return route.query.kind as FilterKind
-})
+const facilityKind = ref<FilterKind>();
 
 const handleSearch = () => {
   filterStore.onlySearchInTitle = false
@@ -141,10 +194,15 @@ const handleSearch = () => {
 }
 
 onIonViewWillEnter(async () => {
-  if (facilityKind.value) {
-    filterStore.filteredResults = []
-    await startSearch()
-  }
+  facilityKind.value = route.query.kind as FilterKind;
+  // if (facilityKind.value) {
+  // }
+  filterStore.filteredResults = []
+  await startSearch()
+})
+
+onIonViewWillLeave(() => {
+  facilityKind.value = undefined;
 })
 
 </script>
@@ -186,5 +244,9 @@ onIonViewWillEnter(async () => {
   justify-content: space-between
   ion-button
     flex: 1
+
+.flex-wrap
+  flex-wrap: wrap
+  justify-content: start
 
 </style>
