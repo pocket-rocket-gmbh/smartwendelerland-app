@@ -1,6 +1,6 @@
 <template>
   <BackButtonLayout force-back="/health/categories" :show-login="false">
-    <ion-modal :is-open="true" v-if="detailModalOpen">
+    <ion-modal :is-open="true" v-if="detailModalOpen" @didDismiss="detailModalOpen = false; selectedSubSubCategory = null;">
       <ion-header>
         <ion-toolbar>
           <ion-title>{{ selectedSubSubCategory?.name }}</ion-title>
