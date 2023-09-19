@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout :force-back="`/health/search?kind=${facility?.kind}`">
+  <BackButtonLayout :force-back="`/health/search?kind=${facility?.kind}`" :show-login="false">
 
     <div class="ion-padding" v-if="facility">
       <swiper :slides-per-view="1" :space-between="20" :modules="modules" :pagination="{ el: '.pagination' }"
@@ -59,13 +59,12 @@
           </div>
           <div class="ion-margin-top">
             <a v-if="facility.email" class="button-rounded is-uppercase" :href="`mailto:${facility.email}`">
-              Kontakt aufnahmen
+              Kontakt aufnehmen
             </a>
           </div>
           <div v-if="facility.opening_hours.length > 0 && openingHoursFilled(facility.opening_hours)" class="opening-hours">
             <div class="has-text-health font-size-medium is-uppercase ion-margin-top ion-margin-bottom">Öffnungszeiten
             </div>
-            {{ facility.opening_hours }}
             <div v-for="(hour, index) in facility.opening_hours" :key="index">
               <span class="day">{{ hour.day }}</span><span v-if="hour.hours">{{ hour.hours }}</span><span v-else>Keine
                 Angabe</span>
@@ -248,8 +247,11 @@ const modules = [Pagination]
   padding: 8px 30px
   border-radius: 20px
   display: inline-block
-  width: 300px
+  width: 100%
   text-align: center
+  // make button 300px width on higher resolutions
+  @media (min-width: 768px)
+    width: 300px
 
 .table
   td

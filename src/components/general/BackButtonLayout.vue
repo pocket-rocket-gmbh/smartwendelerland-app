@@ -8,8 +8,8 @@
           </ion-nav-link>
           <ion-back-button v-else text="" default-href="/" :icon="arrowBackOutline" />
         </ion-buttons>
-        <ion-icon v-if="!useUser().loggedIn()" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
-        <div v-else @click="router.push('/me')" router-link="/me" slot="end">
+        <ion-icon v-if="!useUser().loggedIn() && showLogin" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
+        <div v-else-if="showLogin" @click="router.push('/me')" router-link="/me" slot="end">
           <UserProfile
             :user="useUser().currentUser()"
           />
@@ -32,7 +32,13 @@ import { useUser } from '@/composables/user/user'
 import UserProfile from '@/components/UserProfile.vue'
 
 const props = defineProps({
-  forceBack: String
+  forceBack: {
+    type: String
+  },
+  showLogin: {
+    type: Boolean,
+    default: true
+  }
 })
 
 const router = useRouter()

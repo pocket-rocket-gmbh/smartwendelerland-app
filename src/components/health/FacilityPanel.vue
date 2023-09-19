@@ -14,7 +14,7 @@
 
       <div class="ion-margin-top">{{ facility.excerpt }}</div>
     </ion-card-content>
-    <div class="footer">Einrichtung ansehen</div>
+    <div class="footer" @click="router.push({ path: `/health/care_facilities/${facility.id}`})">Einrichtung ansehen</div>
   </ion-card>
 </template>
 

@@ -83,7 +83,7 @@ const getLocationsFromFacilies = async (facilities: any[]) => {
         latitude: parseFloat(facility.latitude),
         draggable: false,
         name: facility.name,
-        url: `${window.location.origin}/public/care_facilities/${facility.id}`,
+        url: `/health/care_facilities/${facility.id}`,
         imageUrl: facility.logo_url,
         kind: facility.kind,
       });
@@ -96,7 +96,7 @@ const getLocationsFromFacilies = async (facilities: any[]) => {
         latitude: parseFloat(location.latitude),
         draggable: false,
         name: facility.name,
-        url: `${window.location.origin}/public/care_facilities/${facility.id}`,
+        url: `/health/care_facilities/${facility.id}`,
         imageUrl: facility.logo_url,
         kind: facility.kind,
       });
@@ -111,7 +111,7 @@ const getLocationsFromFacilies = async (facilities: any[]) => {
 const navigateToFacility = (facilityId: string) => {
   clickedLocation.value = null;
   // TODO: route to Facility-Details-Page
-  router.push({ path: `/public/care_facilities/${facilityId}` });
+  router.push({ path: `/health/care_facilities/${facilityId}` });
 };
 
 const updateLocations = () => {
@@ -165,4 +165,9 @@ onIonViewDidEnter(() => {
   width: 100%
   height: 100%
   position: relative
+
+.close-button
+  font-size: 20px
+  background: transparent
+  margin-top: 20px
 </style>
