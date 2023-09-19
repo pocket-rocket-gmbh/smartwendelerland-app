@@ -15,12 +15,12 @@
     />
     <div class="health-top-panel">
       <div class="headline">
-        {{ facilityKind }}
         <span v-if="facilityKind">Suche nach passenden </span>
         <span v-else>Allgemeine Suche</span>
 
         <span v-if="facilityKind === 'facility'">Anbietern</span>
-        <span v-else-if="facilityKind === 'event'">Kursen</span>
+        <span v-else-if="facilityKind === 'course'">Kursen</span>
+        <span v-else-if="facilityKind === 'event'">Veranstaltungen</span>
         <span v-else-if="facilityKind === 'news'">Beiträgen</span>
       </div>
       <div class="gap-1" />

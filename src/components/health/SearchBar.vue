@@ -30,6 +30,7 @@ const clearSearch = () => {
 
 <style lang="sass" scoped>
 ion-searchbar
+  --background: white
   --background-color: white
   padding: 0
   margin: 0
