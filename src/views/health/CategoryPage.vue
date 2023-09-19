@@ -1,5 +1,24 @@
 <template>
   <BackButtonLayout force-back="/health/categories" :show-login="false">
+    <ion-modal :is-open="true" v-if="detailModalOpen">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ selectedSubSubCategory?.name }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button @click="detailModalOpen = false; selectedSubSubCategory = null;">Schließen</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <img :src="selectedSubSubCategory?.image_url" class="modal-image" />
+        <div>
+          {{ selectedSubSubCategory?.description }}
+        </div>
+
+        <ion-button expand="block" class="ion-margin-top" @click="handleClick(selectedSubSubCategory)">Mehr erfahren ></ion-button>
+      </ion-content>
+    </ion-modal>
+
     <div v-if="category">
       <div class="health-top-panel is-headline">
         <div class="headline">{{ category?.name }}</div>
@@ -10,17 +29,17 @@
         </span>
       </div>
 
-      <div class="ion-padding-start ion-padding-end">
-        <div v-html="currentSubCategory.description" />
+      <div class="ion-padding-start ion-padding-end is-justified">
+        <div v-html="currentSubCategory?.description" />
       </div>
 
-      <div v-for="subSubCategory in subSubCategories" :key="subSubCategory.id" class="health-sub-category-box" @click="handleClick(subSubCategory)">
-        <div class="image-left" :style="`background: url(${subSubCategory.image_url}); background-size: contain; background-repeat: no-repeat;`">
+      <div v-for="subSubCategory in subSubCategories" :key="subSubCategory.id" class="health-sub-category-box">
+        <div @click="handleClick(subSubCategory)" class="image-left" :style="`background: url(${subSubCategory.image_url}); background-size: contain; background-repeat: no-repeat;`">
         </div>
         <div class="content-right">
-          <div class="has-text-health">{{ subSubCategory.name }}</div>
-          <div class="description" v-html="subSubCategory.description"></div>
-          <div class="cta">Mehr erfahren ></div>
+          <div class="headline has-text-health" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory">{{ subSubCategory.name }}</div>
+          <div class="content" v-html="subSubCategory.description" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory"></div>
+          <div class="cta" @click="handleClick(subSubCategory)">Mehr erfahren ></div>
         </div>
       </div>
     </div>
@@ -37,7 +56,7 @@ import BackButtonLayout from '@/components/general/BackButtonLayout.vue'
 import { useRoute } from 'vue-router';
 import { useCollectionApi } from '@/composables/api/collectionApi';
 import { usePublicApi } from '@/composables/api/public';
-import { onIonViewDidEnter, IonLoading } from '@ionic/vue';
+import { onIonViewDidEnter, IonLoading, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent } from '@ionic/vue';
 import { Browser } from '@capacitor/browser'
 const route = useRoute()
 const categoryId = computed(() => {
@@ -48,6 +67,8 @@ const subCategories = ref([]) as any
 const loading = ref(false)
 const category = ref(null) as any
 const categoryApi = useCollectionApi()
+const detailModalOpen = ref(false)
+const selectedSubSubCategory = ref(null) as any
 categoryApi.setBaseApi(usePublicApi('health'))
 
 const getCategory = async () => {
@@ -90,7 +111,6 @@ const setItemsAndGo = (subCategory:any) => {
 }
 
 const handleClick = async (subSubCategory:any) => {
-  console.log(subSubCategory)
   if (subSubCategory.url_kind === 'external') {
     await Browser.open({ url: subSubCategory.url })
   }
@@ -104,5 +124,9 @@ onIonViewDidEnter(() => {
 </script>
 
 <style lang="sass" scoped>
-
+.modal-image
+  width: 100px
+  float: left
+  margin-right: 10px
+  margin-bottom: 10px
 </style>

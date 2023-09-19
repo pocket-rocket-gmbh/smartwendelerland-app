@@ -1,5 +1,5 @@
 <template>
-  <ion-grid>
+  <ion-grid class="no-margin-padding">
     <ion-row>
       <ion-col v-for="category in categories" :key="category.id" size-xs="6" size-sm="4" size-lg="3">
         <div class="health-category-box" @click="router.push({ path: `/health/categories/${category.id}`})">
@@ -98,4 +98,8 @@ ion-col
   padding: 2px
 .signal
   color: #e84040
+
+ion-grid.no-margin-padding
+  margin: -5px
+  padding: 0
 </style>
