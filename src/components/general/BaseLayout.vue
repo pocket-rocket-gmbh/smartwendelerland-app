@@ -3,8 +3,8 @@
     <ion-header>
       <ion-toolbar>
         <img @click="$router.push({path: `/`})" src="@/assets/images/logo.png" class="logo" slot="start"/>
-        <ion-icon v-if="!useUser().loggedIn()" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
-        <div v-else @click="router.push('/me')" router-link="/me" slot="end">
+        <ion-icon v-if="!useUser().loggedIn() && showLogin" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
+        <div v-else-if="showLogin" @click="router.push('/me')" router-link="/me" slot="end">
           <UserProfile
             :user="useUser().currentUser()"
           />
@@ -19,6 +19,7 @@
 </template>
 
 <script setup lang="ts">
+import { defineProps } from 'vue'
 import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from '@ionic/vue'
 import { logInOutline, logInSharp, personCircleOutline, personCircleSharp } from 'ionicons/icons'
 import { useRouter } from 'vue-router'
@@ -26,6 +27,13 @@ import UserProfile from '@/components/UserProfile.vue'
 import { useUser } from '@/composables/user/user'
 
 const router = useRouter()
+
+defineProps({
+  showLogin: {
+    type: Boolean,
+    default: true
+  }
+})
 
 </script>
 

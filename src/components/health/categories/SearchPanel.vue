@@ -4,7 +4,7 @@
       <div class="headline has-text-white" align="center">
         Herzlich Willkommen auf Deiner Gesundheitsplattform im Landkreis Sankt Wendel
       </div>
-      <div class="font-size-small has-text-white" align="center">Finde Informationen zu Gesundheitsthemen, Präventionsmaßnahmen sowie umfangreiche Pflegeangebote.</div>
+      <div class="has-text-white" align="center">Finde Informationen zu Gesundheitsthemen, Präventionsmaßnahmen sowie umfangreiche Pflegeangebote.</div>
 
       <SearchBar
         @handleSearch="handleSearch"

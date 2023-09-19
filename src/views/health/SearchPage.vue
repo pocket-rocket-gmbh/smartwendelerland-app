@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout force-back="/health/categories">
+  <BackButtonLayout force-back="/health/categories" :show-login="false">
     <BasicFilterModal
       :filter-kind="facilityKind"
       v-model="filterStore.currentTags"
@@ -64,19 +64,21 @@
       </div>
 
       <div class="buttons">
-        <ion-button class="transparent" expand="block" @click="resetFilter">Auswahl zurücksetzen</ion-button>
+        <ion-button class="transparent" expand="block" shape="round" @click="resetFilter">Zurücksetzen</ion-button>
         <ion-button class="white" expand="block" @click="startSearch">Suche starten</ion-button>
       </div>
     </div>
 
-    <div class="buttons ion-padding" v-if="facilityKind === 'facility'">
-      <ion-button :class="['white has-border', { 'is-active' : view === 'list' }]" expand="block" @click="view = 'list'">Listenansicht</ion-button>
-      <ion-button :class="['white has-border', { 'is-active' : view === 'map' }]" expand="block" @click="view = 'map'">Kartenansicht</ion-button>
-    </div>
+    <div>
+      <div class="buttons ion-padding" v-if="facilityKind === 'facility'">
+        <ion-button :class="['white has-border', { 'is-active' : view === 'list' }]" expand="block" @click="view = 'list'">Listenansicht</ion-button>
+        <ion-button :class="['white has-border', { 'is-active' : view === 'map' }]" expand="block" @click="view = 'map'">Kartenansicht</ion-button>
+      </div>
 
-    <div class="ion-padding">
-      <FacilityList v-if="view === 'list'" :facility-kind="facilityKind" />
-      <FacilityMap v-else-if="view === 'map'"/>
+      <div class="ion-padding">
+        <FacilityList v-if="view === 'list'" :facility-kind="facilityKind" />
+        <FacilityMap v-else-if="view === 'map'"/>
+      </div>
     </div>
 
     <ion-loading

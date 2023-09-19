@@ -6,7 +6,7 @@
           <ion-nav-link routerLink="/landing/participation">
             <div class="pile has-background-project" align="center">
               <img src="@/assets/images/panel_project.svg" alt="project" />
-              <div class="headline">Projektplattform</div>
+              <div class="headline">Projekt- plattform</div>
             </div>
           </ion-nav-link>
         </ion-col>
@@ -16,7 +16,7 @@
           <ion-nav-link routerLink="/health/categories">
             <div class="pile has-background-health" align="center">
               <img src="@/assets/images/panel_health.svg" alt="health" />
-              <div class="headline">Gesundheitsplattform</div>
+              <div class="headline">Gesundheits- plattform</div>
             </div>
           </ion-nav-link>
         </ion-col>

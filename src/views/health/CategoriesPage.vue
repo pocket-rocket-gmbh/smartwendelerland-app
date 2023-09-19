@@ -1,5 +1,5 @@
 <template>
-  <BaseLayout>
+  <BaseLayout :show-login="false">
     <ion-content class="ion-padding">
       <SearchPanel
       />

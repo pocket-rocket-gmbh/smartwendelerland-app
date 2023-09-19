@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout force-back="/health/categories">
+  <BackButtonLayout force-back="/health/categories" :show-login="false">
     <div v-if="category">
       <div class="health-top-panel is-headline">
         <div class="headline">{{ category?.name }}</div>
@@ -10,8 +10,12 @@
         </span>
       </div>
 
+      <div class="ion-padding-start ion-padding-end">
+        <div v-html="currentSubCategory.description" />
+      </div>
+
       <div v-for="subSubCategory in subSubCategories" :key="subSubCategory.id" class="health-sub-category-box" @click="handleClick(subSubCategory)">
-        <div class="image-left" :style="`background: url(${subSubCategory.image_url}); background-size: contain;`">
+        <div class="image-left" :style="`background: url(${subSubCategory.image_url}); background-size: contain; background-repeat: no-repeat;`">
         </div>
         <div class="content-right">
           <div class="has-text-health">{{ subSubCategory.name }}</div>

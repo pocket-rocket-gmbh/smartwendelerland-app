@@ -31,7 +31,7 @@
           <div align="center">
             <img src="@/assets/images/given-heart.svg" />
           </div>
-          <div class="headline">Anbieter</div>
+          <div class="headline">Anbietersuche</div>
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3">
@@ -42,16 +42,23 @@
           <div class="headline">Beiträge</div>
         </div>
       </ion-col>
-      <ion-col size-xs="6" size-sm="4" size-lg="3">
-        <div class="health-category-box">
-          <div align="center">
-            <img src="@/assets/images/help.svg" />
-          </div>
-          <div class="headline">Hilfe</div>
-        </div>
-      </ion-col>
     </ion-row>
   </ion-grid>
+  <div class="ion-padding">
+    <div class="headline">Du benötigst dringend Hilfe?</div>
+
+    <div class="ion-margin-top">
+      <div><b>Rettungsdienste</b></div>
+      Rufe den Rettungsdienst, wenn Du akut medizinische Hilfe benötigst. Egal ob es sich um die Folgen eines Unfalls handelt oder plötzliche starke gesundheitliche Beschwerden auftreten.</div>
+    <div class="signal">Wähle den Notruf 112</div>
+
+    <div class="ion-margin-top">
+      <div><b>Apothekennotdienst</b></div>
+      Es ist Wochenende und Du benötigst dringend Medikamente? Rufe sofort den Apothekennotdienst an und erfahre, welche Apotheke im Landkreis Sankt Wendel für Dich da ist.</div>
+    <div class="signal">Wähle den Notruf 22833</div>
+  </div>
+
+
   <ion-loading
     :is-open="loading"
     message="Kategorien werden geladen..."
@@ -89,4 +96,6 @@ onMounted(() => {
 <style lang="sass" scoped>
 ion-col
   padding: 2px
+.signal
+  color: #e84040
 </style>
