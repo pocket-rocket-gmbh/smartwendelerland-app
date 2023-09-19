@@ -62,9 +62,10 @@
               Kontakt aufnahmen
             </a>
           </div>
-          <div v-if="facility.opening_hours.length > 0" class="opening-hours">
+          <div v-if="facility.opening_hours.length > 0 && openingHoursFilled(facility.opening_hours)" class="opening-hours">
             <div class="has-text-health font-size-medium is-uppercase ion-margin-top ion-margin-bottom">Öffnungszeiten
             </div>
+            {{ facility.opening_hours }}
             <div v-for="(hour, index) in facility.opening_hours" :key="index">
               <span class="day">{{ hour.day }}</span><span v-if="hour.hours">{{ hour.hours }}</span><span v-else>Keine
                 Angabe</span>
@@ -183,6 +184,15 @@ const mapDates = (dateStrings:string[]) => {
 
 const formattedDateString = (rawNumber:number) => {
   return rawNumber < 10 ? `0${rawNumber}` : rawNumber
+}
+
+const openingHoursFilled = (openingHours:any[]) => {
+  for (const item of openingHours) {
+    if (item.hours.trim() !== "") {
+      return true;
+    }
+  }
+  return false;
 }
 
 const modules = [Pagination]
