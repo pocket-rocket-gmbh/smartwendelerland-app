@@ -12,7 +12,9 @@
       <div v-if="!loadingFilters" class="filters">
         <div v-for="filter in advancedFilters" :key="filter.key">
           <div v-for="item in filter.next" :key="item.id">
-            <div v-if="item.next.length" class="filter-name">{{ item.title.replace("(nur von ärztlichen/ therapeutischen Leistungserbringern auszuwählen)", "") }}</div>
+            <div v-if="item.next.length" class="filter-name">
+              {{ item.title.replace("(nur von ärztlichen/ therapeutischen Leistungserbringern auszuwählen)", "") }}
+            </div>
             <div class="filter-options">
               <div v-for="subItem in item.next" :key="subItem.id">
                 <label class="option is-fullwidth" :for="subItem.id" @click.prevent="toggleSelection(subItem)">
@@ -99,8 +101,11 @@ const loadingFilters = ref(false);
 //   emit('update:modelValue', selectedFilters.value)
 // })
 
-onMounted(() => {
+onMounted(async () => {
   selectedFilters.value = [...props.modelValue];
+  loadingFilters.value = true;
+  await useFilterStore().getItems(props.filterKind);
+  loadingFilters.value = false;
 });
 </script>
 

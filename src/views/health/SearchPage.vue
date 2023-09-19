@@ -26,13 +26,15 @@
       <div class="gap-1" />
       <div class="gap-1" />
       <template v-if="facilityKind">
-        <div class="label font-size-small">Filter</div>
-        <div :class="['filter-button', { 'is-active' : basicFilter !== null }]" @click="basicFilterModalOpen = true">
-          <span v-if="basicFilter">{{ basicFilter.name }}</span>
-          <span v-else class="placeholder">Filter wählen</span>
-        </div>
+        <template v-if="facilityKind === 'facility' || facilityKind === 'course'">
+          <div class="label font-size-small">Filter</div>
+          <div :class="['filter-button', { 'is-active' : basicFilter !== null }]" @click="basicFilterModalOpen = true">
+            <span v-if="basicFilter">{{ basicFilter.name }}</span>
+            <span v-else class="placeholder">Filter wählen</span>
+          </div>
+        </template>
 
-        <div class="grid-2">
+        <div :class="(facilityKind === 'facility' || facilityKind === 'course') ? 'grid-2' : 'grid-1'">
           <div>
             <div class="label font-size-small">Gemeinde</div>
             <CommunityFilter
@@ -40,7 +42,7 @@
               @selectCommunityFilter="selectCommunityFilter"
             />
           </div>
-          <div>
+          <div v-if="facilityKind === 'facility' || facilityKind === 'course'">
             <div class="label font-size-small">&nbsp;</div>
             <button class="filter-button is-fullwidth" @click="advancedFilterModalOpen = true">
               weitere Filter
@@ -219,6 +221,9 @@ onIonViewWillLeave(() => {
   display: grid
   grid-template-columns: 64% 34%
   gap: 2%
+.grid-1
+  display: grid
+  grid-template-columns: 100%
 .filter-button
   border-radius: 7px
   background: #FFF
