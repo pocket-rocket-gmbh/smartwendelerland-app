@@ -12,7 +12,7 @@
       <div v-if="!loadingFilters" class="filters">
         <div v-for="filter in advancedFilters" :key="filter.key">
           <div v-for="item in filter.next" :key="item.id">
-            <div v-if="item.next.length" class="filter-name">{{ item.title }}</div>
+            <div v-if="item.next.length" class="filter-name">{{ item.title.replace("(nur von ärztlichen/ therapeutischen Leistungserbringern auszuwählen)", "") }}</div>
             <div class="filter-options">
               <div v-for="subItem in item.next" :key="subItem.id">
                 <label class="option is-fullwidth" :for="subItem.id" @click.prevent="toggleSelection(subItem)">
@@ -35,6 +35,11 @@
           </div>
         </div>
       </div>
+      <div class="gap-1" />
+      <div class="gap-1" />
+      <div class="gap-1" />
+      <div class="gap-1" />
+      <div class="gap-1" />
       <ion-loading :is-open="loadingFilters" message="Filter werden geladen..." />
     </ion-content>
   </ion-modal>
@@ -111,5 +116,5 @@ onMounted(() => {
 
   &.indent
     margin-left: 10%
-    width: 90%
+    width: 90% !important
 </style>
