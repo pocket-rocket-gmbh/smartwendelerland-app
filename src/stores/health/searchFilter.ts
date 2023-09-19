@@ -321,7 +321,7 @@ export const useFilterStore = defineStore({
 
           return [bestResult.lat, bestResult.lon] as [string, string];
         } catch (err) {
-          console.error(err);
+          console.error(`Geocode not found for zipCode ${zipCode} and street ${street}`);
           return null;
         }
       };
