@@ -2,7 +2,7 @@
   <div v-if="filterStore.filteredResults.length > 0">
     <div v-for="facility in filterStore.filteredResults" :key="facility.id" class="facility-box" @click="router.push({ path: `/health/care_facilities/${facility.id}`})">
       <div class="headline">{{ facility.name }} <span class="kind">{{ formatFacilityKind(facility.kind) }}</span></div>
-      <div class="has-text-health font-size-small tags">
+      <div class="has-text-health font-size-small tags ion-margin-top">
         <span v-for="tag in facility.tags" :key="tag.id">{{ tag.name }}</span>
       </div>
 

@@ -38,7 +38,7 @@
         </div>
         <div class="content-right">
           <div class="headline has-text-health" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory">{{ subSubCategory.name }}</div>
-          <div class="content" v-html="subSubCategory.description" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory"></div>
+          <div class="content is-justified" v-html="subSubCategory.description" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory"></div>
           <div class="cta" @click="handleClick(subSubCategory)">Mehr erfahren ></div>
         </div>
       </div>
