@@ -1,21 +1,12 @@
 <template>
   <ion-grid class="no-margin-padding">
     <ion-row>
-      <ion-col v-for="category in categories" :key="category.id" size-xs="6" size-sm="4" size-lg="3">
-        <div class="health-category-box" @click="router.push({ path: `/health/categories/${category.id}`})">
+      <ion-col size-xs="6" size-sm="4" size-lg="3">
+        <div class="health-category-box" @click="router.push({ path: `/health/search`, query: { kind: 'facility' }})">
           <div align="center">
-            <img src="@/assets/images/prevention.svg" v-if="category.name.includes('Prävention')" />
-            <img src="@/assets/images/sick.svg" v-else />
+            <img src="@/assets/images/given-heart.svg" />
           </div>
-          <div class="headline">{{ category.name }}</div>
-        </div>
-      </ion-col>
-      <ion-col size-xs="6" size-sm="4" size-lg="3" @click="router.push({ path: `/health/search`, query: { kind: 'event' }})">
-        <div class="health-category-box">
-          <div align="center">
-            <img src="@/assets/images/calendar.svg" />
-          </div>
-          <div class="headline">Veranstaltungen</div>
+          <div class="headline">Anbietersuche</div>
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3" @click="router.push({ path: `/health/search`, query: { kind: 'course' }})">
@@ -26,12 +17,12 @@
           <div class="headline">Kurse</div>
         </div>
       </ion-col>
-      <ion-col size-xs="6" size-sm="4" size-lg="3">
-        <div class="health-category-box" @click="router.push({ path: `/health/search`, query: { kind: 'facility' }})">
+      <ion-col size-xs="6" size-sm="4" size-lg="3" @click="router.push({ path: `/health/search`, query: { kind: 'event' }})">
+        <div class="health-category-box">
           <div align="center">
-            <img src="@/assets/images/given-heart.svg" />
+            <img src="@/assets/images/calendar.svg" />
           </div>
-          <div class="headline">Anbietersuche</div>
+          <div class="headline">Veranstaltungen</div>
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3">
@@ -42,6 +33,15 @@
           <div class="headline">Beiträge</div>
         </div>
       </ion-col>
+      <ion-col v-for="category in categories" :key="category.id" size-xs="6" size-sm="4" size-lg="3">
+        <div class="health-category-box" @click="router.push({ path: `/health/categories/${category.id}`})">
+          <div align="center">
+            <img src="@/assets/images/prevention.svg" v-if="category.name.includes('Prävention')" />
+            <img src="@/assets/images/sick.svg" v-else />
+          </div>
+          <div class="headline">{{ category.name }}</div>
+        </div>
+      </ion-col>
     </ion-row>
   </ion-grid>
   <div class="ion-padding">
@@ -50,12 +50,12 @@
     <div class="ion-margin-top">
       <div><b>Rettungsdienste</b></div>
       Rufe den Rettungsdienst, wenn Du akut medizinische Hilfe benötigst. Egal ob es sich um die Folgen eines Unfalls handelt oder plötzliche starke gesundheitliche Beschwerden auftreten.</div>
-    <div class="signal">Wähle den Notruf 112</div>
+    <a href="tel:112" class="signal">Wähle den Notruf 112</a>
 
     <div class="ion-margin-top">
       <div><b>Apothekennotdienst</b></div>
       Es ist Wochenende und Du benötigst dringend Medikamente? Rufe sofort den Apothekennotdienst an und erfahre, welche Apotheke im Landkreis Sankt Wendel für Dich da ist.</div>
-    <div class="signal">Wähle den Notruf 22833</div>
+    <a href="tel:22833" class="signal">Wähle den Notruf 22833</a>
   </div>
 
 
