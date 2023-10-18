@@ -1,19 +1,39 @@
 <template>
-  <ion-searchbar
+  <ion-page>
+    <ion-searchbar
     class="has-background-white"
-    placeholder="Suchbegriff eingeben"
+    :placeholder="placeholder"
     v-model="filterStore.currentSearchTerm"
     :debounce="2000"
     @ionChange="emitHandleSearch"
     @ionClear="clearSearch"
   />
+  </ion-page>
+ 
 </template>
 
 <script setup lang="ts">
-import { defineEmits } from 'vue';
+import { computed, defineEmits, defineProps } from 'vue';
 import { IonSearchbar } from '@ionic/vue';
 import { useFilterStore } from '@/stores/health/searchFilter';
 const emit = defineEmits(['handleSearch'])
+
+const props = defineProps({
+  placeHolderText: {
+    type: String,
+    required: true
+  }
+})
+
+const placeholder = computed(() => {
+  if (props.placeHolderText) {
+    return props.placeHolderText
+  } else {
+    return 'Suche nach Themen, Anbietern, Kursen,…'
+  }
+})  
+
+
 
 const filterStore = useFilterStore()
 
@@ -26,6 +46,7 @@ const clearSearch = () => {
   filterStore.currentSearchTerm = ''
   filterStore.filteredResults = filterStore.allResults
 }
+
 </script>
 
 <style lang="sass" scoped>
