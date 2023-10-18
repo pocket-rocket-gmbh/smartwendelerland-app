@@ -25,29 +25,38 @@
       </div>
       <div class="gap-1" />
       <div class="gap-1" />
+      <div class="label pull-up">
+        <span v-if="facilityKind === 'facility'">Anbieter suchen</span>
+        <span v-else-if="facilityKind === 'course'">Kurs suchen</span>
+        <span v-else-if="facilityKind === 'event'">Veranstaltung suchen</span>
+        <span v-else-if="facilityKind === 'news'">Nachrichten suchen</span>
+      </div>
+      <div class="search-wrap">
+        <SearchBar
+          @handleSearch="handleSearch"
+          :placeHolderText="placeHolderText"
+        />
+      </div>
       <template v-if="facilityKind">
         <template v-if="facilityKind === 'facility' || facilityKind === 'course'">
-          <div class="label font-size-small">Filter</div>
+          <div class="label">Branche</div>
           <div :class="['filter-button', { 'is-active' : basicFilter !== null }]" @click="basicFilterModalOpen = true">
             <span v-if="basicFilter">{{ basicFilter.name }}</span>
-            <span v-else class="placeholder">Filter wählen</span>
+            <span v-else class="placeholder">Branche wählen</span>
           </div>
         </template>
 
         <div :class="(facilityKind === 'facility' || facilityKind === 'course') ? 'grid-2' : 'grid-1'">
           <div>
-            <div class="label font-size-small">Gemeinde</div>
+            <div class="label">Gemeinde</div>
             <CommunityFilter
               ref="communityFilterRef"
               @selectCommunityFilter="selectCommunityFilter"
             />
           </div>
           <div v-if="facilityKind === 'facility' || facilityKind === 'course'">
-            <div class="label font-size-small">&nbsp;</div>
-            <button class="filter-button is-fullwidth" @click="advancedFilterModalOpen = true">
-              weitere Filter
-              <img src="@/assets/images/filter.svg" class="icon" />
-            </button>
+            <div class="label">&nbsp;</div>
+            <img src="@/assets/images/filter.svg" class="filter-icon" @click="advancedFilterModalOpen = true"/>
           </div>
         </div>
       </template>
@@ -57,32 +66,19 @@
         </div>
       </template>
       
-
-      <div class="label font-size-small pull-up">{{ facilityKind ? 'Spezifische' : 'Allgemeine' }} Suche</div>
-      <div class="search-wrap">
-        <SearchBar
-          @handleSearch="handleSearch"
-        />
-      </div>
-
       <div class="buttons">
         <ion-button class="transparent" expand="block" shape="round" @click="resetFilter">Zurücksetzen</ion-button>
-        <ion-button class="white" expand="block" @click="startSearch">Suche starten</ion-button>
+        <div v-if="facilityKind === 'facility'">
+          <ion-button :class="['white has-border', view === 'list' ? 'list' : 'map']" expand="block" @click="toggleView">{{ view === 'list' ? 'Kartenansicht' : 'Listenansicht' }}</ion-button>
+        </div>
       </div>
     </div>
-
     <div>
-      <div class="buttons ion-padding" v-if="facilityKind === 'facility'">
-        <ion-button :class="['white has-border', { 'is-active' : view === 'list' }]" expand="block" @click="view = 'list'">Listenansicht</ion-button>
-        <ion-button :class="['white has-border', { 'is-active' : view === 'map' }]" expand="block" @click="view = 'map'">Kartenansicht</ion-button>
-      </div>
-
       <div class="ion-padding">
         <FacilityList v-if="view === 'list'" :facility-kind="facilityKind" />
         <FacilityMap v-else-if="view === 'map'"/>
       </div>
     </div>
-
     <ion-loading
       :is-open="loading"
       message="Ergebnisse werden geladen..."
@@ -114,6 +110,15 @@ const communityFilterRef = ref(null)
 const view = ref('list')
 const loading = ref(false)
 const route = useRoute()
+
+const placeHolderText = computed(() => {
+  if (facilityKind.value === 'facility') return 'Name, Fachrichtung,…'
+  if (facilityKind.value === 'course') return 'Name, Kursinhalt,…'
+  if (facilityKind.value === 'event') return 'Name, Thema, Angebote,…'
+  if (facilityKind.value === 'news') return 'Nachrichten suchen'
+  return ''
+})
+
 
 watch(
   () => filterStore.currentTags,
@@ -148,6 +153,10 @@ const setFacilityKind = (kind: FilterKind) => {
   startSearch()
 }
 
+const toggleView = () => {
+  view.value = view.value === 'list' ? 'map' : 'list';
+};
+
 const filteredKinds = computed(() => {
   return Array.from(new Set(filterStore.filteredResults.map((result) => result.kind)));
 });
@@ -176,7 +185,7 @@ const resetFilter = () => {
   basicFilter.value = null
   communityFilter.value = null
   communityFilterRef.value.resetFilter()
-
+  filterStore.currentSearchTerm = ''
   filterStore.currentTags = []
   filterStore.currentZip = null
 }
@@ -216,11 +225,12 @@ onIonViewWillLeave(() => {
   font-weight: bold
   color: white
 .search-wrap
-  margin-top: -15px
+  margin: -15px 0 10px 0
 .grid-2
+  align-items: end
   display: grid
-  grid-template-columns: 64% 34%
-  gap: 2%
+  grid-template-columns: 75% 25%
+  gap: 15%
 .grid-1
   display: grid
   grid-template-columns: 100%
@@ -245,14 +255,18 @@ onIonViewWillLeave(() => {
     height: 15px
 
 .buttons
-  display: flex
-  gap: 10px
+  display: grid
+  grid-template-columns: 49% 49%
+  gap: 2%
   margin-top: 15px
   justify-content: space-between
   ion-button
     flex: 1
 
-.flex-wrap
+.filter-icon
+  color: white
+  width: 30px
+  .flex-wrap
   flex-wrap: wrap
   justify-content: start
 
