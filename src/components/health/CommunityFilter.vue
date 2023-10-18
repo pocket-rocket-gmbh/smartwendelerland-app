@@ -1,21 +1,30 @@
 <template>
-  <ion-select placeholder="Gemeinde wählen" v-model="selectedFilter">
-    <ion-select-option v-for="community in communities" :key="community.id" :value="community">
-      {{ community.name}}
+  <ion-select
+    :toggle-icon="caretDownSharp"
+    interface="popover"
+    placeholder="Gemeinde wählen"
+    v-model="selectedFilter"
+  >
+    <ion-select-option
+      v-for="community in communities"
+      :key="community.id"
+      :value="community"
+    >
+      {{ community.name }}
     </ion-select-option>
   </ion-select>
 </template>
 
 <script setup lang="ts">
-import { useCollectionApi } from '@/composables/api/collectionApi';
-import { usePublicApi } from '@/composables/api/public';
-import { onMounted, ref, watch, defineEmits, defineExpose } from 'vue';
-import { IonSelect, IonSelectOption } from '@ionic/vue';
-const emit = defineEmits(['selectCommunityFilter'])
+import { useCollectionApi } from "@/composables/api/collectionApi";
+import { usePublicApi } from "@/composables/api/public";
+import { onMounted, ref, watch, defineEmits, defineExpose } from "vue";
+import { IonSelect, IonSelectOption } from "@ionic/vue";
+const emit = defineEmits(["selectCommunityFilter"]);
 
-const selectedFilter = ref(null)
+const selectedFilter = ref(null);
 const communitiesApi = useCollectionApi();
-communitiesApi.setBaseApi(usePublicApi('health'));
+communitiesApi.setBaseApi(usePublicApi("health"));
 communitiesApi.setEndpoint(`communities`);
 const communities = communitiesApi.items;
 const getCommunities = async () => {
@@ -23,18 +32,18 @@ const getCommunities = async () => {
 };
 
 const resetFilter = () => {
-  selectedFilter.value = null
-}
+  selectedFilter.value = null;
+};
 
 onMounted(() => {
-  getCommunities()
-})
+  getCommunities();
+});
 
 watch(selectedFilter, () => {
-  emit('selectCommunityFilter', selectedFilter.value)
-})
+  emit("selectCommunityFilter", selectedFilter.value);
+});
 
-defineExpose({ resetFilter })
+defineExpose({ resetFilter });
 </script>
 
 <style lang="sass" scoped>
