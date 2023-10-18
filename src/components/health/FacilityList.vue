@@ -1,19 +1,52 @@
 <template>
   <div v-if="filterStore.filteredResults.length > 0">
     <div v-for="facility in filterStore.filteredResults" :key="facility.id" class="facility-box" @click="router.push({ path: `/health/care_facilities/${facility.id}`})">
-      <div class="headline">{{ facility.name }} <span class="kind">{{ formatFacilityKind(facility.kind) }}</span></div>
-      <div class="has-text-health font-size-small tags ion-margin-top">
-        <span v-for="tag in facility.tags" :key="tag.id">{{ tag.name }}</span>
+      <div class="headline general-font-size">{{ facility.name }}</div>
+      <div class="tag-chips" v-if="facility.tags.length">
+        <ion-chip v-for="tag in displayedTags(facility)" :key="tag.id">
+          <span @click.stop="emitSearch(tag.name)" class="break-text">{{ tag.name }}</span>
+        </ion-chip>
+        <ion-chip v-if="facility.tags.length > 3 && !facility.showAllTags" @click.stop="showAllTags(facility)">
+          <span >+ {{ facility.tags.length - 1 }}</span>
+        </ion-chip>
       </div>
-
       <div class="body">
-        <div class="address font-size-small" v-if="facilityKind !== 'news'">
-          <div class="street">{{ facility.street }}</div>
-          <div class="city"><span>{{ facility.zip }}</span> <span>{{ facility.town }}</span></div>
+        <div class="contact general-font-size" v-if="facilityKind !== 'news'">
+          <div class="informations">
+           <div class="icon-contact">
+              <img src="@/assets/images/facilities/icon_address.svg" />
+           </div>
+           <div>
+            <div>
+              <div class="break-text">
+                {{ facility.street }}
+              </div>
+              <span class="zip-code">
+                {{ facility.zip }}
+              </span>
+              <span>
+                {{ facility.town }}
+              </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="contact font-size-small" v-if="facilityKind !== 'news'">
-          <div v-if="facility.phone"><span><img src="@/assets/images/phone.svg"></span> {{ facility.phone }}</div>
-          <div v-if="facility.mail"><span><img src="@/assets/images/mail.svg"></span> {{ facility.mail }}</div>
+        <div class="contact general-font-size" v-if="facilityKind !== 'news'">
+          <div class="informations">
+           <div class="icon-contact">
+              <img src="@/assets/images/facilities/icon_phone.svg" />
+           </div>
+           <div>
+            <div>
+              <div>
+                {{ facility.phone }}
+              </div>
+              <span class="break-text">
+                {{ facility.email }}
+              </span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="contact" v-if="facilityKind === 'news'">
@@ -29,14 +62,31 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { computed, defineProps, ref, defineEmits } from 'vue'
 import { useFilterStore, filterSortingDirections } from "@/stores/health/searchFilter";
 import { useRouter } from "vue-router";
 import { useDatetime } from '@/composables/ui/datetime';
+
 const router = useRouter()
 const filterStore = useFilterStore();
 
 defineProps(['facilityKind'])
+
+const emitSearch = (tag:string) => {
+  filterStore.currentSearchTerm = tag
+  filterStore.loadFilteredResults()
+}
+
+const showMoreButton = ref(true)
+
+const showAllTags = (facility: { showAllTags: boolean; }) => {
+  facility.showAllTags = true;
+  showMoreButton.value = false
+};
+
+const displayedTags = computed(() => (facility: { showAllTags: any; tags: string|any[]; }) => {
+  return facility.showAllTags ? facility.tags : facility.tags.slice(0, 3);
+});
 
 const formatFacilityKind = (facilityKind:string) => {
   switch (facilityKind) {
@@ -85,9 +135,26 @@ const formatFacilityKind = (facilityKind:string) => {
   .body
     margin-top: 10px
     display: grid
-    grid-template-columns: 50% 50%
-  .contact
-    img
-      margin-right: 5px
-      margin-bottom: -2px
+    grid-template-columns: 49% 49%
+    gap: 2%
+  .informations
+    display: flex
+  .zip-code
+    padding-right: 5px
+
+.icon-contact
+  display: flex
+  align-content: center
+  width: 30px
+  margin-right: 10px
+
+.tag-chips
+  display: flex
+  align-content: center
+  flex-wrap: wrap
+
+ion-chip
+  --background: var(--ion-color-health)
+  --color: white
+  font-size: 1.2rem
   </style>
