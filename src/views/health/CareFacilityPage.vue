@@ -19,11 +19,11 @@
       <div class="headline ion-margin-top">
         {{ facility.name }} <img src="@/assets/images/check-decagram-outline.svg" class="insurance-logo" v-if="facility.billable_through_health_insurance_approved" />
       </div>
-      <div class="has-text-health font-size-small tags ion-margin-bottom" v-if="facility.tags.length > 0">
+      <div class="has-text-health tags ion-margin-bottom" v-if="facility.tags.length > 0">
         <span v-for="tag in facility.tags" :key="tag.id">{{ tag.name }}</span>
       </div>
 
-      <div v-html="facility.description" />
+      <div v-html="facility.description" class="general-font-size"/>
       <div v-if="facility.name_responsible_person" class="ion-margin-bottom"><i>Inhaltlich verantwortlich: {{ facility.name_responsible_person }}</i></div>
       <div v-if="facility.kind === 'news'" class="news-grid">
         <div><span><img src="@/assets/images/watch.svg"></span> {{ useDatetime().parseDatetime(facility.created_at) }}
@@ -33,18 +33,18 @@
       </div>
       <div v-else class="more-infos ion-padding">
         <div>
-          <div class="has-text-health font-size-medium is-uppercase ion-margin-bottom">Kontakt und Infos</div>
+          <div class="has-text-health is-uppercase ion-margin-bottom">Kontakt und Infos</div>
           <div v-if="facility.phone" class="info-grid">
-            <div><img src="@/assets/images/phone.svg"></div>
-            <div><a :href="`tel:${facility.phone}`">{{ facility.phone }}</a></div>
+            <div><img src="@/assets/images/facilities/icon_phone.svg"></div>
+            <div class="general-font-size"><a :href="`tel:${facility.phone}`">{{ facility.phone }}</a></div>
           </div>
           <div v-if="facility.email" class="info-grid">
-            <div><img src="@/assets/images/mail.svg"></div>
-            <div><a :href="`mailto:${facility.email}`">{{ facility.email }}</a></div>
+            <div><img src="@/assets/images/facilities/icon_mail.svg"></div>
+            <div class="general-font-size"><a :href="`mailto:${facility.email}`">{{ facility.email }}</a></div>
           </div>
           <div v-if="facility.street" class="info-grid">
-            <div><img src="@/assets/images/location.svg"></div>
-            <div>
+            <div><img src="@/assets/images/facilities/icon_address.svg"></div>
+            <div class="general-font-size">
               <div>{{ facility.street }}</div>
               <div>{{ facility.zip }} {{ facility.town }}</div>
             </div>
@@ -63,11 +63,17 @@
             </a>
           </div>
           <div v-if="facility.opening_hours.length > 0 && openingHoursFilled(facility.opening_hours)" class="opening-hours">
-            <div class="has-text-health font-size-medium is-uppercase ion-margin-top ion-margin-bottom">Öffnungszeiten
+            <div class="has-text-health is-uppercase ion-margin-top ion-margin-bottom">Öffnungszeiten
             </div>
-            <div v-for="(hour, index) in facility.opening_hours" :key="index">
-              <span class="day">{{ hour.day }}</span><span v-if="hour.hours">{{ hour.hours }}</span><span v-else>Keine
-                Angabe</span>
+            <div class="general-font-size">
+              <ion-row v-for="opening in facility.opening_hours" :key="opening.day">
+                <ion-col>
+                  <ion-label>{{ opening.day }}</ion-label>
+                </ion-col>
+                <ion-col v-if="opening.hours.length">
+                  <ion-label>{{ opening.hours }}</ion-label>
+                </ion-col>
+              </ion-row>
             </div>
           </div>
         </div>
@@ -201,18 +207,20 @@ const modules = [Pagination]
 .header-image img
   border-radius: 10px
 .tags
+  font-size: 1.2rem
   span
     margin-right: 10px
 .more-infos
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
   border-radius: 10px
-  img
-    margin-right: 5px
-    margin-bottom: -2px
 .info-grid
   margin-bottom: 10px
   display: grid
+  gap: 2%
   grid-template-columns: 25px auto
+  a
+    color: #636362
+    text-decoration: none
 .opening-hours
   .day
     font-weight: bold
@@ -220,9 +228,6 @@ const modules = [Pagination]
 .news-grid
   display: grid
   grid-template-columns: 50% 50%
-  img
-    margin-right: 5px
-    margin-bottom: -2px
 
 .pagination
   text-align: center
@@ -259,4 +264,10 @@ const modules = [Pagination]
 .insurance-logo
   height: 25px
   margin-bottom: -3px
+
+.contect-icons
+  display: flex
+  align-content: center
+  width: 30px
+  margin-right: 10px
 </style>
