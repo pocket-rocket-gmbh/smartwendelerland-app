@@ -1,61 +1,66 @@
 <template>
   <ion-grid class="no-margin-padding">
     <ion-row>
-      <ion-col size-xs="6" size-sm="4" size-lg="3">
-        <div class="health-category-box" @click="router.push({ path: `/health/search`, query: { kind: 'facility' }})">
+      <ion-col size-xs="6" size-sm="4" size-lg="3" @click="router.push({ path: `/health/search`, query: { kind: 'facility' }})">
+        <div class="health-category-box">
           <div align="center">
-            <img src="@/assets/images/given-heart.svg" />
+            <img src="@/assets/images/main-categories/icon_app_facilities.svg" />
           </div>
-          <div class="headline">Anbietersuche</div>
+          <div class="headline general-font-size">Anbietersuche</div>
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3" @click="router.push({ path: `/health/search`, query: { kind: 'course' }})">
         <div class="health-category-box">
           <div align="center">
-            <img src="@/assets/images/courses.svg" />
+            <img src="@/assets/images/main-categories/icon_app_courses.svg" />
           </div>
-          <div class="headline">Kurse</div>
+          <div class="headline general-font-size">Kurse</div>
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3" @click="router.push({ path: `/health/search`, query: { kind: 'event' }})">
         <div class="health-category-box">
           <div align="center">
-            <img src="@/assets/images/calendar.svg" />
+            <img src="@/assets/images/main-categories/icon_app_events.svg" />
           </div>
-          <div class="headline">Veranstaltungen</div>
+          <div class="headline general-font-size">Veranstaltungen</div>
         </div>
       </ion-col>
       <ion-col size-xs="6" size-sm="4" size-lg="3">
         <div class="health-category-box" @click="router.push({ path: `/health/search`, query: { kind: 'news' }})">
           <div align="center">
-            <img src="@/assets/images/news.svg" />
+            <img src="@/assets/images/main-categories/icon_app_news.svg" />
           </div>
-          <div class="headline">Beiträge</div>
+          <div class="headline general-font-size">Beiträge</div>
         </div>
       </ion-col>
       <ion-col v-for="category in categories" :key="category.id" size-xs="6" size-sm="4" size-lg="3">
         <div class="health-category-box" @click="router.push({ path: `/health/categories/${category.id}`})">
           <div align="center">
-            <img src="@/assets/images/prevention.svg" v-if="category.name.includes('Prävention')" />
-            <img src="@/assets/images/sick.svg" v-else />
+            <img src="@/assets/images/main-categories/icon_app_health.svg" v-if="category.name.includes('Prävention')" />
+            <img src="@/assets/images/main-categories/icon_app_sick.svg" v-else />
           </div>
-          <div class="headline">{{ category.name }}</div>
+          <div class="headline general-font-size">{{ category.name }}</div>
         </div>
       </ion-col>
     </ion-row>
   </ion-grid>
   <div class="ion-padding">
-    <div class="headline">Du benötigst dringend Hilfe?</div>
+    <div class="headline title">Du benötigst dringend Hilfe?</div>
 
     <div class="ion-margin-top">
-      <div><b>Rettungsdienste</b></div>
-      Rufe den Rettungsdienst, wenn Du akut medizinische Hilfe benötigst. Egal ob es sich um die Folgen eines Unfalls handelt oder plötzliche starke gesundheitliche Beschwerden auftreten.</div>
+      <div class="general-font-size"><b>Rettungsdienste</b></div>
+      Wenn es eine akute Gefahr für das Leben gibt und es nicht ausgeschlossen werden kann, dass bleibende Schäden auftreten, sollte unverzüglich der Notruf gewählt werden.</div>
     <a href="tel:112" class="signal">Wähle den Notruf 112</a>
 
     <div class="ion-margin-top">
-      <div><b>Apothekennotdienst</b></div>
-      Es ist Wochenende und Du benötigst dringend Medikamente? Rufe sofort den Apothekennotdienst an und erfahre, welche Apotheke im Landkreis Sankt Wendel für Dich da ist.</div>
-    <a href="tel:22833" class="signal">Wähle den Notruf 22833</a>
+      <div class="general-font-size"><b>Ärztlicher Bereitschaftsdienst</b></div>
+      Der Bereitschaftsdienst leistet dir auch an Wochenenden, Feiertagen und in der Nacht medizinische Hilfe.</div>
+    <a href="tel:116117" class="signal">Wähle den Notruf 116 117</a>
+
+    <div class="ion-margin-top">
+      <div class="general-font-size"><b>Nummer gegen Kummer</b></div>
+      Die "Nummer gegen Kummer" ist eine Anlaufstelle für Kinder und Jugendliche, die mit Sorgen und Problemen zu kämpfen haben. Hier findest du Unterstützung durch psychologisch geschulte Fachkräfte, die ihre Dienste anonym und kostenlos anbieten.</div>
+    <a href="tel:116123" class="signal">Wähle den Notruf 116123</a>
   </div>
 
 
@@ -102,4 +107,8 @@ ion-col
 ion-grid.no-margin-padding
   margin: -5px
   padding: 0
+  
+.title
+  margin-top: 40px
+  font-size: 1.5rem
 </style>
