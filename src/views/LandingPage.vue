@@ -6,7 +6,7 @@
           <ion-nav-link routerLink="/landing/participation">
             <div class="pile has-background-project" align="center">
               <img class="icon-project" src="@/assets/images/panel_project.svg" alt="project" />
-              <div class="headline">Projekt-plattform</div>
+              <div class="headline">Projektplattform</div>
             </div>
           </ion-nav-link>
         </ion-col>
@@ -16,7 +16,7 @@
           <ion-nav-link routerLink="/health/categories">
             <div class="pile has-background-health" align="center">
               <img class="icon-health" src="@/assets/images/panel_health.svg" alt="health" />
-              <div class="headline">Gesundheits-plattform</div>
+              <div class="headline">Gesundheitsplattform</div>
             </div>
           </ion-nav-link>
         </ion-col>
@@ -78,6 +78,8 @@ onMounted(() => {
     font-size: 2rem
     text-align: center
     margin-top: 20px
+    @media (max-width: 768px)
+    font-size: 1.5rem
 
 .main-page
   display: flex
@@ -88,8 +90,10 @@ onMounted(() => {
   gap: 5%
 
 .icon-health
-  width: 80%
+  width: 250px
 
 .icon-project
-  width: 60%
+  width: 300px
+  @media (max-width: 768px)
+    height: 200px
 </style>
