@@ -1,24 +1,25 @@
 <template>
   <div v-if="filterStore.filteredResults.length > 0">
+    {{ filterStore.filteredResults.length  }}
     <div v-for="facility in filterStore.filteredResults" :key="facility.id" class="facility-box" @click="router.push({ path: `/health/care_facilities/${facility.id}`})">
-      <div class="headline general-font-size">{{ facility.name }}</div>
-      <div class="tag-chips" v-if="facility.tags.length">
+      <div class="general-font-size-title is-dark-grey">{{ facility.name }}</div>
+      <!-- <div class="tag-chips" v-if="facility.tags.length">
         <ion-chip v-for="tag in displayedTags(facility)" :key="tag.id">
           <span @click.stop="emitSearch(tag.name)" class="break-text">{{ tag.name }}</span>
         </ion-chip>
         <ion-chip v-if="facility.tags.length > 3 && !facility.showAllTags" @click.stop="showAllTags(facility)">
           <span >+ {{ facility.tags.length - 1 }}</span>
         </ion-chip>
-      </div>
-      <div class="body">
-        <div class="contact general-font-size" v-if="facilityKind !== 'news'">
+      </div> -->
+      <div class="general-font-size is-dark-grey">
+        <div class="contact " v-if="facilityKind !== 'news'">
           <div class="informations">
            <div class="icon-contact">
               <img src="@/assets/images/facilities/icon_address.svg" />
            </div>
            <div>
-            <div>
-              <div class="break-text">
+            <div class="ion-padding">
+              <div>
                 {{ facility.street }}
               </div>
               <span class="zip-code">
@@ -31,23 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="contact general-font-size" v-if="facilityKind !== 'news'">
-          <div class="informations">
-           <div class="icon-contact">
-              <img src="@/assets/images/facilities/icon_phone.svg" />
-           </div>
-           <div>
-            <div>
-              <div>
-                {{ facility.phone }}
-              </div>
-              <span class="break-text">
-                {{ facility.email }}
-              </span>
-              </div>
-            </div>
-          </div>
-        </div>
+  
 
         <div class="contact" v-if="facilityKind === 'news'">
           <div><span><img src="@/assets/images/watch.svg"></span> {{ useDatetime().parseDatetime(facility.created_at) }}</div>
@@ -72,7 +57,7 @@ const filterStore = useFilterStore();
 
 defineProps(['facilityKind'])
 
-const emitSearch = (tag:string) => {
+/* const emitSearch = (tag:string) => {
   filterStore.currentSearchTerm = tag
   filterStore.loadFilteredResults()
 }
@@ -86,7 +71,7 @@ const showAllTags = (facility: { showAllTags: boolean; }) => {
 
 const displayedTags = computed(() => (facility: { showAllTags: any; tags: string|any[]; }) => {
   return facility.showAllTags ? facility.tags : facility.tags.slice(0, 3);
-});
+}); */
 
 const formatFacilityKind = (facilityKind:string) => {
   switch (facilityKind) {
@@ -124,7 +109,6 @@ const formatFacilityKind = (facilityKind:string) => {
   margin-bottom: 10px
   .headline
     color: #636362
-    font-size: 16px
     font-style: normal
     font-weight: 600
     line-height: normal
@@ -132,11 +116,6 @@ const formatFacilityKind = (facilityKind:string) => {
   .tags
     span
       margin-right: 10px
-  .body
-    margin-top: 10px
-    display: grid
-    grid-template-columns: 49% 49%
-    gap: 2%
   .informations
     display: flex
   .zip-code
