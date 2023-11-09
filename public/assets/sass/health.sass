@@ -1,6 +1,8 @@
 .health-panel
   border-radius: 10px
   background: linear-gradient(74deg, #91A80D 0%, #BAC323 38.19%, #9EA100 95.31%)
+  display: flex
+  flex-direction: column
 
 .health-category-box
   border-radius: 10px
@@ -106,23 +108,56 @@ ion-button.white
     --background: #636362
     color: white
 
-.filters
-  padding: 10px
-  margin-bottom: 20px
-  .option
-    border-radius: 7px
-    padding: 5px
-    border: 1px solid black
-    margin-right: 10px
-    white-space: nowrap
-  .filter-name
-    font-size: 18px
-    font-weight: bold
-    margin-top: 10px
-  input
-    margin-top: 20px
-    margin-bottom: 10px
-    margin-right: 10px
 
 .has-background-health
   background-color: var(--ion-color-health)
+
+.is-dark-grey
+  color: #636362
+
+.is-white
+  color: white
+
+.filter-name
+  margin: 20px 0 10px
+.filters
+  display: flex
+  flex-direction: column
+  margin-left: 10px
+
+  .filter-options
+    display: flex
+    flex-wrap: wrap
+    align-content: center
+    align-items: center
+    gap: 1rem
+
+    .option-label
+      cursor: pointer
+      display: flex
+      align-items: center
+
+
+
+.is-selected
+  background-color: #8ab61d !important
+  color: white !important
+
+.options-select
+  display: flex
+  align-items: center
+  cursor: pointer
+  padding: 10px
+  margin-bottom: 0.5rem
+  color: #636362
+  background: white
+  box-shadow: 0 3px 1px -2px var(--v-shadow-key-umbra-opacity,rgba(0,0,0,.2)),0 2px 2px 0 var(--v-shadow-key-penumbra-opacity,rgba(0,0,0,.14)),0 1px 5px 0 var(--v-shadow-key-penumbra-opacity,rgba(0,0,0,.12))
+
+.communities
+  display: flex
+  flex-wrap: wrap
+  align-content: center
+  align-items: center
+  gap: 1rem
+   
+
