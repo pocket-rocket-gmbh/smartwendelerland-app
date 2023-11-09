@@ -2,28 +2,54 @@
   <ion-modal :is-open="true" :can-dismiss="true">
     <ion-header>
       <ion-toolbar>
-        <ion-title>Filter</ion-title>
+        <ion-title>Branche wählen</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="emitClose()">Schließen</ion-button>
+          <ion-button @click="emitClose()">Fertig</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
+    <ion-header>
+      <ion-toolbar>
+        <ion-segment>
+          <ion-segment-button @click.prevent="changeCurrentStep('types')">
+            <ion-label>Branche</ion-label>
+          </ion-segment-button>
+          <ion-segment-button @click.prevent="changeCurrentStep('community')">
+            <ion-label>Gemeinde</ion-label>
+          </ion-segment-button>
+          <ion-segment-button @click.prevent="changeCurrentStep('filter')">
+            <ion-label>Filter</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content v-if="currentStep === 'types' || !currentStep.length">
       <div v-if="!loadingFilters" class="filters">
         <div v-for="filter in mainFilters" :key="filter.id">
-          <div class="filter-name">
+          <div class="filter-name general-font-size-title is-dark-grey">
             {{ filter.name }}
           </div>
           <div class="filter-options">
             <label
               :for="option.id"
               class="option"
-              v-for="(option, index) in filterOptions.find(({ parentId }) => parentId === filter.id).options"
+              v-for="(option, index) in filterOptions.find(
+                ({ parentId }) => parentId === filter.id
+              ).options"
               :key="index"
-              @click.prevent="handleOptionSelect(option)"
             >
-              <input type="radio" :checked="selectedFilter?.id === option.id" :id="option.id">
-              {{ `${option.name}${selectedFilter?.id === option.id ? '' : '' }` }}
+              <div
+                :model-value="modelValue.includes(option.id)"
+                @click.prevent="handleOptionSelect(option)"
+                hide-details
+                density="compact"
+                class="options-select"
+                :class="{
+                  'is-selected': selectedFilter?.id === option.id,
+                }"
+              >
+                {{ option.name }}
+              </div>
             </label>
           </div>
         </div>
@@ -33,51 +59,96 @@
         message="Filter werden geladen..."
       />
     </ion-content>
+    <ion-content v-if="currentStep === 'community'">
+      <CommunityFilter
+        ref="communityFilterRef"
+        @selectCommunityFilter="selectCommunityFilter"
+      />
+    </ion-content>
+    <ion-content v-if="currentStep === 'filter'"> Filter </ion-content>
   </ion-modal>
 </template>
 
 <script setup lang="ts">
-import { ResultStatus } from '@/types/serverCallResult'
-import { FilterKind, FilterType, useFilterStore } from "@/stores/health/searchFilter";
-import { defineEmits, onMounted, ref, defineProps } from 'vue';
-import { IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonLoading } from '@ionic/vue';
-import { useCollectionApi } from '@/composables/api/collectionApi';
-import { usePublicApi } from '@/composables/api/public';
+import { ResultStatus } from "@/types/serverCallResult";
+import {
+  FilterKind,
+  FilterType,
+  useFilterStore,
+} from "@/stores/health/searchFilter";
+import { defineEmits, onMounted, ref, defineProps } from "vue";
+import {
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonButton,
+  IonContent,
+  IonLoading,
+  onIonViewWillEnter,
+} from "@ionic/vue";
+import { useCollectionApi } from "@/composables/api/collectionApi";
+import { usePublicApi } from "@/composables/api/public";
+import CommunityFilter from "@/components/health/CommunityFilter.vue";
+
+const filterStore = useFilterStore();
 
 type Filter = { id: string; name: string };
 type FilterOption = {
   parentId: string;
   options: Filter[];
 };
+const currentStep = ref("");
+
+const changeCurrentStep = (value: string) => {
+  currentStep.value = value;
+};
 
 const props = defineProps<{
   modelValue: string[];
   filterKind: FilterKind;
-}>()
+}>();
 
-const emit = defineEmits(["selectBasicFilter", "close", "update:modelValue"])
+const emit = defineEmits(["selectBasicFilter", "close", "update:modelValue"]);
 
 const selectedFilter = ref<Filter>();
 const filterOptions = ref<FilterOption[]>([]);
-const loadingFilters = ref(false)
+const loadingFilters = ref(false);
 const mainFilters = ref([]);
 
 const propsModel = ref(props.modelValue);
 
 const emitClose = () => {
-  emit('close')
-}
+  emit("close");
+};
+
+const communityFilter = ref(null);
+
+const selectCommunityFilter = (filter: any) => {
+  communityFilter.value = filter;
+  filterStore.currentZip = filter.zip;
+  startSearch();
+};
+
+const startSearch = async () => {
+  await filterStore.loadAllResults();
+};
 
 const handleOptionSelect = (option: Filter) => {
   if (selectedFilter.value && selectedFilter.value.id !== option.id) {
-    const indexOfAlreadySetFilter = propsModel.value.findIndex((item) => item === selectedFilter.value.id);
+    const indexOfAlreadySetFilter = propsModel.value.findIndex(
+      (item) => item === selectedFilter.value.id
+    );
 
     if (indexOfAlreadySetFilter !== -1) {
       propsModel.value.splice(indexOfAlreadySetFilter, 1);
     }
   }
 
-  const previousIndex = propsModel.value.findIndex((item) => item === option.id);
+  const previousIndex = propsModel.value.findIndex(
+    (item) => item === option.id
+  );
 
   if (previousIndex !== -1) {
     propsModel.value.splice(previousIndex, 1);
@@ -98,7 +169,9 @@ onMounted(async () => {
   mainFilters.value = useFilterStore().basicFilters;
   const allFilters = await useFilterStore().getAllFilters();
 
-  const allOptions = mainFilters.value.map((filter) => allFilters.filter(item => item.parent_id === filter.id));
+  const allOptions = mainFilters.value.map((filter) =>
+    allFilters.filter((item) => item.parent_id === filter.id)
+  );
 
   allOptions.forEach((options, index) => {
     filterOptions.value.push({
@@ -114,13 +187,18 @@ onMounted(async () => {
   }, [] as Filter[]);
 
   const foundFilter = allAvailableOptions.find((option) => {
-    const doesInclude = props.modelValue.find((item: string) => item === option.id);
+    const doesInclude = props.modelValue.find(
+      (item: string) => item === option.id
+    );
     return doesInclude;
   });
 
   selectedFilter.value = foundFilter;
-})
+});
 
+onIonViewWillEnter(() => {
+  currentStep.value = "types";
+});
 </script>
 
 <style lang="sass" scoped>
