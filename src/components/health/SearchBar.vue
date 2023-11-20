@@ -36,7 +36,7 @@ const placeholder = computed(() => {
   if (props.placeHolderText && !props.loading) {
     return props.placeHolderText;
   } else {
-    return "Suche nach Themen, Anbietern,…";
+    return "Suche…";
   }
 });
 
@@ -58,7 +58,9 @@ ion-searchbar
   --background: white
   --background-color: white
   padding: 0
-  margin: 0
   --border-radius: 7px
   --box-shadow: none
+  transform: scale(1.2)
+  margin: 0 auto
+  width: 80%
 </style>

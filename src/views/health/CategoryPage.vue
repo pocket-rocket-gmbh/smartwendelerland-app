@@ -11,11 +11,11 @@
       </ion-header>
       <ion-content class="ion-padding">
         <img :src="selectedSubSubCategory?.image_url" class="modal-image" />
-        <div>
+        <div class="general-font-size">
           {{ selectedSubSubCategory?.description }}
         </div>
 
-        <ion-button expand="block" class="ion-margin-top" @click="handleClick(selectedSubSubCategory)">Mehr erfahren ></ion-button>
+        <ion-button expand="block" class="ion-margin-top"  @click="handleClick(selectedSubSubCategory)">Mehr erfahren ></ion-button>
       </ion-content>
     </ion-modal>
 
@@ -30,7 +30,7 @@
       </div>
 
       <div class="ion-padding-start ion-padding-end is-justified">
-        <div v-html="currentSubCategory?.description" />
+        <div class="general-font-size is-dark-grey" v-html="currentSubCategory?.description" />
       </div>
 
       <div v-for="subSubCategory in subSubCategories" :key="subSubCategory.id" class="health-sub-category-box">
@@ -38,7 +38,7 @@
         </div>
         <div class="content-right">
           <div class="headline has-text-health" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory">{{ subSubCategory.name }}</div>
-          <div class="content is-justified" v-html="subSubCategory.description" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory"></div>
+          <div class="content is-justified general-font-size is-dark-grey break-text"  v-html="subSubCategory.description" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory"></div>
           <div class="cta" @click="handleClick(subSubCategory)">Mehr erfahren ></div>
         </div>
       </div>
@@ -127,6 +127,6 @@ onIonViewDidEnter(() => {
 .modal-image
   width: 100px
   float: left
-  margin-right: 10px
+  margin-right: 20px
   margin-bottom: 10px
 </style>

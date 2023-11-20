@@ -1,8 +1,14 @@
 <template>
   <div v-if="filterStore.filteredResults.length > 0">
-    {{ filterStore.filteredResults.length  }}
-    <div v-for="facility in filterStore.filteredResults" :key="facility.id" class="facility-box" @click="router.push({ path: `/health/care_facilities/${facility.id}`})">
-      <div class="general-font-size-title is-dark-grey">{{ facility.name }}</div>
+    <div
+      v-for="facility in filterStore.filteredResults"
+      :key="facility.id"
+      class="facility-box"
+      @click="router.push({ path: `/health/care_facilities/${facility.id}` })"
+    >
+      <div class="general-font-size-subtitle is-dark-grey">
+        {{ facility.name }}
+      </div>
       <!-- <div class="tag-chips" v-if="facility.tags.length">
         <ion-chip v-for="tag in displayedTags(facility)" :key="tag.id">
           <span @click.stop="emitSearch(tag.name)" class="break-text">{{ tag.name }}</span>
@@ -12,50 +18,72 @@
         </ion-chip>
       </div> -->
       <div class="general-font-size is-dark-grey">
-        <div class="contact " v-if="facilityKind !== 'news'">
+        <div class="contact" v-if="facilityKind !== 'news'">
           <div class="informations">
-           <div class="icon-contact">
-              <img src="@/assets/images/facilities/icon_address.svg" />
-           </div>
-           <div>
-            <div class="ion-padding">
+            <div class="icon-contact">
+              <img class="icon" src="@/assets/images/facilities/icon_address.svg" />
+            </div>
+            <div >
               <div>
                 {{ facility.street }}
               </div>
-              <span class="zip-code">
-                {{ facility.zip }}
-              </span>
-              <span>
+
+              <div>
+                <span class="zip-code">
+                  {{ facility.zip }}
+                </span>
                 {{ facility.town }}
-              </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="informations">
+            <div class="icon-contact">
+              <img src="@/assets/images/facilities/icon_phone.svg" />
+              <img src="@/assets/images/facilities/icon_mail.svg" />
+            </div>
+            <div class="contact-information">
+              <div class="phone">
+                {{ facility.phone }}
+              </div>
+
+              <div class="email">
+                {{ facility.email }}
               </div>
             </div>
           </div>
         </div>
-  
 
         <div class="contact" v-if="facilityKind === 'news'">
-          <div><span><img src="@/assets/images/watch.svg"></span> {{ useDatetime().parseDatetime(facility.created_at) }}</div>
+          <div>
+            <span><img src="@/assets/images/watch.svg" /></span>
+            {{ useDatetime().parseDatetime(facility.created_at) }}
+          </div>
         </div>
         <div class="contact" v-if="facilityKind === 'news'">
-          <div v-if="facility.user"><span><img src="@/assets/images/user.svg"></span> {{ facility.user.name }}</div>
+          <div v-if="facility.user">
+            <span><img src="@/assets/images/user.svg" /></span>
+            {{ facility.user.name }}
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div v-else>Keine Ergebnisse gefunden.</div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, ref, defineEmits } from 'vue'
-import { useFilterStore, filterSortingDirections } from "@/stores/health/searchFilter";
+import { computed, defineProps, ref, defineEmits } from "vue";
+import {
+  useFilterStore,
+  filterSortingDirections,
+} from "@/stores/health/searchFilter";
 import { useRouter } from "vue-router";
-import { useDatetime } from '@/composables/ui/datetime';
+import { useDatetime } from "@/composables/ui/datetime";
 
-const router = useRouter()
+const router = useRouter();
 const filterStore = useFilterStore();
 
-defineProps(['facilityKind'])
+defineProps(["facilityKind"]);
 
 /* const emitSearch = (tag:string) => {
   filterStore.currentSearchTerm = tag
@@ -73,20 +101,20 @@ const displayedTags = computed(() => (facility: { showAllTags: any; tags: string
   return facility.showAllTags ? facility.tags : facility.tags.slice(0, 3);
 }); */
 
-const formatFacilityKind = (facilityKind:string) => {
+const formatFacilityKind = (facilityKind: string) => {
   switch (facilityKind) {
-    case 'facility':
-      return 'Anbieter'
-    case 'news':
-      return 'News'
-    case 'event':
-      return 'Veranstaltung'
-    case 'course':
-      return 'Kurs'
+    case "facility":
+      return "Anbieter";
+    case "news":
+      return "News";
+    case "event":
+      return "Veranstaltung";
+    case "course":
+      return "Kurs";
     default:
-      return ''
+      return "";
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>
@@ -123,17 +151,30 @@ const formatFacilityKind = (facilityKind:string) => {
 
 .icon-contact
   display: flex
-  align-content: center
-  width: 30px
+  flex-direction: column
+  justify-content: center
+  gap: 1.2rem
   margin-right: 10px
+  margin-top: 1rem
 
-.tag-chips
+.icon
+  margin-bottom: 1rem  
+.contact-information
+  display: flex
+  flex-direction: column
+  justify-content: center
+  gap: .7rem
+  margin-right: 10px
+  align-content: center
+  margin-top: 1rem
+
+/* .tag-chips
   display: flex
   align-content: center
   flex-wrap: wrap
 
-ion-chip
+/* ion-chip
   --background: var(--ion-color-health)
   --color: white
-  font-size: 1.2rem
-  </style>
+  font-size: 1.2rem */ 
+</style>

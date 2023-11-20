@@ -2,26 +2,26 @@
   <ion-modal :is-open="true" :can-dismiss="true">
     <ion-header>
       <ion-toolbar>
-        <ion-title>Branche wählen</ion-title>
+        <ion-title>{{ currenStepTitle }}</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="emitClose()">Fertig</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-header>
-      <ion-toolbar>
+      
         <ion-segment>
           <ion-segment-button @click.prevent="changeCurrentStep('types')">
-            <ion-label>Branche</ion-label>
+            <ion-label class="general-fint-size">Branche</ion-label>
           </ion-segment-button>
           <ion-segment-button @click.prevent="changeCurrentStep('community')">
             <ion-label>Gemeinde</ion-label>
           </ion-segment-button>
           <ion-segment-button @click.prevent="changeCurrentStep('filter')">
-            <ion-label>Filter</ion-label>
+            <ion-label>Leistung</ion-label>
           </ion-segment-button>
         </ion-segment>
-      </ion-toolbar>
+  
     </ion-header>
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
       <div v-if="!loadingFilters" class="filters">
@@ -30,7 +30,14 @@
             {{ filter.name }}
           </div>
           <div class="filter-options">
-            <label :for="option.id" class="option" v-for="(option, index) in filterOptions.find(({ parentId }) => parentId === filter.id).options" :key="index">
+            <label
+              :for="option.id"
+              class="option"
+              v-for="(option, index) in filterOptions.find(
+                ({ parentId }) => parentId === filter.id
+              ).options"
+              :key="index"
+            >
               <div
                 :model-value="modelValue.includes(option.id)"
                 @click.prevent="handleOptionSelect(option)"
@@ -47,13 +54,23 @@
           </div>
         </div>
       </div>
-      <ion-loading :is-open="loadingFilters" message="Filter werden geladen..." />
+      <ion-loading
+        :is-open="loadingFilters"
+        message="Filter werden geladen..."
+      />
     </ion-content>
     <ion-content v-if="currentStep === 'community'">
-      <CommunityFilter ref="communityFilterRef" @selectCommunityFilter="selectCommunityFilter" />
+      <CommunityFilter
+        ref="communityFilterRef"
+        @selectCommunityFilter="selectCommunityFilter"
+      />
     </ion-content>
-    <ion-content v-if="currentStep === 'filter'"> 
-      <AdvancedFilter :filter-kind="filterKind" :model-value="modelValue" @update:model-value="handleSelectAdvancedFilter" />
+    <ion-content v-if="currentStep === 'filter'">
+      <AdvancedFilter
+        :filter-kind="filterKind"
+        :model-value="modelValue"
+        @update:model-value="handleSelectAdvancedFilter"
+      />
     </ion-content>
   </ion-modal>
 </template>
@@ -74,6 +91,7 @@ import {
   IonTitle,
   IonToolbar,
   onIonViewWillEnter,
+  IonToast,
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref } from "vue";
 import AdvancedFilter from "./AdvancedFilter.vue";
@@ -85,10 +103,22 @@ type FilterOption = {
   parentId: string;
   options: Filter[];
 };
-const currentStep = ref("");
+const currentStep = ref('types');
+const currenStepTitle = ref("Branche wählen")
+
+const tableTile = () => {
+  if (currentStep.value === "types") {
+    currenStepTitle.value = "Branche wählen";
+  } else if (currentStep.value === "community") {
+    currenStepTitle.value = "Gemeinde wählen";
+  } else if (currentStep.value === "filter") {
+    currenStepTitle.value = "Leistung wählen";
+  }
+}
 
 const changeCurrentStep = (value: string) => {
   currentStep.value = value;
+  tableTile();
 };
 
 const props = defineProps<{
@@ -128,14 +158,18 @@ const startSearch = async () => {
 
 const handleOptionSelect = (option: Filter) => {
   if (selectedFilter.value && selectedFilter.value.id !== option.id) {
-    const indexOfAlreadySetFilter = propsModel.value.findIndex((item) => item === selectedFilter.value.id);
+    const indexOfAlreadySetFilter = propsModel.value.findIndex(
+      (item) => item === selectedFilter.value.id
+    );
 
     if (indexOfAlreadySetFilter !== -1) {
       propsModel.value.splice(indexOfAlreadySetFilter, 1);
     }
   }
 
-  const previousIndex = propsModel.value.findIndex((item) => item === option.id);
+  const previousIndex = propsModel.value.findIndex(
+    (item) => item === option.id
+  );
 
   if (previousIndex !== -1) {
     propsModel.value.splice(previousIndex, 1);
@@ -156,7 +190,9 @@ onMounted(async () => {
   mainFilters.value = useFilterStore().basicFilters;
   const allFilters = await useFilterStore().getAllFilters();
 
-  const allOptions = mainFilters.value.map((filter) => allFilters.filter((item) => item.parent_id === filter.id));
+  const allOptions = mainFilters.value.map((filter) =>
+    allFilters.filter((item) => item.parent_id === filter.id)
+  );
 
   allOptions.forEach((options, index) => {
     filterOptions.value.push({
@@ -172,7 +208,9 @@ onMounted(async () => {
   }, [] as Filter[]);
 
   const foundFilter = allAvailableOptions.find((option) => {
-    const doesInclude = props.modelValue.find((item: string) => item === option.id);
+    const doesInclude = props.modelValue.find(
+      (item: string) => item === option.id
+    );
     return doesInclude;
   });
 
@@ -184,4 +222,9 @@ onIonViewWillEnter(() => {
 });
 </script>
 
-<style lang="sass" scoped></style>
+<style lang="sass" scoped>
+ion-segment-button
+  height: 50px
+  min-height: 50px
+  font-size: 1.2rem
+</style>

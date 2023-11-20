@@ -15,16 +15,25 @@
         style="--swiper-pagination-color: #8ab61d; --swiper-pagination-top: 8px"
       >
         <swiper-slide>
-          <img :src="imageCache.cacheableImageUrl(facility.image_url)" class="showroom" />
+          <img
+            :src="imageCache.cacheableImageUrl(facility.image_url)"
+            class="showroom"
+          />
           <img v-if="facility.logo_url" :src="facility.logo_url" class="logo" />
         </swiper-slide>
-        <swiper-slide v-for="(image, index) in facility.sanitized_images" :key="index">
-          <img :src="imageCache.cacheableImageUrl(image.url)" class="showroom" />
+        <swiper-slide
+          v-for="(image, index) in facility.sanitized_images"
+          :key="index"
+        >
+          <img
+            :src="imageCache.cacheableImageUrl(image.url)"
+            class="showroom"
+          />
         </swiper-slide>
         <div class="pagination" />
       </swiper>
 
-      <div class="headline ion-margin-top">
+      <div class="general-font-size-title is-dark-grey ion-margin-top">
         {{ facility.name }}
         <img
           src="@/assets/images/check-decagram-outline.svg"
@@ -32,22 +41,30 @@
           v-if="facility.billable_through_health_insurance_approved"
         />
       </div>
-      <div class="has-text-health tags ion-margin-bottom" v-if="facility.tags.length > 0">
-        <span v-for="tag in facility.tags" :key="tag.id">{{ tag.name }}</span>
+
+      <div class="tag-chips" v-if="facility.tags.length">
+        <ion-chip v-for="tag in displayedTags(facility)" :key="tag.id">
+          <span class="break-text">{{ tag.name }}</span>
+        </ion-chip>
+        <ion-chip
+          v-if="facility.tags.length > 3 && !facility.showAllTags"
+          @click.stop="showAllTags(facility)"
+        >
+          <span>+ {{ facility.tags.length - 1 }}</span>
+        </ion-chip>
       </div>
 
-      <div v-html="facility.description" class="general-font-size" />
-      <div v-if="facility.name_responsible_person" class="ion-margin-bottom">
+      <div
+        v-html="facility.description"
+        class="general-font-size is-dark-grey"
+      />
+      <div v-if="facility.name_responsible_person" class="ion-margin-bottom general-font-size is-dark-grey">
         <i>Inhaltlich verantwortlich: {{ facility.name_responsible_person }}</i>
       </div>
       <div v-if="facility.kind === 'news'" class="news-grid">
         <div>
           <span><img src="@/assets/images/watch.svg" /></span>
           {{ useDatetime().parseDatetime(facility.created_at) }}
-        </div>
-
-        <div v-if="facility.user">
-          <span><img src="@/assets/images/user.svg" /></span> {{ facility.user.name }}
         </div>
       </div>
       <div v-else class="more-infos ion-padding">
@@ -59,20 +76,28 @@
             <ion-row>
               <ion-col size-sm="12" size-md="8">
                 <div v-if="facility.phone" class="info-grid">
-                  <div><img src="@/assets/images/facilities/icon_phone.svg" /></div>
+                  <div>
+                    <img src="@/assets/images/facilities/icon_phone.svg" />
+                  </div>
                   <div class="general-font-size">
                     <a :href="`tel:${facility.phone}`">{{ facility.phone }}</a>
                   </div>
                 </div>
                 <div v-if="facility.email" class="info-grid">
-                  <div><img src="@/assets/images/facilities/icon_mail.svg" /></div>
+                  <div>
+                    <img src="@/assets/images/facilities/icon_mail.svg" />
+                  </div>
                   <div class="general-font-size">
-                    <a :href="`mailto:${facility.email}`">{{ facility.email }}</a>
+                    <a :href="`mailto:${facility.email}`">{{
+                      facility.email
+                    }}</a>
                   </div>
                 </div>
                 <div v-if="facility.street" class="info-grid">
-                  <div><img src="@/assets/images/facilities/icon_address.svg" /></div>
-                  <div class="general-font-size">
+                  <div>
+                    <img src="@/assets/images/facilities/icon_address.svg" />
+                  </div>
+                  <div class="general-font-size is-dark-grey">
                     <div>{{ facility.street }}</div>
                     <div>{{ facility.zip }} {{ facility.town }}</div>
                   </div>
@@ -120,13 +145,17 @@
             >
               Öffnungszeiten
             </div>
-            <div class="general-font-size ion-no-padding">
-              <ion-row v-for="opening in facility.opening_hours" :key="opening.day">
-                <ion-col size="4" size-md="2">
-                  <ion-label>{{ opening.day }}</ion-label>
+            <div class="general-font-size is-dark-grey ion-no-padding">
+              <ion-row
+                v-for="opening in facility.opening_hours"
+                :key="opening.day"
+                class="divider"
+              >
+                <ion-col size="4" size-md="6" >
+                  <ion-label class="is-dark-grey general-font-size">{{ opening.day }}</ion-label>
                 </ion-col>
-                <ion-col v-if="opening.hours.length">
-                  <ion-label>{{ opening.hours }}</ion-label>
+                <ion-col size="4" size-md="6" v-if="opening.hours.length">
+                  <ion-label class="is-dark-grey general-font-size">{{ opening.hours }}</ion-label>
                 </ion-col>
               </ion-row>
             </div>
@@ -138,7 +167,9 @@
         class="more-infos ion-margin-top ion-padding"
         v-if="facility.event_dates.length > 0"
       >
-        <div class="has-text-health font-size-medium is-uppercase ion-margin-bottom">
+        <div
+          class="has-text-health font-size-medium is-uppercase ion-margin-bottom"
+        >
           Termine
         </div>
         <div class="ion-margin-bottom">
@@ -154,14 +185,20 @@
             <th>Uhrzeit</th>
           </thead>
           <tbody>
-            <tr v-for="(date, index) in mapDates(facility.event_dates)" :key="index">
+            <tr
+              v-for="(date, index) in mapDates(facility.event_dates)"
+              :key="index"
+            >
               <td>
-                {{ date.getDate() }}.{{ formattedDateString(date.getMonth() + 1) }}.{{
-                  date.getFullYear()
-                }}
+                {{ date.getDate() }}.{{
+                  formattedDateString(date.getMonth() + 1)
+                }}.{{ date.getFullYear() }}
               </td>
               <td>
-                {{ date.getHours() }}:{{ formattedDateString(date.getMinutes()) }} Uhr
+                {{ date.getHours() }}:{{
+                  formattedDateString(date.getMinutes())
+                }}
+                Uhr
               </td>
             </tr>
           </tbody>
@@ -174,7 +211,9 @@
         :key="document.signed_id"
         @click="handleLinkClick(document.url)"
       >
-        <div class="has-text-health font-size-medium is-uppercase ion-margin-bottom">
+        <div
+          class="has-text-health font-size-medium is-uppercase ion-margin-bottom"
+        >
           Dokumente
         </div>
 
@@ -215,6 +254,19 @@ const facilityId = computed(() => {
 
 const showApi = useCollectionApi();
 const facility = showApi.item;
+
+const showMoreButton = ref(true);
+
+const showAllTags = (facility: { showAllTags: boolean }) => {
+  facility.showAllTags = true;
+  showMoreButton.value = false;
+};
+
+const displayedTags = computed(
+  () => (facility: { showAllTags: any; tags: string | any[] }) => {
+    return facility.showAllTags ? facility.tags : facility.tags.slice(0, 3);
+  }
+);
 
 const getItem = async () => {
   showApi.setBaseApi(usePublicApi("health"));
@@ -344,4 +396,14 @@ const modules = [Pagination];
   align-content: center
   width: 30px
   margin-right: 10px
+
+.tag-chips
+  display: flex
+  align-content: center
+  flex-wrap: wrap
+
+ion-chip
+  --background: var(--ion-color-health)
+  --color: white
+  font-size: 1.2rem
 </style>

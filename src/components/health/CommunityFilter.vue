@@ -22,27 +22,30 @@
         </div>
       </label>
     </div>
+
   </ion-content>
+  <ion-loading :is-open="loadingFilters" message="Gemeinde werden geladen..." />
 </template>
 
 <script setup lang="ts">
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
 import { onMounted, ref, defineEmits, defineExpose } from "vue";
-import {
-
-  useFilterStore,
-} from "@/stores/health/searchFilter";
+import { useFilterStore } from "@/stores/health/searchFilter";
+import { IonButton, IonContent, IonFooter, IonHeader, IonTitle, IonToast, IonToolbar, IonLoading } from '@ionic/vue';
 const filterStore = useFilterStore();
 const emit = defineEmits(["selectCommunityFilter"]);
 
 const selectedFilter = ref(null);
+const loadingFilters = ref(false);
 const communitiesApi = useCollectionApi();
 communitiesApi.setBaseApi(usePublicApi("health"));
 communitiesApi.setEndpoint(`communities`);
 const communities = communitiesApi.items;
 const getCommunities = async () => {
+  loadingFilters.value = true;
   await communitiesApi.retrieveCollection();
+  loadingFilters.value = false;
 };
 
 const resetFilter = () => {
@@ -54,11 +57,10 @@ onMounted(() => {
 });
 
 const selectCommunityFilterValue = (selectedFilter: any) => {
-  console.log("selectedFilter", selectedFilter)
+  console.log("selectedFilter", selectedFilter);
   selectedFilter.value = selectedFilter;
   emit("selectCommunityFilter", selectedFilter.value);
 };
-
 
 defineExpose({ resetFilter });
 </script>

@@ -1,5 +1,9 @@
 <template>
-  <BackButtonLayout force-back="/health/categories" :show-login="false" :title="searchLabel">
+  <BackButtonLayout
+    force-back="/health/categories"
+    :show-login="false"
+    :title="searchLabel"
+  >
     <BasicFilterModal
       :filter-kind="facilityKind"
       v-model="filterStore.currentTags"
@@ -17,53 +21,24 @@
       <div class="gap-1"></div>
       <div class="gap-1"></div>
       <div class="gap-1"></div>
-      <div class="search-wrap">
-        <SearchBar
-          @handleSearch="handleSearch"
-          :placeHolderText="placeHolderText"
-        />
-      </div>
-      <template v-if="facilityKind">
-        <template
-          v-if="facilityKind === 'facility' || facilityKind === 'course'"
-        >
-          <div class="general-font-size-title is-white">Branche</div>
-          <div class="gap-1" />
-          <div
-            :class="['filter-button', { 'is-active': basicFilter !== null }]"
-            @click="basicFilterModalOpen = true"
-          >
-            <span v-if="basicFilter">{{ basicFilter.name }}</span>
-            <span v-else class="placeholder">Branche wählen</span>
-          </div>
-        </template>
-
-        <div
-          :class="
-            facilityKind === 'facility' || facilityKind === 'course'
-              ? 'grid-2'
-              : 'grid-1'
-          "
-        >
-          <div>
-            <div class="general-font-size-title is-white">Gemeinde</div>
-            <div class="gap-1" />
-            <CommunityFilter
-              ref="communityFilterRef"
-              @selectCommunityFilter="selectCommunityFilter"
-            />
-          </div>
+      <ion-row>
+        <ion-col class="search-wrap" size="10" size-sm="8">
+          <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" />
+        </ion-col>
+        <ion-col v-if="facilityKind" size-sm="4" class="icon-container">
           <div v-if="facilityKind === 'facility' || facilityKind === 'course'">
-            <div class="label">&nbsp;</div>
-            <img
-              src="@/assets/images/filter.svg"
-              class="filter-icon"
-              @click="advancedFilterModalOpen = true"
-            />
+            <div class="filter-container">
+              <img
+                src="@/assets/images/filter.svg"
+                class="filter-icon"
+                @click="basicFilterModalOpen = true"
+              />
+              <span class="is-white counter">{{ countSelectedFilters }}</span>
+            </div>
           </div>
-        </div>
-      </template>
-      <template v-else>
+        </ion-col>
+      </ion-row>
+      <template v-if="!facilityKind">
         <div class="buttons flex-wrap">
           <button
             v-for="kind in filteredKinds"
@@ -77,11 +52,7 @@
       </template>
 
       <div class="buttons">
-        <ion-button
-          class="transparent"
-          expand="block"
-          shape="round"
-          @click="resetFilter"
+        <ion-button class="transparent" expand="block" shape="round" @click="resetFilter"
           >Zurücksetzen</ion-button
         >
         <div v-if="facilityKind === 'facility'">
@@ -89,11 +60,19 @@
             :class="['white has-border', view === 'list' ? 'list' : 'map']"
             expand="block"
             @click="toggleView"
-            >{{
-              view === "list" ? "Kartenansicht" : "Listenansicht"
-            }}</ion-button
+            >{{ view === "list" ? "Kartenansicht" : "Listenansicht" }}</ion-button
           >
         </div>
+      </div>
+    </div>
+    <div class="bottom-actions has-bg-darken-grey general-font-size">
+      <div v-if="filterStore.loading">Lade...</div>
+
+      <div class="general-font-size" v-else-if="filterStore.filteredResults.length">
+        {{ filterStore.filteredResults.length }} Treffer
+      </div>
+      <div class="general-font-size" v-else>
+        Leider keine Ergebnisse gefunden. Bitte passe deine Suche an.
       </div>
     </div>
     <div>
@@ -145,16 +124,24 @@ const placeHolderText = computed(() => {
 });
 
 const pageTile = computed(() => {
-  if (facilityKind.value === 'facility') {
-    return 'Anbietern';
-  } else if (facilityKind.value === 'course') {
-    return 'Kursen';
-  } else if (facilityKind.value === 'event') {
-    return 'Veranstaltungen';
-  } else if (facilityKind.value === 'news') {
-    return 'Beiträgen';
+  if (facilityKind.value === "facility") {
+    return "Anbietern";
+  } else if (facilityKind.value === "course") {
+    return "Kursen";
+  } else if (facilityKind.value === "event") {
+    return "Veranstaltungen";
+  } else if (facilityKind.value === "news") {
+    return "Beiträgen";
   } else {
-    return 'Allgemeine Suche';
+    return "Allgemeine Suche";
+  }
+});
+
+const countSelectedFilters = computed(() => {
+  if (filterStore.currentZip) {
+    return filterStore.currentTags?.length + 1;
+  } else {
+    return filterStore.currentTags?.length;
   }
 });
 
@@ -162,7 +149,7 @@ const searchLabel = computed(() => {
   if (facilityKind.value) {
     return `Suche nach passenden ${pageTile.value}`;
   } else {
-    return 'Allgemeine Suche';
+    return "Allgemeine Suche";
   }
 });
 
@@ -184,9 +171,7 @@ const addParamsToLocation = (params: any) => {
       "?" +
       Object.keys(params)
         .map((key) => {
-          return (
-            encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
-          );
+          return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
         })
         .join("&")
   );
@@ -204,9 +189,7 @@ const toggleView = () => {
 };
 
 const filteredKinds = computed(() => {
-  return Array.from(
-    new Set(filterStore.filteredResults.map((result) => result.kind))
-  );
+  return Array.from(new Set(filterStore.filteredResults.map((result) => result.kind)));
 });
 
 const getMappedKindName = (kind: "facility" | "news" | "event" | "course") => {
@@ -223,16 +206,10 @@ const selectBasicFilter = (filter: any) => {
   // startSearch()
 };
 
-const selectCommunityFilter = (filter: any) => {
-  communityFilter.value = filter;
-  filterStore.currentZip = filter.zip;
-  startSearch();
-};
-
 const resetFilter = () => {
   basicFilter.value = null;
   communityFilter.value = null;
-  communityFilterRef.value.resetFilter();
+  communityFilterRef.value = null;
   filterStore.currentSearchTerm = "";
   filterStore.currentTags = [];
   filterStore.currentZip = null;
@@ -309,11 +286,43 @@ onIonViewWillLeave(() => {
   ion-button
     flex: 1
 
-.filter-icon
-  color: white
-  width: 30px
+
+.icon-container
+  display: flex
+  flex-wrap: wrap
+  align-content: center
+  align-items: center
+  margin-top: -1rem
   .flex-wrap
   flex-wrap: wrap
   justify-content: start
-</style>
 
+.bottom-actions
+  display: flex
+  flex-wrap: wrap
+  align-content: center
+  align-items: center
+  height: 50px
+  width: 100%
+  justify-content: center
+  background: #636362
+  color: white
+  text-align: center
+
+.filter-container
+  margin-top: -10px
+  display: flex
+  align-items: center
+  justify-content: center
+  .counter
+    color: #8ab61d
+    margin-top: -40px
+    margin-left: -12px
+    background-color: #ffffff
+    padding: 2px 9px
+    border-radius: 50%
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
+.filter-icon
+  color: white
+  width: 30px
+</style>

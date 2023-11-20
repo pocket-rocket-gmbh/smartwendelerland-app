@@ -3,25 +3,45 @@
     <div v-if="!loadingFilters" class="filters">
       <div v-for="filter in advancedFilters" :key="filter.key">
         <div v-for="item in filter.next" :key="item.id">
-          <div v-if="item.next.length" class="filter-name">
-            {{ item.title.replace("(nur von ärztlichen/ therapeutischen Leistungserbringern auszuwählen)", "") }}
+          <div v-if="item.next.length" class="filter-name general-font-size-title is-dark-grey">
+            {{
+              item.title.replace(
+                "(nur von ärztlichen/ therapeutischen Leistungserbringern auszuwählen)",
+                ""
+              )
+            }}
           </div>
           <div class="filter-options">
             <div v-for="subItem in item.next" :key="subItem.id">
-              <label class="option is-fullwidth" :for="subItem.id">
-                <input
-                  type="checkbox"
-                  :checked="selectedFilters.includes(subItem.id)"
-                  :id="subItem.id"
-                  :class="[!subItem?.next?.length ? '' : 'invisible']"
-                  @change="toggleSelection(subItem)"
-                />
-                {{ subItem.title }}
+              <label :for="subItem.id" class="option">
+                <div
+                  :model-value="modelValue.includes(subItem.id)"
+                  @click.prevent="toggleSelection(subItem)"
+                  hide-details
+                  density="compact"
+                  class="options-select communities"
+                  :class="{
+                    'is-selected': selectedFilters.includes(subItem.id),
+                  }"
+                >
+                  {{ subItem.title }}
+                </div>
               </label>
 
               <div v-if="subItem.next.length > 0">
-                <label v-for="tag in subItem.next" class="option indent is-fullwidth" :for="tag.id" :key="tag.id">
-                  <input type="checkbox" :checked="selectedFilters.includes(tag.id)" :value="tag.id" :id="tag.id" @change="toggleSelection(tag)" />
+                <label
+                  v-for="tag in subItem.next"
+                  class="option indent is-fullwidth"
+                  :for="tag.id"
+                  :key="tag.id"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="selectedFilters.includes(tag.id)"
+                    :value="tag.id"
+                    :id="tag.id"
+                    @change="toggleSelection(tag)"
+                  />
                   {{ tag.title }}
                 </label>
               </div>
@@ -35,7 +55,7 @@
     <div class="gap-1" />
     <div class="gap-1" />
     <div class="gap-1" />
-    <ion-loading :is-open="loadingFilters" message="Filter werden geladen..." />
+    <ion-loading :is-open="loadingFilters" message="Leistungen werden geladen..." />
   </ion-content>
 </template>
 
@@ -64,7 +84,9 @@ const emitClose = () => {
 
 const toggleSelection = (item: CollapsibleListItem) => {
   if (item.next?.length) {
-    const index = expandedItemIds.value.findIndex((expandedItemId) => expandedItemId === item.id);
+    const index = expandedItemIds.value.findIndex(
+      (expandedItemId) => expandedItemId === item.id
+    );
 
     if (index === -1) {
       expandedItemIds.value.push(item.id);
@@ -103,10 +125,6 @@ onMounted(async () => {
 
 <style lang="sass" scoped>
 .filters .option
-  display: block
-  padding: 0px 10px 11px 10px
-  margin-top: 10px
-
   .invisible
     opacity: 0
     width: 0
