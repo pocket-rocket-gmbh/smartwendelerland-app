@@ -31,24 +31,16 @@
   border-radius: 10px
   background: #F5F5F5
   display: grid
-  grid-template-columns: 140px auto
+  grid-template-columns: 100px auto
   margin: 20px 10px
   overflow: hidden
   .content-right
     padding: 10px
     color: #636362
     .content
-      height: 64px
-      overflow: hidden
-      display: -webkit-box
-      -webkit-line-clamp: 3
-      -webkit-box-orient: vertical
+      height: 5rem
     .headline
       font-weight: bold
-      overflow: hidden
-      display: -webkit-box
-      -webkit-line-clamp: 1
-      -webkit-box-orient: vertical
     .cta
       font-weight: bold
       font-size: 12px
@@ -99,6 +91,9 @@ ion-button.transparent
   border-radius: 30px
 ion-button.white
   --background: white
+  --background: white
+  color: black
+  --background: white 
   color: black
   --border-radius: 30px
   &.has-border
@@ -160,4 +155,22 @@ ion-button.white
   align-items: center
   gap: 1rem
    
+.divider
+  border-bottom: 1px solid rgba(99, 99, 98, 0.354)
+
+.break-text
+  word-break: break-word
+  overflow: hidden
+  display: -webkit-box
+  -webkit-line-clamp: 3
+  line-clamp: 3
+  -webkit-box-orient: vertical
+
+.break-title
+  word-break: break-word
+  overflow: hidden
+  display: -webkit-box
+  -webkit-line-clamp: 1
+  line-clamp: 1
+  -webkit-box-orient: vertical
 
