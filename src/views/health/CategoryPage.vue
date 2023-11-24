@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout force-back="/health/categories" :show-login="false">
+  <BackButtonLayout force-back="/health/categories" :show-login="false" :title="category?.name" :show-bar="true" :is-category-page="true">
     <ion-modal :is-open="true" v-if="detailModalOpen" @didDismiss="detailModalOpen = false; selectedSubSubCategory = null;">
       <ion-header>
         <ion-toolbar>
@@ -19,10 +19,7 @@
       </ion-content>
     </ion-modal>
 
-    <div v-if="category">
-      <div class="health-top-panel is-headline">
-        <div class="headline">{{ category?.name }}</div>
-      </div>
+    <div v-if="category" class="categories">
       <div class="health-category-tags">
         <span v-for="subCategory in subCategories" :key="subCategory.id" @click="setItemsAndGo(subCategory)" :class="['health-category-tag', {'is-active' : currentSubCategory?.id === subCategory.id }]">
           {{ subCategory.name }}
@@ -34,12 +31,12 @@
       </div>
 
       <div v-for="subSubCategory in subSubCategories" :key="subSubCategory.id" class="health-sub-category-box">
-        <div @click="handleClick(subSubCategory)" class="image-left" :style="`background: url(${subSubCategory.image_url}); background-size: contain; background-repeat: no-repeat;`">
+        <div @click="handleClick(subSubCategory)" class="image-left" :style="`background: url(${subSubCategory.image_url}); background-size: cover; background-repeat: no-repeat; background-position: center;`">
         </div>
         <div class="content-right">
           <div class="headline has-text-health" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory">{{ subSubCategory.name }}</div>
           <div class="content is-justified general-font-size is-dark-grey break-text"  v-html="subSubCategory.description" @click="detailModalOpen = true; selectedSubSubCategory = subSubCategory"></div>
-          <div class="cta" @click="handleClick(subSubCategory)">Mehr erfahren ></div>
+          <ion-chip @click="handleClick(subSubCategory)">Mehr erfahren ></ion-chip>
         </div>
       </div>
     </div>
@@ -129,4 +126,18 @@ onIonViewDidEnter(() => {
   float: left
   margin-right: 20px
   margin-bottom: 10px
+
+.image-left
+  max-width: 200px
+  max-height: 200px
+  @media (max-width: 768px)
+    display: none
+
+.categories
+  margin-top: 80px
+
+ion-chip
+  --background: var(--ion-color-health)
+  --color: white
+  font-size: 1.2rem
 </style>
