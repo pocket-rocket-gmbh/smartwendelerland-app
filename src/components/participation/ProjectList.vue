@@ -4,6 +4,7 @@
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <ion-searchbar
+      class="search-bar"
       placeholder="Projekt, PLZ oder Gemeinde suchen …"
       v-model="searchQuery"
       :debounce="2000"
@@ -221,4 +222,7 @@ export default defineComponent({
 <style lang="sass" scoped>
 .project-list
   margin-bottom: 150px
+
+.search-bar
+  margin-top: 30px
 </style>

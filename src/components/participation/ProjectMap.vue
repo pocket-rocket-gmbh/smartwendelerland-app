@@ -2,6 +2,7 @@
   <div class="base">
     <div class="mapcontainer">
       <ion-searchbar
+        class=search-bar
         placeholder="Projekt, PLZ oder Gemeinde suchen …"
         v-model="searchQuery"
         :debounce="2000"
@@ -335,4 +336,7 @@ div.mapcontainer
 
 #projectList
   background-color: #ffffff
+
+.search-bar
+  margin-top: 30px
 </style>
