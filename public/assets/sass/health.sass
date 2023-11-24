@@ -31,14 +31,15 @@
   border-radius: 10px
   background: #F5F5F5
   display: grid
-  grid-template-columns: 100px auto
+  grid-template-columns: 200px auto
   margin: 20px 10px
   overflow: hidden
+  @media (max-width: 768px)
+    display: flex
   .content-right
     padding: 10px
     color: #636362
-    .content
-      height: 5rem
+    
     .headline
       font-weight: bold
     .cta
@@ -64,7 +65,8 @@
   width: 100%
   overflow-x: auto
   white-space: nowrap
-  height: 50px
+  display: flex
+  justify-content: center
   margin-top: 10px
   padding-top: 10px
   padding-bottom: 10px
@@ -125,7 +127,6 @@ ion-button.white
     flex-wrap: wrap
     align-content: center
     align-items: center
-    gap: 1rem
 
     .option-label
       cursor: pointer
@@ -143,6 +144,7 @@ ion-button.white
   align-items: center
   cursor: pointer
   padding: 10px
+  margin: 10px
   margin-bottom: 0.5rem
   color: #636362
   background: white
@@ -153,7 +155,6 @@ ion-button.white
   flex-wrap: wrap
   align-content: center
   align-items: center
-  gap: 1rem
    
 .divider
   border-bottom: 1px solid rgba(99, 99, 98, 0.354)
@@ -162,8 +163,8 @@ ion-button.white
   word-break: break-word
   overflow: hidden
   display: -webkit-box
-  -webkit-line-clamp: 3
-  line-clamp: 3
+  -webkit-line-clamp: 6
+  line-clamp: 6
   -webkit-box-orient: vertical
 
 .break-title
