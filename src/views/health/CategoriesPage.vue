@@ -1,10 +1,6 @@
 <template>
   <BaseLayout :show-login="false">
     <ion-content class="ion-padding">
-      <SearchPanel
-      />
-      <div class="gap-1" />
-      <div class="gap-1" />
       <MainCategories />
     </ion-content>
 </BaseLayout>
