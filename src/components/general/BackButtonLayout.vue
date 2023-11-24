@@ -1,74 +1,150 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar class="page-toolbar">
-        <ion-buttons slot="start">
+    <ion-header v-if="projekRoute && showBar">
+      <ion-toolbar>
+        <ion-buttons slot="start" class="ion-padding">
           <ion-nav-link v-if="forceBack" :routerLink="forceBack">
             <IonIcon :icon="arrowBackOutline" />
           </ion-nav-link>
-          <ion-back-button class="is-dark-grey" v-else text="" default-href="/" :icon="arrowBackOutline" />
+          <ion-back-button v-else text="" default-href="/" :icon="arrowBackOutline" />
         </ion-buttons>
-        <ion-title class="is-dark-grey">{{ title }}</ion-title>
-        <ion-icon v-if="!useUser().loggedIn() && showLogin" @click="router.push('/login')" router-link="/login" :ios="logInOutline" :md="logInSharp" slot="end"></ion-icon>
-        <div v-else-if="showLogin" @click="router.push('/me')" router-link="/me" slot="end">
-          <UserProfile
-            :user="useUser().currentUser()"
-          />
+        <ion-icon
+          v-if="!useUser().loggedIn() && showLogin"
+          @click="router.push('/login')"
+          router-link="/login"
+          :ios="logInOutline"
+          :md="logInSharp"
+          slot="end"
+        ></ion-icon>
+        <div
+          v-else-if="showLogin"
+          @click="router.push('/me')"
+          router-link="/me"
+          slot="end"
+        >
+          <UserProfile :user="useUser().currentUser()" />
         </div>
       </ion-toolbar>
     </ion-header>
 
     <ion-content :fullscreen="true">
+      <div class="back-button" :class="[isCategoryPage ? 'category-page' : '']">
+        <ion-nav-link
+          v-if="forceBack && !showBar || isCategoryPage"
+          :routerLink="forceBack"
+        >
+          <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
+        </ion-nav-link>
+        <div class="page-title is-uppercase is-white" v-if="!isFacilityPage">{{ title }}</div>
+      </div>
       <slot />
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
-import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonBackButton, IonButtons, IonNavLink } from '@ionic/vue'
-import { logInOutline, logInSharp, personCircleOutline, personCircleSharp, arrowBackOutline } from 'ionicons/icons'
-import { useRouter } from 'vue-router'
-import { useUser } from '@/composables/user/user'
-import UserProfile from '@/components/UserProfile.vue'
+import { defineProps, computed } from "vue";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonIcon,
+  IonContent,
+  IonBackButton,
+  IonButtons,
+  IonNavLink,
+} from "@ionic/vue";
+import {
+  logInOutline,
+  logInSharp,
+  personCircleOutline,
+  personCircleSharp,
+  arrowBackOutline,
+} from "ionicons/icons";
+import { useRouter } from "vue-router";
+import { useUser } from "@/composables/user/user";
+import UserProfile from "@/components/UserProfile.vue";
 
 const props = defineProps({
   forceBack: {
-    type: String
+    type: String,
   },
   showLogin: {
     type: Boolean,
-    default: true
+    default: true,
+  },
+  showBar: {
+    type: Boolean,
+    default: true,
+  },
+  isFacilityPage: {
+    type: Boolean,
+    default: false,
   },
   title: {
     type: String,
-    default: 'Gesundheitplattform'
+    default: "",
+  },
+  isCategoryPage: {
+    type: Boolean,
+    default: false,
+  },  
+});
+
+const router = useRouter();
+const route = router.currentRoute;
+
+const projekRoute = computed(() => {
+  if (route.value.path.includes("participation")) {
+    return true;
   }
-})
-
-const router = useRouter()
-
+  return false;
+});
 </script>
 
-<style lang="sass" scoped>
-.logo
-  height: 40px
-  margin-left: 10px
+<style scoped>
+.logo {
+  height: 40px;
+  margin-left: 10px;
+}
+ion-icon {
+  font-size: 32px;
+  padding-right: 20px;
+}
 
-ion-icon 
-  font-size: 32px
-  padding-right: 20px
-  margin-top: 8px
-  color: #636362
+.back-button {
+  position: absolute;
+  padding-left: 10px;
+  z-index: 99;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+}
+.back-button-icon {
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 50%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #636362;
+}
 
-ion-toolbar
-  --border-width: 4px 0
-  --min-height: 50px
+.page-title {
+  font-size: 1.5rem;
+  margin-left: 10px;
+  font-weight: 600;
+}
 
-.page-toolbar 
-  display: flex
-  align-content: center
-  align-items: center
-  flex-wrap: wrap
+.category-page {
+  background: linear-gradient(66deg, #91A80D 0%, #BAC323 46.88%, #9EA100 95.31%);
+  margin-bottom: 20px;
+}
 
+.not-category-page {
+  margin-top: 20px;
+}
 </style>
