@@ -100,7 +100,7 @@ export default defineComponent({
 .slide
   background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%)
   border-radius: 20px
-  height: 70vh
+  height: 60vh
   text-align: center
   color: #FFFFFF
   padding: 40px 20px 20px 20px
