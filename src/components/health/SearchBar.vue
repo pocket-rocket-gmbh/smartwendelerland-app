@@ -36,7 +36,7 @@ const placeholder = computed(() => {
   if (props.placeHolderText && !props.loading) {
     return props.placeHolderText;
   } else {
-    return "Suche…";
+    return "Suche nach Themen, Anbietern, Kursen,...";  
   }
 });
 
