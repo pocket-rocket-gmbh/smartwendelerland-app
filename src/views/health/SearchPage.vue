@@ -3,6 +3,7 @@
     force-back="/health/categories"
     :show-login="false"
     :title="searchLabel"
+    :show-bar="false"
   >
     <BasicFilterModal
       :filter-kind="facilityKind"
@@ -18,14 +19,27 @@
       @close="advancedFilterModalOpen = false"
     />
     <div class="health-top-panel">
-      <div class="gap-1"></div>
-      <div class="gap-1"></div>
-      <div class="gap-1"></div>
-      <ion-row>
-        <ion-col class="search-wrap" size="10" size-sm="8">
-          <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" />
-        </ion-col>
-        <ion-col v-if="facilityKind" size-sm="4" class="icon-container">
+      <div class="search-col">
+        <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" />
+      </div>
+
+      <template v-if="!facilityKind">
+        <div class="gap-1"></div>
+        <div class="gap-1"></div>
+        <div class="buttons flex-wrap">
+          <ion-button
+            v-for="kind in filteredKinds"
+            :key="kind"
+            expand="block"
+            shape="round"
+            class="transparent general-font-size"
+            @click="setFacilityKind(kind)"
+            >{{ getMappedKindName(kind) }}</ion-button
+          >
+        </div>
+      </template>
+      <div class="grid-buttons">
+        <div>
           <div v-if="facilityKind === 'facility' || facilityKind === 'course'">
             <div class="filter-container">
               <img
@@ -36,40 +50,44 @@
               <span class="is-white counter">{{ countSelectedFilters }}</span>
             </div>
           </div>
-        </ion-col>
-      </ion-row>
-      <template v-if="!facilityKind">
-        <div class="buttons flex-wrap">
-          <button
-            v-for="kind in filteredKinds"
-            :key="kind"
-            class="filter-button"
-            @click="setFacilityKind(kind)"
-          >
-            {{ getMappedKindName(kind) }}
-          </button>
         </div>
-      </template>
-
-      <div class="buttons">
-        <ion-button class="transparent" expand="block" shape="round" @click="resetFilter"
-          >Zurücksetzen</ion-button
-        >
-        <div v-if="facilityKind === 'facility'">
+        <div>
           <ion-button
-            :class="['white has-border', view === 'list' ? 'list' : 'map']"
+            v-if="
+              (facilityKind && facilityKind === 'facility') || facilityKind === 'course'
+            "
+            class="transparent"
             expand="block"
-            @click="toggleView"
-            >{{ view === "list" ? "Kartenansicht" : "Listenansicht" }}</ion-button
+            shape="round"
+            @click="resetFilter"
+            >Filter löschen</ion-button
           >
+        </div>
+        <div>
+          <div v-if="facilityKind === 'facility'">
+            <ion-button
+              :class="['white', view === 'list' ? 'list' : 'map']"
+              expand="block"
+              class="is-dark-grey"
+              @click="toggleView"
+              >{{ view === "list" ? "Kartenansicht" : "Listenansicht" }}</ion-button
+            >
+          </div>
         </div>
       </div>
     </div>
     <div class="bottom-actions has-bg-darken-grey general-font-size">
-      <div v-if="filterStore.loading">Lade...</div>
+      <div v-if="filterStore.loading">Wird geladen...</div>
 
       <div class="general-font-size" v-else-if="filterStore.filteredResults.length">
-        {{ filterStore.filteredResults.length }} Treffer
+        <span>{{ filterStore.filteredResults.length }}</span>
+        <span v-if="facilityKind === 'facility'"> Anbieter </span>
+        <span v-if="facilityKind === 'course'"> Kurse </span>
+        <span v-if="facilityKind === 'event'"> Veranstaltungen </span>
+        <span v-if="facilityKind === 'news'"> Beiträge </span>
+        <span v-if="!facilityKind"> Ergebnisse </span>
+        <span v-if="view === 'map'">in deiner Nähe</span>
+        gefunden
       </div>
       <div class="general-font-size" v-else>
         Leider keine Ergebnisse gefunden. Bitte passe deine Suche an.
@@ -103,6 +121,8 @@ import {
 import { useRoute } from "vue-router";
 import SearchBar from "@/components/health/SearchBar.vue";
 import { debounce } from "@/utils/global.utils";
+import router from "@/router";
+import { MapLocation } from "@/types/MapLocation";
 
 const filterStore = useFilterStore();
 const advancedFilterModalOpen = ref(false);
@@ -114,40 +134,53 @@ const communityFilterRef = ref(null);
 const view = ref("list");
 const loading = ref(false);
 const route = useRoute();
+const locations = ref<MapLocation[]>([]);
 
 const placeHolderText = computed(() => {
   if (facilityKind.value === "facility") return "Name, Fachrichtung,…";
   if (facilityKind.value === "course") return "Name, Kursinhalt,…";
   if (facilityKind.value === "event") return "Name, Thema, Angebote,…";
-  if (facilityKind.value === "news") return "Nachrichten suchen";
+  if (facilityKind.value === "news") return "Beiträge suchen";
   return "";
 });
 
 const pageTile = computed(() => {
   if (facilityKind.value === "facility") {
-    return "Anbietern";
+    return "Anbieter";
   } else if (facilityKind.value === "course") {
-    return "Kursen";
+    return "Kurs";
   } else if (facilityKind.value === "event") {
-    return "Veranstaltungen";
+    return "Veranstaltung";
   } else if (facilityKind.value === "news") {
-    return "Beiträgen";
+    return "Beitrag";
   } else {
     return "Allgemeine Suche";
   }
 });
 
 const countSelectedFilters = computed(() => {
-  if (filterStore.currentZip) {
-    return filterStore.currentTags?.length + 1;
-  } else {
-    return filterStore.currentTags?.length;
+  let results = 0;
+  if (filterStore.currentSearchTerm.length) {
+    results += 1;
   }
+  if (filterStore.currentTags.length) {
+    results += filterStore.currentTags.length;
+  }
+  if (filterStore.currentZip) {
+    results += 1;
+  }
+  return results;
 });
 
 const searchLabel = computed(() => {
-  if (facilityKind.value) {
-    return `Suche nach passenden ${pageTile.value}`;
+  if (facilityKind.value === "facility") {
+    return `Finde den passenden ${pageTile.value}`
+  } else if (facilityKind.value === "course") {
+    return `Finde den passenden ${pageTile.value}`
+  } else if (facilityKind.value === "event") {
+    return `Finde die passende ${pageTile.value}`
+  } else if (facilityKind.value === "news") {
+    return `Finde den passenden ${pageTile.value}`
   } else {
     return "Allgemeine Suche";
   }
@@ -193,7 +226,7 @@ const filteredKinds = computed(() => {
 });
 
 const getMappedKindName = (kind: "facility" | "news" | "event" | "course") => {
-  if (kind === "facility") return "Zu den Einrichtungen";
+  if (kind === "facility") return "Zu den Anbietern";
   if (kind === "news") return "Zu den Beiträgen";
   if (kind === "course") return "Zu den Kursen";
   if (kind === "event") return "Zu den Veranstaltungen";
@@ -214,6 +247,22 @@ const resetFilter = () => {
   filterStore.currentTags = [];
   filterStore.currentZip = null;
 };
+
+onIonViewWillLeave(() => {
+  resetFilter();
+});
+
+onIonViewWillEnter(() => {
+  if (router.currentRoute.value.query.tags) {
+    filterStore.currentTags = JSON.parse(router.currentRoute.value.query.tags as string);
+  }
+  if (router.currentRoute.value.query.community) {
+    filterStore.currentZip = router.currentRoute.value.query.community as string;
+  }
+  if (router.currentRoute.value.query.tags && router.currentRoute.value.query.community) {
+    router.push({ path: `/health/search?kind=${facilityKind.value}` });
+  }
+});
 
 const startSearch = async () => {
   loading.value = true;
@@ -248,8 +297,13 @@ onIonViewWillLeave(() => {
 .label
   font-weight: bold
   color: white
-.search-wrap
-  margin: -15px 0 10px 0
+
+.grid-buttons
+  margin-top: 30px
+  display: grid
+  grid-template-columns: 9% 44% 44%
+  gap: 2%
+  align-items: center
 .grid-2
   align-items: end
   display: grid
@@ -281,21 +335,9 @@ onIonViewWillLeave(() => {
   display: grid
   grid-template-columns: 49% 49%
   gap: 2%
-  margin-top: 15px
   justify-content: space-between
   ion-button
     flex: 1
-
-
-.icon-container
-  display: flex
-  flex-wrap: wrap
-  align-content: center
-  align-items: center
-  margin-top: -1rem
-  .flex-wrap
-  flex-wrap: wrap
-  justify-content: start
 
 .bottom-actions
   display: flex
@@ -310,19 +352,23 @@ onIonViewWillLeave(() => {
   text-align: center
 
 .filter-container
-  margin-top: -10px
   display: flex
   align-items: center
-  justify-content: center
   .counter
     color: #8ab61d
-    margin-top: -40px
-    margin-left: -12px
+    margin-top: -50px
+    margin-left: -15px
     background-color: #ffffff
     padding: 2px 9px
     border-radius: 50%
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
 .filter-icon
   color: white
-  width: 30px
+  width: 50px
+
+.search-col
+  margin: 70px -10px 0 -10px
+
+ion-button
+  --background-activated: var(--ion-color-health)
 </style>
