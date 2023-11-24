@@ -6,7 +6,7 @@
           <ion-nav-link routerLink="/landing/participation">
             <div class="pile has-background-project" align="center">
               <img class="icon-project" src="@/assets/images/panel_project.svg" alt="project" />
-              <div class="headline">Projektplattform</div>
+              <div class="headline">meinWND</div>
             </div>
           </ion-nav-link>
         </ion-col>
@@ -16,7 +16,7 @@
           <ion-nav-link routerLink="/health/categories">
             <div class="pile has-background-health" align="center">
               <img class="icon-health" src="@/assets/images/panel_health.svg" alt="health" />
-              <div class="headline">Gesundheitsplattform</div>
+              <div class="headline">gesundesWND</div>
             </div>
           </ion-nav-link>
         </ion-col>
@@ -70,16 +70,14 @@ onMounted(() => {
   font-style: normal
   line-height: 35px
   letter-spacing: 2.25px
-  text-transform: uppercase
 
   .headline
-    text-transform: uppercase
     color: white
     font-size: 2rem
     text-align: center
     margin-top: 20px
     @media (max-width: 768px)
-    font-size: 1.5rem
+    font-size: 2rem
 
 .main-page
   display: flex
