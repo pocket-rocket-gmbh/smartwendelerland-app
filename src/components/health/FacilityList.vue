@@ -4,53 +4,119 @@
       v-for="facility in filterStore.filteredResults"
       :key="facility.id"
       class="facility-box"
-      @click="router.push({ path: `/health/care_facilities/${facility.id}` })"
+      @click="routeAndGo(facility)"
     >
-      <div class="general-font-size-subtitle is-dark-grey">
-        {{ facility.name }}
+      <div class="general-font-size-subtitle facility-name is-dark-grey">
+        <div>
+          {{ facility.name }}
+        </div>
+        <div>
+          <ion-icon v-if="facility.kind === 'facility'" class="icons-category" :src="iconFacilities" size="large"></ion-icon>
+           <ion-icon v-if="facility.kind === 'course'" class="icons-category" :src="iconCourses" size="large"></ion-icon>
+           <ion-icon v-if="facility.kind === 'event'" class="icons-category" :src="iconEvents" size="large"></ion-icon>
+           <ion-icon v-if="facility.kind === 'news'" class="icons-category" :src="iconNews" size="large"></ion-icon>
+        </div>
       </div>
-      <!-- <div class="tag-chips" v-if="facility.tags.length">
-        <ion-chip v-for="tag in displayedTags(facility)" :key="tag.id">
-          <span @click.stop="emitSearch(tag.name)" class="break-text">{{ tag.name }}</span>
-        </ion-chip>
-        <ion-chip v-if="facility.tags.length > 3 && !facility.showAllTags" @click.stop="showAllTags(facility)">
-          <span >+ {{ facility.tags.length - 1 }}</span>
-        </ion-chip>
-      </div> -->
       <div class="general-font-size is-dark-grey">
-        <div class="contact" v-if="facilityKind !== 'news'">
+        <div v-if="facilityKind !== 'news'">
           <div class="informations">
-            <div class="icon-contact">
-              <img class="icon" src="@/assets/images/facilities/icon_address.svg" />
+            <div>
+              <ion-icon
+                @click.stop="openMapsApp(facility.street)"
+                class="icons"
+                size="large"
+                :src="mapIcon"
+              ></ion-icon>
             </div>
-            <div >
+            <div>
               <div>
                 {{ facility.street }}
               </div>
-
               <div>
-                <span class="zip-code">
-                  {{ facility.zip }}
+                {{ facility.zip }}
+                <span>
+                  {{ facility.town }}
                 </span>
-                {{ facility.town }}
               </div>
             </div>
           </div>
-
+        </div>
+        <div v-if="facilityKind === 'facility' || facilityKind === 'news' || !facility?.event_dates.length">
           <div class="informations">
-            <div class="icon-contact">
-              <img src="@/assets/images/facilities/icon_phone.svg" />
-              <img src="@/assets/images/facilities/icon_mail.svg" />
+            <div>
+              <a class="is-dark-grey" :href="`tel:${facility.phone}`" @click.stop>
+                <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
+              </a>
             </div>
-            <div class="contact-information">
-              <div class="phone">
-                {{ facility.phone }}
-              </div>
+            <div>
+              {{ facility.phone }}
+            </div>
+          </div>
+          <div class="informations">
+            <div>
+              <a
+                class="is-dark-grey informations-mail"
+                :href="`mailto:${facility.email}`"
+                @click.stop
+              >
+                <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
+              </a>
+            </div>
+            <div>
+              {{ facility.email }}
+            </div>
+          </div>
+        </div>
 
-              <div class="email">
-                {{ facility.email }}
-              </div>
+        <div v-else-if="facility?.event_dates.length" class="informations-dates">
+          <div>
+            <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
+          </div>
+          <div class="event-chips" v-if="facility?.event_dates.length">
+            <span>Nächster Termin:</span>
+            <div class="dates" v-if="!facility.showAllEvents">
+              <span
+                ><i>{{ getDayOfWeek(facility?.event_dates[0].slice(0, 10)) }},</i
+                >&nbsp;</span
+              >
+              <span> {{ facility?.event_dates[0].slice(0, 10) }},&nbsp;</span>
+              <span
+                >{{
+                  facility?.event_dates[0].slice(
+                    Math.max(facility?.event_dates[0].length - 5, 1)
+                  )
+                }}
+                Uhr</span
+              >
             </div>
+
+            <ion-chip
+              v-if="facility?.event_dates.length >= 2 && !facility.showAllEvents"
+              @click.stop="showAllEvents(facility)"
+            >
+              <span>Weitere Termine</span>
+            </ion-chip>
+          </div>
+        </div>
+        <div
+          v-if="facility?.event_dates.length && showAllEvents && facility.showAllEvents"
+          class="informations"
+        >
+          <div>
+            <ion-icon class="icons" size="large"></ion-icon>
+          </div>
+          <div>
+            <span v-for="event in displayedEvents(facility)" :key="event.index">
+              <div class="informations">
+                <div class="dates">
+                  <span
+                    ><i>{{ getDayOfWeek(event.slice(0, 10)) }},</i>&nbsp;</span
+                  >
+                  <span>{{ event.slice(0, 10) }},&nbsp;</span>
+                  <span>{{ event.slice(Math.max(event.length - 5, 1)) }} Uhr</span>
+                </div>
+              </div>
+            </span>
           </div>
         </div>
 
@@ -76,44 +142,75 @@ import { computed, defineProps, ref, defineEmits } from "vue";
 import {
   useFilterStore,
   filterSortingDirections,
+  Facility,
 } from "@/stores/health/searchFilter";
 import { useRouter } from "vue-router";
 import { useDatetime } from "@/composables/ui/datetime";
+import mapIcon from "@/assets/images/facilities/icon_address.svg";
+import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
+import calendarIcon from "@/assets/images/facilities/icon_calendar.svg";
+import mailIcon from "@/assets/images/facilities/icon_mail.svg";
+import iconFacilities from "@/assets/images/main-categories/icon_app_facilities.svg";
+import iconEvents from "@/assets/images/main-categories/icon_app_events.svg";
+import iconCourses from "@/assets/images/main-categories/icon_app_courses.svg";
+import iconNews from "@/assets/images/main-categories/icon_app_news.svg";
+import { isPlatform } from "@ionic/vue";
+import mapMarker from "@/assets/images/facilities/icon_map_marker.svg";
+import { onIonViewWillEnter } from "@ionic/vue";
 
 const router = useRouter();
 const filterStore = useFilterStore();
 
-defineProps(["facilityKind"]);
+const showMoreButton = ref(true);
 
-/* const emitSearch = (tag:string) => {
-  filterStore.currentSearchTerm = tag
-  filterStore.loadFilteredResults()
-}
-
-const showMoreButton = ref(true)
-
-const showAllTags = (facility: { showAllTags: boolean; }) => {
-  facility.showAllTags = true;
-  showMoreButton.value = false
+const showAllEvents = (facility: { showAllEvents: boolean }) => {
+  facility.showAllEvents = true;
+  showMoreButton.value = false;
 };
 
-const displayedTags = computed(() => (facility: { showAllTags: any; tags: string|any[]; }) => {
-  return facility.showAllTags ? facility.tags : facility.tags.slice(0, 3);
-}); */
-
-const formatFacilityKind = (facilityKind: string) => {
-  switch (facilityKind) {
-    case "facility":
-      return "Anbieter";
-    case "news":
-      return "News";
-    case "event":
-      return "Veranstaltung";
-    case "course":
-      return "Kurs";
-    default:
-      return "";
+const displayedEvents = computed(
+  () => (facility: { showAllEvents: any; tags: string | any[] }) => {
+    return facility.showAllEvents
+      ? facility?.event_dates
+      : facility.event_dates.slice(0, 0);
   }
+);
+
+const getDayOfWeek = (event: string) => {
+  const [day, month, year] = event.split(".").map(Number);
+  const currentDate = new Date(year, month - 1, day); // Month is 0-indexed
+  const daysOfWeek = [
+    "Sonntag",
+    "Montag",
+    "Dienstag",
+    "Mittwoch",
+    "Donnerstag",
+    "Freitag",
+    "Samstag",
+  ];
+  const dayIndex = currentDate.getDay();
+  return daysOfWeek[dayIndex];
+};
+
+defineProps(["facilityKind"]);
+
+const openMapsApp = (location: any) => {
+  if (isPlatform("android")) {
+    window.location.href = `https://maps.google.com/?q=${location}`;
+  } else {
+    window.location.href = `maps://maps.apple.com/?q=${location}`;
+  }
+};
+
+const routeAndGo = (facility: Facility) => {
+  filterStore.currentTags;
+  router.push({
+    path: `/health/care_facilities/${facility.id}`,
+    query: {
+      tags: JSON.stringify(filterStore.currentTags),
+      community: filterStore.currentZip,
+    },
+  });
 };
 </script>
 
@@ -134,47 +231,52 @@ const formatFacilityKind = (facilityKind: string) => {
   border-radius: 10px
   background: #FFF
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
-  margin-bottom: 10px
-  .headline
-    color: #636362
-    font-style: normal
-    font-weight: 600
-    line-height: normal
-    text-transform: uppercase
-  .tags
-    span
-      margin-right: 10px
-  .informations
-    display: flex
-  .zip-code
-    padding-right: 5px
+  margin-bottom: 20px
 
-.icon-contact
+.informations
   display: flex
-  flex-direction: column
-  justify-content: center
-  gap: 1.2rem
-  margin-right: 10px
-  margin-top: 1rem
-
-.icon
-  margin-bottom: 1rem  
-.contact-information
-  display: flex
-  flex-direction: column
-  justify-content: center
-  gap: .7rem
-  margin-right: 10px
-  align-content: center
-  margin-top: 1rem
-
-/* .tag-chips
-  display: flex
-  align-content: center
   flex-wrap: wrap
+  align-items: center
+  margin-bottom: 10px
 
-/* ion-chip
+.informations-dates
+  display: flex
+  flex-wrap: wrap
+  margin-bottom: 10px
+
+.icons
+  height: 30px
+  width: 30px
+  margin-right: 10px
+
+.informations-mail
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+
+.facility-name
+  display: grid
+  grid-template-columns: 85% 10%
+  gap: 5%
+  flex-wrap: wrap
+  justify-content: space-evenly
+  align-items: start
+  margin-bottom: 10px
+
+a
+  text-decoration: none
+
+ion-chip
   --background: var(--ion-color-health)
   --color: white
-  font-size: 1.2rem */ 
+  font-size: 1.2rem
+
+.event-chips
+  display: flex
+  flex-direction: column
+  align-items: start
+  gap: 10px
+
+.dates
+  display: flex
 </style>
