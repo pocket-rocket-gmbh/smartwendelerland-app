@@ -2,26 +2,24 @@
   <ion-modal :is-open="true" :can-dismiss="true">
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{ currenStepTitle }}</ion-title>
+        <ion-title class="general-font-size is-dark-grey">Verfeinere hier deine Suche!</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="emitClose()">Fertig</ion-button>
+          <ion-button shape="round" color="white" class="general-font-size done-button" @click="emitClose()">Fertig</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-header>
-      
-        <ion-segment>
-          <ion-segment-button @click.prevent="changeCurrentStep('types')">
-            <ion-label class="general-fint-size">Branche</ion-label>
-          </ion-segment-button>
-          <ion-segment-button @click.prevent="changeCurrentStep('community')">
-            <ion-label>Gemeinde</ion-label>
-          </ion-segment-button>
-          <ion-segment-button @click.prevent="changeCurrentStep('filter')">
-            <ion-label>Leistung</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-  
+      <ion-segment value="types">
+        <ion-segment-button @click.prevent="changeCurrentStep('types')" value="types">
+          <ion-label class="general-fint-size">Branche</ion-label>
+        </ion-segment-button>
+        <ion-segment-button @click.prevent="changeCurrentStep('community')">
+          <ion-label class="general-fint-size">Gemeinde</ion-label>
+        </ion-segment-button>
+        <ion-segment-button @click.prevent="changeCurrentStep('filter')">
+          <ion-label class="general-fint-size">Leistung</ion-label>
+        </ion-segment-button>
+      </ion-segment>
     </ion-header>
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
       <div v-if="!loadingFilters" class="filters">
@@ -54,10 +52,7 @@
           </div>
         </div>
       </div>
-      <ion-loading
-        :is-open="loadingFilters"
-        message="Filter werden geladen..."
-      />
+      <ion-loading :is-open="loadingFilters" message="Filter werden geladen..." />
     </ion-content>
     <ion-content v-if="currentStep === 'community'">
       <CommunityFilter
@@ -91,7 +86,7 @@ import {
   IonTitle,
   IonToolbar,
   onIonViewWillEnter,
-  IonToast,
+  toastController,
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref } from "vue";
 import AdvancedFilter from "./AdvancedFilter.vue";
@@ -103,8 +98,8 @@ type FilterOption = {
   parentId: string;
   options: Filter[];
 };
-const currentStep = ref('types');
-const currenStepTitle = ref("Branche wählen")
+const currentStep = ref("types");
+const currenStepTitle = ref("Branche wählen");
 
 const tableTile = () => {
   if (currentStep.value === "types") {
@@ -114,7 +109,17 @@ const tableTile = () => {
   } else if (currentStep.value === "filter") {
     currenStepTitle.value = "Leistung wählen";
   }
-}
+};
+
+const presentToast = async (selectedFilter: any) => {
+  console.log(selectedFilter);
+  const toast = await toastController.create({
+    message: `Branche ${selectedFilter.name} ausgewählt`,
+    duration: 3000,
+    cssClass: "custom-toast",
+  });
+  await toast.present();
+};
 
 const changeCurrentStep = (value: string) => {
   currentStep.value = value;
@@ -167,9 +172,7 @@ const handleOptionSelect = (option: Filter) => {
     }
   }
 
-  const previousIndex = propsModel.value.findIndex(
-    (item) => item === option.id
-  );
+  const previousIndex = propsModel.value.findIndex((item) => item === option.id);
 
   if (previousIndex !== -1) {
     propsModel.value.splice(previousIndex, 1);
@@ -180,6 +183,7 @@ const handleOptionSelect = (option: Filter) => {
     selectedFilter.value = option;
     emit("selectBasicFilter", option);
   }
+  presentToast(option);
 
   emit("update:modelValue", propsModel.value);
 };
@@ -208,18 +212,14 @@ onMounted(async () => {
   }, [] as Filter[]);
 
   const foundFilter = allAvailableOptions.find((option) => {
-    const doesInclude = props.modelValue.find(
-      (item: string) => item === option.id
-    );
+    const doesInclude = props.modelValue.find((item: string) => item === option.id);
     return doesInclude;
   });
 
   selectedFilter.value = foundFilter;
-});
-
-onIonViewWillEnter(() => {
   currentStep.value = "types";
 });
+
 </script>
 
 <style lang="sass" scoped>
@@ -227,4 +227,20 @@ ion-segment-button
   height: 50px
   min-height: 50px
   font-size: 1.2rem
+
+ion-segment-button::part(indicator-background)
+  background: #8ab61d
+  --color-checked: #8ab61d
+
+ion-segment-button::part(native)
+  color: #636362
+
+.segment-button-checked::part(native)
+  color: white
+
+.done-button
+  color: white
+  background: #8ab61d
+  border-radius: 15px
+  padding: 5px
 </style>
