@@ -35,6 +35,8 @@ export type Facility = {
   image_url?: string;
   mail?: string,
   created_at?: string,
+  event_dates?: []
+  showAllEvents?: boolean,
   user?: {
     name: string,
   }
