@@ -6,15 +6,17 @@
       class="facility-box"
       @click="routeAndGo(facility)"
     >
-      <div class="general-font-size-subtitle facility-name is-dark-grey">
-        <div>
-          {{ facility.name }}
+      <div class="is-dark-grey">
+        <div
+          v-if="facility.kind !== 'facility'"
+          @click.stop="routeAndGo(facility?.user_care_facility)"
+        >
+          <img class="facility-icon" :src="facilityIcon" />
+          <span class="general-font-size">{{ facility?.user_care_facility.name }}</span>
+          <div class="divider has-gap"></div>
         </div>
-        <div>
-          <ion-icon v-if="facility.kind === 'facility'" class="icons-category" :src="iconFacilities" size="large"></ion-icon>
-           <ion-icon v-if="facility.kind === 'course'" class="icons-category" :src="iconCourses" size="large"></ion-icon>
-           <ion-icon v-if="facility.kind === 'event'" class="icons-category" :src="iconEvents" size="large"></ion-icon>
-           <ion-icon v-if="facility.kind === 'news'" class="icons-category" :src="iconNews" size="large"></ion-icon>
+        <div class="general-font-size-subtitle is-dark-grey facility-name">
+          {{ facility.name }}
         </div>
       </div>
       <div class="general-font-size is-dark-grey">
@@ -41,7 +43,13 @@
             </div>
           </div>
         </div>
-        <div v-if="facilityKind === 'facility' || facilityKind === 'news' || !facility?.event_dates.length">
+        <div
+          v-if="
+            facilityKind === 'facility' ||
+            facilityKind === 'news' ||
+            !facility?.event_dates.length
+          "
+        >
           <div class="informations">
             <div>
               <a class="is-dark-grey" :href="`tel:${facility.phone}`" @click.stop>
@@ -74,28 +82,38 @@
           </div>
           <div class="event-chips" v-if="facility?.event_dates.length">
             <span>Nächster Termin:</span>
-            <div class="dates" v-if="!facility.showAllEvents">
-              <span
-                ><i>{{ getDayOfWeek(facility?.event_dates[0].slice(0, 10)) }},</i
-                >&nbsp;</span
-              >
-              <span> {{ facility?.event_dates[0].slice(0, 10) }},&nbsp;</span>
-              <span
-                >{{
+            
+            <div class="dates" v-if="!facility.showAllEvents" mode="ios">
+              <span>{{ getDayOfWeek(facility?.event_dates[0].slice(0, 10)) }},</span>
+              <span>&nbsp; {{ facility?.event_dates[0].slice(0, 10) }}, </span>
+              <span>
+                &nbsp;
+                {{
                   facility?.event_dates[0].slice(
                     Math.max(facility?.event_dates[0].length - 5, 1)
                   )
                 }}
                 Uhr</span
               >
-            </div>
-
-            <ion-chip
-              v-if="facility?.event_dates.length >= 2 && !facility.showAllEvents"
+              <div>
+                <ion-button
+              v-if="
+                facility.kind !== 'facility' &&
+                facility.kind !== 'news' &&
+                facility.event_dates.length > 2
+              "
+              mode="md"
+              size="small"
+              shape="round"
+              expand="block"
+              class="green-button"
               @click.stop="showAllEvents(facility)"
+              ><span v-if="showMoreButton">+ {{ facility.event_dates.length -1 }}</span>
+              </ion-button
             >
-              <span>Weitere Termine</span>
-            </ion-chip>
+              </div>
+
+            </div>
           </div>
         </div>
         <div
@@ -109,9 +127,7 @@
             <span v-for="event in displayedEvents(facility)" :key="event.index">
               <div class="informations">
                 <div class="dates">
-                  <span
-                    ><i>{{ getDayOfWeek(event.slice(0, 10)) }},</i>&nbsp;</span
-                  >
+                  <span>{{ getDayOfWeek(event.slice(0, 10)) }},&nbsp;</span>
                   <span>{{ event.slice(0, 10) }},&nbsp;</span>
                   <span>{{ event.slice(Math.max(event.length - 5, 1)) }} Uhr</span>
                 </div>
@@ -132,6 +148,27 @@
             {{ facility.user.name }}
           </div>
         </div>
+        <ion-button
+          v-if="
+            !router.currentRoute.value.query.kind ||
+            facility.kind === 'course' ||
+            facility.kind === 'event'
+          "
+          mode="md"
+          shape="round"
+          expand="block"
+          class="green-button"
+          >{{ getFacilityKind(facility) }}</ion-button
+        >
+
+        <ion-button
+          v-if="facility.kind === 'facility' && router.currentRoute.value.query.kind"
+          mode="md"
+          shape="round"
+          expand="block"
+          class="green-button"
+          >Details ansehen</ion-button
+        >
       </div>
     </div>
   </div>
@@ -150,10 +187,7 @@ import mapIcon from "@/assets/images/facilities/icon_address.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import calendarIcon from "@/assets/images/facilities/icon_calendar.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
-import iconFacilities from "@/assets/images/main-categories/icon_app_facilities.svg";
-import iconEvents from "@/assets/images/main-categories/icon_app_events.svg";
-import iconCourses from "@/assets/images/main-categories/icon_app_courses.svg";
-import iconNews from "@/assets/images/main-categories/icon_app_news.svg";
+import facilityIcon from "@/assets/images/facilities/facilities.svg";
 import { isPlatform } from "@ionic/vue";
 import mapMarker from "@/assets/images/facilities/icon_map_marker.svg";
 import { onIonViewWillEnter } from "@ionic/vue";
@@ -164,8 +198,8 @@ const filterStore = useFilterStore();
 const showMoreButton = ref(true);
 
 const showAllEvents = (facility: { showAllEvents: boolean }) => {
-  facility.showAllEvents = true;
-  showMoreButton.value = false;
+  facility.showAllEvents = !facility.showAllEvents;
+  showMoreButton.value = !showMoreButton.value;
 };
 
 const displayedEvents = computed(
@@ -176,18 +210,23 @@ const displayedEvents = computed(
   }
 );
 
+const getFacilityKind = (facility) => {
+  if (facility && facility.kind === "facility") {
+    return "zur Einrichtung";
+  } else if (facility && facility.kind === "event") {
+    return "zur veranstaltung";
+  } else if (facility && facility.kind === "course") {
+    return "zum Kurs";
+  } else if (facility && facility.kind === "news") {
+    return "zum Beitrag";
+  }
+  return "";
+};
+
 const getDayOfWeek = (event: string) => {
   const [day, month, year] = event.split(".").map(Number);
-  const currentDate = new Date(year, month - 1, day); // Month is 0-indexed
-  const daysOfWeek = [
-    "Sonntag",
-    "Montag",
-    "Dienstag",
-    "Mittwoch",
-    "Donnerstag",
-    "Freitag",
-    "Samstag",
-  ];
+  const currentDate = new Date(year, month - 1, day);
+  const daysOfWeek = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
   const dayIndex = currentDate.getDay();
   return daysOfWeek[dayIndex];
 };
@@ -242,7 +281,6 @@ const routeAndGo = (facility: Facility) => {
 .informations-dates
   display: flex
   flex-wrap: wrap
-  margin-bottom: 10px
 
 .icons
   height: 30px
@@ -255,12 +293,6 @@ const routeAndGo = (facility: Facility) => {
   align-items: center
 
 .facility-name
-  display: grid
-  grid-template-columns: 85% 10%
-  gap: 5%
-  flex-wrap: wrap
-  justify-content: space-evenly
-  align-items: start
   margin-bottom: 10px
 
 a
@@ -275,8 +307,15 @@ ion-chip
   display: flex
   flex-direction: column
   align-items: start
-  gap: 10px
 
 .dates
   display: flex
+  flex-wrap: wrap
+  align-items: center
+  margin-bottom: 10px
+
+.dates div:last-child
+  margin-left: 10px
+.facility-icon
+  padding-right: 10px
 </style>

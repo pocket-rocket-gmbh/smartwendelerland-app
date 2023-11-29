@@ -1,11 +1,11 @@
 <template>
   <ion-page>
-    <ion-header>
+    <ion-header mode="md">
       <ion-toolbar>
         <img
           @click="$router.push({ path: '/' })"
           :src="setLogo"
-          class="logo"
+          class="logo-header"
           slot="start"
         />
         <ion-icon
@@ -38,7 +38,10 @@
         ></ion-icon>
       </ion-toolbar>
     </ion-header>
-    <ion-header v-if="healthRoute && showSearchBar">
+    
+    <ion-header v-if="healthRoute && showSearchBar" mode="md">
+    
+      <div mode="md" class="divider"></div>
       <ion-toolbar>
         <SearchBar
           class="search-bar"
@@ -48,6 +51,8 @@
           :debounce="2000"
         />
       </ion-toolbar>
+   
+
     </ion-header>
     <ion-content :fullscreen="true">
       <slot />
@@ -134,7 +139,7 @@ const checkRoute = () => {
 </script>
 
 <style lang="sass">
-.logo
+.logo-header
   height: 60px
   margin-left: 10px
 ion-icon
@@ -161,4 +166,10 @@ ion-toolbar
   margin-right: 10px
   margin-left: auto
   justify-content: end
+
+ion-item-divider
+  --padding-top: 0px
+  --padding-bottom: 0px
+  --padding-start: 0px
+  --padding-end: 0px
 </style>

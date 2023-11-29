@@ -1,27 +1,37 @@
 <template>
   <ion-modal :is-open="true" :can-dismiss="true">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title class="general-font-size is-dark-grey">Verfeinere hier deine Suche!</ion-title>
+    <ion-header mode="md">
+      <ion-toolbar >
+        <ion-title class="general-font-size is-dark-grey" slot="start"
+          >Verfeinere hier deine Suche!</ion-title
+        >
         <ion-buttons slot="end">
-          <ion-button shape="round" color="white" class="general-font-size done-button" @click="emitClose()">Fertig</ion-button>
+          <ion-button
+            mode="ios"
+            shape="round"
+            expand="block"
+            class="green-button general-font-size"
+            @click="emitClose()"
+            >Fertig</ion-button
+          >
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-header>
-      <ion-segment value="types">
+      <ion-segment value="types" mode="md">
         <ion-segment-button @click.prevent="changeCurrentStep('types')" value="types">
-          <ion-label class="general-fint-size">Branche</ion-label>
+          <ion-label class="general-font-size">Branche</ion-label>
         </ion-segment-button>
         <ion-segment-button @click.prevent="changeCurrentStep('community')">
-          <ion-label class="general-fint-size">Gemeinde</ion-label>
+          <ion-label class="general-font-size">Gemeinde</ion-label>
         </ion-segment-button>
         <ion-segment-button @click.prevent="changeCurrentStep('filter')">
-          <ion-label class="general-fint-size">Leistung</ion-label>
+          <ion-label class="general-font-size">Leistung</ion-label>
         </ion-segment-button>
       </ion-segment>
     </ion-header>
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
+
       <div v-if="!loadingFilters" class="filters">
         <div v-for="filter in mainFilters" :key="filter.id">
           <div class="filter-name general-font-size-title is-dark-grey">
@@ -86,7 +96,6 @@ import {
   IonTitle,
   IonToolbar,
   onIonViewWillEnter,
-  toastController,
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref } from "vue";
 import AdvancedFilter from "./AdvancedFilter.vue";
@@ -109,16 +118,6 @@ const tableTile = () => {
   } else if (currentStep.value === "filter") {
     currenStepTitle.value = "Leistung wählen";
   }
-};
-
-const presentToast = async (selectedFilter: any) => {
-  console.log(selectedFilter);
-  const toast = await toastController.create({
-    message: `Branche ${selectedFilter.name} ausgewählt`,
-    duration: 3000,
-    cssClass: "custom-toast",
-  });
-  await toast.present();
 };
 
 const changeCurrentStep = (value: string) => {
@@ -183,8 +182,6 @@ const handleOptionSelect = (option: Filter) => {
     selectedFilter.value = option;
     emit("selectBasicFilter", option);
   }
-  presentToast(option);
-
   emit("update:modelValue", propsModel.value);
 };
 
@@ -219,28 +216,12 @@ onMounted(async () => {
   selectedFilter.value = foundFilter;
   currentStep.value = "types";
 });
-
 </script>
 
 <style lang="sass" scoped>
 ion-segment-button
-  height: 50px
-  min-height: 50px
-  font-size: 1.2rem
-
-ion-segment-button::part(indicator-background)
-  background: #8ab61d
   --color-checked: #8ab61d
 
-ion-segment-button::part(native)
-  color: #636362
-
-.segment-button-checked::part(native)
-  color: white
-
-.done-button
-  color: white
-  background: #8ab61d
-  border-radius: 15px
-  padding: 5px
+ion-segment-button::part(indicator-background)
+  --color-checked: #8ab61d
 </style>

@@ -1,6 +1,7 @@
 <template>
   <ion-page>
     <ion-searchbar
+      mode="md"
       class="has-background-white placeholder"
       :placeholder="placeholder"
       v-model="filterStore.currentSearchTerm"
@@ -29,14 +30,14 @@ const props = defineProps({
   header: {
     type: Boolean,
     required: false,
-  }
+  },
 });
 
 const placeholder = computed(() => {
   if (props.placeHolderText && !props.loading) {
     return props.placeHolderText;
   } else {
-    return "Suche nach Themen, Anbietern, Kursen,...";  
+    return "Suche nach Themen, Anbietern, Kursen,...";
   }
 });
 
@@ -57,10 +58,6 @@ const clearSearch = () => {
 ion-searchbar
   --background: white
   --background-color: white
-  padding: 0
   --border-radius: 7px
   --box-shadow: none
-  transform: scale(1.2)
-  margin: 0 auto
-  width: 80%
 </style>

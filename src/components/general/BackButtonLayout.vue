@@ -28,7 +28,7 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <div class="back-button" :class="[isCategoryPage ? 'category-page' : '']">
+      <div :class="[isCategoryPage ? 'category-page' : 'back-button']">
         <ion-nav-link
           v-if="forceBack && !showBar || isCategoryPage"
           :routerLink="forceBack"
@@ -120,6 +120,7 @@ ion-icon {
   flex-wrap: nowrap;
   align-items: center;
   width: 100%;
+  margin-top: 30px;
 }
 .back-button-icon {
   font-size: 12px;
@@ -128,7 +129,7 @@ ion-icon {
   background: white;
   width: 20px;
   height: 20px;
-  margin-top: 20px;
+  margin-top: 50%;
   margin-bottom: 15px;
   border: 1px solid #636362;
 }
@@ -141,7 +142,13 @@ ion-icon {
 
 .category-page {
   background: linear-gradient(66deg, #91A80D 0%, #BAC323 46.88%, #9EA100 95.31%);
-  margin-bottom: 20px;
+  position: absolute;
+  padding-left: 10px;
+  z-index: 99;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
 }
 
 .not-category-page {

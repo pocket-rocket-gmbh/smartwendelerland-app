@@ -24,10 +24,9 @@
       </div>
 
       <template v-if="!facilityKind">
-        <div class="gap-1"></div>
-        <div class="gap-1"></div>
         <div class="buttons flex-wrap">
           <ion-button
+            mode="ios"
             v-for="kind in filteredKinds"
             :key="kind"
             expand="block"
@@ -40,7 +39,7 @@
       </template>
       <div class="grid-buttons">
         <div>
-          <div v-if="facilityKind === 'facility' || facilityKind === 'course'">
+          <div v-if="facilityKind === 'facility' || facilityKind === 'course'" mode="md">
             <div class="filter-container">
               <img
                 src="@/assets/images/filter.svg"
@@ -56,16 +55,19 @@
             v-if="
               (facilityKind && facilityKind === 'facility') || facilityKind === 'course'
             "
+            mode="ios"
             class="transparent"
             expand="block"
             shape="round"
             @click="resetFilter"
+            :disabled="!countSelectedFilters"
             >Filter löschen</ion-button
           >
         </div>
         <div>
           <div v-if="facilityKind === 'facility'">
             <ion-button
+              mode="ios"
               :class="['white', view === 'list' ? 'list' : 'map']"
               expand="block"
               class="is-dark-grey"
@@ -299,7 +301,7 @@ onIonViewWillLeave(() => {
   color: white
 
 .grid-buttons
-  margin-top: 30px
+  margin: 30px 0 30px 0
   display: grid
   grid-template-columns: 9% 44% 44%
   gap: 2%
@@ -320,8 +322,8 @@ onIonViewWillLeave(() => {
   .placeholder
     color: var(--placeholder-color)
     opacity: 0.33
-  height: 43.5px
-  margin-bottom: 10px
+    height: 43.5px
+    margin-bottom: 10px
   &.is-active
     color: black
   .icon
@@ -356,7 +358,7 @@ onIonViewWillLeave(() => {
   align-items: center
   .counter
     color: #8ab61d
-    margin-top: -50px
+    margin-top: -40px
     margin-left: -15px
     background-color: #ffffff
     padding: 2px 9px
@@ -367,7 +369,7 @@ onIonViewWillLeave(() => {
   width: 50px
 
 .search-col
-  margin: 70px -10px 0 -10px
+  margin: 100px 0 30px 0
 
 ion-button
   --background-activated: var(--ion-color-health)

@@ -17,11 +17,20 @@
         style="--swiper-pagination-color: #8ab61d; --swiper-pagination-top: 8px"
       >
         <swiper-slide>
-          <img :src="imageCache.cacheableImageUrl(facility.image_url)" class="showroom" />
+          <img
+            :src="imageCache.cacheableImageUrl(facility.image_url)"
+            class="showroom"
+          />
           <img v-if="facility.logo_url" :src="facility.logo_url" class="logo" />
         </swiper-slide>
-        <swiper-slide v-for="(image, index) in facility.sanitized_images" :key="index">
-          <img :src="imageCache.cacheableImageUrl(image.url)" class="showroom" />
+        <swiper-slide
+          v-for="(image, index) in facility.sanitized_images"
+          :key="index"
+        >
+          <img
+            :src="imageCache.cacheableImageUrl(image.url)"
+            class="showroom"
+          />
         </swiper-slide>
         <div class="pagination" />
       </swiper>
@@ -36,15 +45,28 @@
       </div>
 
       <div class="tag-chips" v-if="facility.tags.length">
-        <ion-chip v-for="tag in displayedTags(facility)" :key="tag.id">
+        <ion-button
+          mode="md"
+          shape="round"
+          expand="block"
+          class="green-button"
+          v-for="tag in displayedTags(facility)"
+          :key="tag.id"
+        >
           <span class="break-text">{{ tag.name }}</span>
-        </ion-chip>
-        <ion-chip
-          v-if="facility.tags.length > 3 && !facility.showAllTags"
+        </ion-button>
+        <ion-button
+          mode="md"
+          shape="round"
+          class="green-button"
+          v-if="facility.tags.length > 3"
           @click.stop="showAllTags(facility)"
         >
-          <span>+ {{ facility.tags.length - 1 }}</span>
-        </ion-chip>
+          <span v-if="facility.showAllTags"
+            >- {{ facility.tags.length - 3 }}</span
+          >
+          <span v-else>+ {{ facility.tags.length - 3 }}</span>
+        </ion-button>
       </div>
 
       <div v-if="facility.kind !== 'news'" class="more-infos ion-padding">
@@ -81,7 +103,9 @@
                     <img src="@/assets/images/facilities/icon_mail.svg" />
                   </div>
                   <div class="general-font-size is-dark-grey" @click.stop>
-                    <a :href="`mailto:${facility.email}`">{{ facility.email }}</a>
+                    <a :href="`mailto:${facility.email}`">{{
+                      facility.email
+                    }}</a>
                   </div>
                 </div>
 
@@ -91,7 +115,9 @@
                   >
                     <span>Veranstalter</span>
                   </div>
-                  <div class="is-dark-grey">{{ facility.name_instructor }}</div>
+                  <div class="general-font-size is-dark-grey">
+                    {{ facility.name_instructor }}
+                  </div>
                 </div>
               </ion-col>
               <ion-col>
@@ -133,15 +159,22 @@
                 :key="opening.day"
                 class="divider"
               >
-                <ion-col size="4" size-md="6">
-                  <ion-label class="is-dark-grey general-font-size">{{
-                    opening.day
-                  }}</ion-label>
+                <ion-col size="6" size-md="6">
+                  <ion-label class="is-dark-grey general-font-size">
+                    <span>
+                      {{ opening.day }}
+                    </span>
+                  </ion-label>
                 </ion-col>
-                <ion-col size="4" size-md="6" v-if="opening.hours.length">
-                  <ion-label class="is-dark-grey general-font-size">{{
-                    opening.hours
-                  }}</ion-label>
+                <ion-col size="6" size-md="6">
+                  <ion-label
+                    v-if="opening.hours.length"
+                    class="is-dark-grey general-font-size"
+                    >{{ opening.hours }}</ion-label
+                  >
+                  <ion-label v-else class="is-dark-grey general-font-size"
+                    >keine Angabe</ion-label
+                  >
                 </ion-col>
               </ion-row>
             </div>
@@ -149,7 +182,7 @@
         </div>
       </div>
 
-      <div v-html="facility.description" class="general-font-size is-dark-grey" />
+      <div v-html="formatDescription" class="general-font-size is-dark-grey" />
       <div
         v-if="facility.name_responsible_person"
         class="ion-margin-bottom general-font-size is-dark-grey"
@@ -167,7 +200,9 @@
         class="more-infos ion-margin-top ion-padding"
         v-if="facility.event_dates.length > 0"
       >
-        <div class="has-text-health general-font-size is-uppercase ion-margin-bottom">
+        <div
+          class="has-text-health general-font-size is-uppercase ion-margin-bottom"
+        >
           Termine
         </div>
         <div class="ion-margin-bottom general-font-size is-dark-grey">
@@ -180,18 +215,36 @@
 
         <table class="table is-dark-grey general-font-size">
           <thead>
+            <th>Tag</th>
             <th>Datum</th>
             <th>Uhrzeit</th>
           </thead>
           <tbody>
-            <tr v-for="(date, index) in mapDates(facility.event_dates)" :key="index">
-              <td class="divider">
-                {{ date.getDate() }}.{{ formattedDateString(date.getMonth() + 1) }}.{{
-                  date.getFullYear()
-                }}
+            <tr
+              v-for="(date, index) in mapDates(facility.event_dates)"
+              :key="index"
+            >
+              <td class="divider" v-if="showHide">
+                {{ date.toLocaleDateString("de-DE", { weekday: "long" }) }}
               </td>
+              <td class="divider" v-else>
+                {{ date.toLocaleDateString("de-DE", { weekday: "short" }) }}
+              </td>
+              <td class="divider" v-if="showHide">
+                {{ padZero(date.getDate()) }}.{{
+                  formattedDateString(date.getMonth() + 1)
+                }}.{{ date.getFullYear() }}
+              </td>
+              <td class="divider" v-else>
+                {{ padZero(date.getDate()) }}.{{
+                  formattedDateString(date.getMonth() + 1)
+                }}.{{ date.toLocaleDateString("de-DE", { year: "2-digit" }) }}
+              </td>
+
               <td class="divider">
-                {{ date.getHours() }}:{{ formattedDateString(date.getMinutes()) }}
+                {{ date.getHours() }}:{{
+                  formattedDateString(date.getMinutes())
+                }}
                 Uhr
               </td>
             </tr>
@@ -205,12 +258,14 @@
         :key="document.signed_id"
         @click="handleLinkClick(document.url)"
       >
-        <div class="has-text-health is-uppercase general-font-size ion-margin-bottom">
+        <div
+          class="has-text-health is-uppercase general-font-size ion-margin-bottom"
+        >
           Dokumente
         </div>
 
         <div class="general-font-size is-dark-grey documents">
-          <img src="@/assets/images/download.svg" width="24"/>
+          <img src="@/assets/images/download.svg" width="24" />
           <span>{{ document.name }}.pdf</span>
         </div>
       </div>
@@ -247,13 +302,32 @@ const facilityId = computed(() => {
 const showApi = useCollectionApi();
 const facility = showApi.item;
 
-const showMoreButton = ref(true);
+const windowSize = ref(window.innerWidth);
+
+const showHide = computed(() => {
+  if (windowSize.value > 600) {
+    return true;
+  }
+  return false;
+});
 
 const showAllTags = (facility: { showAllTags: boolean }) => {
-  facility.showAllTags = true;
-  showMoreButton.value = false;
+  facility.showAllTags = !facility.showAllTags;
 };
 
+const formatDescription = computed(() => {
+  if (facility.value) {
+    const cleanedDescription = facility.value?.description
+      .replace(/(<br>\s*)+/g, "")
+      .replace(/(<p>&nbsp;<\/p>\s*)+/g, "<p>&nbsp;</p>");
+    return cleanedDescription;
+  }
+  return "";
+});
+
+const padZero = (number: number) => {
+  return number < 10 ? "0" + number : number;
+};
 const openMapsApp = (location: any) => {
   if (isPlatform("android")) {
     window.location.href = `https://maps.google.com/?q=${location}`;
@@ -353,6 +427,8 @@ const modules = [Pagination];
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
   border-radius: 10px
   margin-top: 30px
+  display: flex
+  flex-direction: column
 .info-grid
   margin-bottom: 10px
   display: grid
@@ -400,7 +476,8 @@ const modules = [Pagination];
 
 .table
   td
-    padding: 5px 30px
+    padding: 5px 20px
+    text-align: center
 
 .insurance-logo
   height: 25px

@@ -39,7 +39,11 @@
   .content-right
     padding: 10px
     color: #636362
-    
+    height: 200px
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+
     .headline
       font-weight: bold
     .cta
@@ -163,8 +167,8 @@ ion-button.white
   word-break: break-word
   overflow: hidden
   display: -webkit-box
-  -webkit-line-clamp: 6
-  line-clamp: 6
+  -webkit-line-clamp: 4
+  line-clamp: 4
   -webkit-box-orient: vertical
 
 .break-title
@@ -175,3 +179,15 @@ ion-button.white
   line-clamp: 1
   -webkit-box-orient: vertical
 
+.green-button
+  --background: #8ab61d
+  --color: white
+
+.hypernate
+  word-break: break-word
+  -webkit-hyphens: auto
+  -ms-hyphens: auto
+  hyphens: auto
+
+.has-gap
+  margin: 0 0 .5rem 0
