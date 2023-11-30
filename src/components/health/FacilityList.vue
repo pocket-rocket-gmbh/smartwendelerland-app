@@ -76,7 +76,7 @@
           </div>
         </div>
 
-        <div v-else-if="facility?.event_dates.length" class="informations-dates">
+        <div v-else-if="facility?.event_dates.length" :class="[facility.showAllEvents ? 'informations-dates' : 'informations']">
           <div>
             <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
           </div>
@@ -108,7 +108,7 @@
               expand="block"
               class="green-button"
               @click.stop="showAllEvents(facility)"
-              ><span v-if="showMoreButton">+ {{ facility.event_dates.length -1 }}</span>
+              ><span>+ {{ facility.event_dates.length -1 }}</span>
               </ion-button
             >
               </div>
@@ -195,11 +195,8 @@ import { onIonViewWillEnter } from "@ionic/vue";
 const router = useRouter();
 const filterStore = useFilterStore();
 
-const showMoreButton = ref(true);
-
 const showAllEvents = (facility: { showAllEvents: boolean }) => {
   facility.showAllEvents = !facility.showAllEvents;
-  showMoreButton.value = !showMoreButton.value;
 };
 
 const displayedEvents = computed(

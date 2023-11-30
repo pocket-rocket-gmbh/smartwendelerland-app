@@ -15,7 +15,7 @@
       "
     >
       <ion-header>
-        <ion-toolbar>
+        <on-toolbar>
           <ion-title>{{ selectedSubSubCategory?.name }}</ion-title>
           <ion-buttons slot="end">
             <ion-button
@@ -26,7 +26,7 @@
               >Schließen</ion-button
             >
           </ion-buttons>
-        </ion-toolbar>
+        </on-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
         <div class="modal-content">
@@ -64,7 +64,6 @@
           {{ subCategory.name }}
         </span>
       </div>
-
       <div class="ion-padding-start ion-padding-end is-dark-grey is-justified">
         <div
           class="general-font-size is-dark-grey"
@@ -110,7 +109,7 @@
               selectedSubSubCategory = subSubCategory;
             "
             >
-              Mehr erfahrenssssss
+              Mehr erfahren
             </ion-button>
           </div>
         </div>
@@ -121,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
 import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
@@ -131,7 +130,6 @@ import {
   IonLoading,
   IonModal,
   IonHeader,
-  IonToolbar,
   IonTitle,
   IonButtons,
   IonButton,
@@ -232,7 +230,7 @@ onIonViewDidEnter(() => {
     display: none
 
 .categories
-  margin-top: 80px
+  margin: 150px 0 0 0
 
 .modal-content
   display: flex

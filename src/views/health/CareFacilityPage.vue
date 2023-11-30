@@ -437,6 +437,13 @@ const modules = [Pagination];
   a
     color: #636362
     text-decoration: none
+
+  img
+    height: 25px
+    width: 25px
+    margin-right: 10px
+    margin-bottom: -3px
+    margin-top: 3px
 .opening-hours
   .day
     font-weight: bold
@@ -506,4 +513,5 @@ ion-chip
   display: flex
   align-items: center
   gap: 10px
+
 </style>

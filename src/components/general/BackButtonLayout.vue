@@ -30,12 +30,21 @@
     <ion-content :fullscreen="true">
       <div :class="[isCategoryPage ? 'category-page' : 'back-button']">
         <ion-nav-link
-          v-if="forceBack && !showBar || isCategoryPage"
+          v-if="(forceBack && !showBar) || isCategoryPage"
           :routerLink="forceBack"
         >
           <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
         </ion-nav-link>
-        <div class="page-title is-uppercase is-white" v-if="!isFacilityPage">{{ title }}</div>
+        <div
+          class="page-title is-uppercase is-white "
+          lang="de"
+          v-if="!isFacilityPage"
+        >
+        <span>
+          {{ title }}
+        </span>
+        
+        </div>
       </div>
       <slot />
     </ion-content>
@@ -88,7 +97,7 @@ const props = defineProps({
   isCategoryPage: {
     type: Boolean,
     default: false,
-  },  
+  },
 });
 
 const router = useRouter();
@@ -141,7 +150,7 @@ ion-icon {
 }
 
 .category-page {
-  background: linear-gradient(66deg, #91A80D 0%, #BAC323 46.88%, #9EA100 95.31%);
+  background: linear-gradient(66deg, #91a80d 0%, #bac323 46.88%, #9ea100 95.31%);
   position: absolute;
   padding-left: 10px;
   z-index: 99;
@@ -149,6 +158,7 @@ ion-icon {
   flex-wrap: nowrap;
   align-items: center;
   width: 100%;
+  padding: 30px 10px;
 }
 
 .not-category-page {

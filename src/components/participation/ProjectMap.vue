@@ -337,6 +337,4 @@ div.mapcontainer
 #projectList
   background-color: #ffffff
 
-.search-bar
-  margin-top: 30px
 </style>

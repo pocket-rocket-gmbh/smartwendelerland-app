@@ -37,9 +37,9 @@
           >
         </div>
       </template>
-      <div class="grid-buttons">
+      <div class="grid-buttons" v-if="facilityKind === 'facility' || facilityKind === 'course'" mode="md">
         <div>
-          <div v-if="facilityKind === 'facility' || facilityKind === 'course'" mode="md">
+          <div >
             <div class="filter-container">
               <img
                 src="@/assets/images/filter.svg"
@@ -70,7 +70,7 @@
               mode="ios"
               :class="['white', view === 'list' ? 'list' : 'map']"
               expand="block"
-              class="is-dark-grey"
+              shape="round"
               @click="toggleView"
               >{{ view === "list" ? "Kartenansicht" : "Listenansicht" }}</ion-button
             >
@@ -291,7 +291,7 @@ onIonViewWillEnter(async () => {
 });
 
 onIonViewWillLeave(() => {
-  facilityKind.value = undefined;
+  view.value = "list";
 });
 </script>
 
@@ -372,5 +372,7 @@ onIonViewWillLeave(() => {
   margin: 100px 0 30px 0
 
 ion-button
-  --background-activated: var(--ion-color-health)
+  --background-activated: none
+  --border-color: var(--ion-color-health)
+  --color-activated: white
 </style>

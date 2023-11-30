@@ -42,7 +42,7 @@
     <ion-header v-if="healthRoute && showSearchBar" mode="md">
     
       <div mode="md" class="divider"></div>
-      <ion-toolbar>
+      <ion-toolbar mode="md">
         <SearchBar
           class="search-bar"
           :loading="loading"
