@@ -91,7 +91,7 @@ onMounted(() => {
   width: 250px
 
 .icon-project
-  width: 300px
+  height: 300px
   @media (max-width: 768px)
     height: 200px
 </style>

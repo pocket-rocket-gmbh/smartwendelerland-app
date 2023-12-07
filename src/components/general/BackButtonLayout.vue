@@ -3,7 +3,7 @@
     <ion-header v-if="projekRoute && showBar">
       <ion-toolbar>
         <ion-buttons slot="start" class="ion-padding">
-          <ion-nav-link v-if="forceBack" :routerLink="forceBack">
+          <ion-nav-link v-if="forceBack" :routerLink="handleGoBack">
             <IonIcon :icon="arrowBackOutline" />
           </ion-nav-link>
           <ion-back-button v-else text="" default-href="/" :icon="arrowBackOutline" />
@@ -103,12 +103,17 @@ const props = defineProps({
 const router = useRouter();
 const route = router.currentRoute;
 
+const handleGoBack = () => {
+  router.push({ path: props.forceBack });
+};
+
 const projekRoute = computed(() => {
   if (route.value.path.includes("participation")) {
     return true;
   }
   return false;
 });
+
 </script>
 
 <style scoped>

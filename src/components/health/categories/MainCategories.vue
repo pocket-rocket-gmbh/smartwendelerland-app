@@ -15,7 +15,7 @@
               src="@/assets/images/main-categories/icon_app_facilities.svg"
             />
           </div>
-          <div class="general-font-size-title is-dark-grey text-wrap">Anbietersuche</div>
+          <div class="general-font-size-subtitle is-dark-grey text-wrap">Anbietersuche</div>
         </div>
       </ion-col>
       <ion-col
@@ -30,7 +30,7 @@
           <div align="center">
             <img src="@/assets/images/main-categories/icon_app_courses.svg" />
           </div>
-          <div class="general-font-size-title is-dark-grey">Kurse</div>
+          <div class="general-font-size-subtitle is-dark-grey">Kurse</div>
         </div>
       </ion-col>
       <ion-col
@@ -45,7 +45,7 @@
           <div align="center">
             <img src="@/assets/images/main-categories/icon_app_events.svg" />
           </div>
-          <div class="general-font-size-title is-dark-grey">Veranstaltungen</div>
+          <div class="general-font-size-subtitle is-dark-grey">Veranstaltungen</div>
         </div>
       </ion-col>
       <ion-col size-xs="12" size-sm="6" size-lg="4">
@@ -58,7 +58,7 @@
           <div align="center">
             <img src="@/assets/images/main-categories/icon_app_news.svg" />
           </div>
-          <div class="general-font-size-title is-dark-grey">Beiträge</div>
+          <div class="general-font-size-subtitle is-dark-grey">Beiträge</div>
         </div>
       </ion-col>
       <ion-col
@@ -82,7 +82,7 @@
               v-else
             />
           </div>
-          <div class="general-font-size-title is-dark-grey text-wrap">{{ category.name }}</div>
+          <div class="general-font-size-subtitle is-dark-grey text-wrap">{{ category.name }}</div>
         </div>
       </ion-col>
     </ion-row>
@@ -125,12 +125,15 @@
 </template>
 
 <script setup lang="ts">
-import { IonGrid, IonRow, IonCol, IonLoading } from "@ionic/vue";
+import { IonGrid, IonRow, IonCol, IonLoading, onIonViewDidEnter } from "@ionic/vue";
 import { ref } from "vue";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useFilterStore } from "@/stores/health/searchFilter";
+
+const filterStore = useFilterStore();
 
 const router = useRouter();
 const loading = ref(false);
@@ -158,6 +161,7 @@ const getCategories = async () => {
 onMounted(() => {
   getCategories();
 });
+
 </script>
 
 <style lang="sass" scoped>

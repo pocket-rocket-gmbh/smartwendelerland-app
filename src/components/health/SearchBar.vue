@@ -16,6 +16,8 @@
 import { computed, defineEmits, defineProps } from "vue";
 import { IonSearchbar } from "@ionic/vue";
 import { useFilterStore } from "@/stores/health/searchFilter";
+import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 const emit = defineEmits(["handleSearch"]);
 
 const props = defineProps({
@@ -37,7 +39,7 @@ const placeholder = computed(() => {
   if (props.placeHolderText && !props.loading) {
     return props.placeHolderText;
   } else {
-    return "Suche nach Themen, Anbietern, Kursen,...";
+    return "Finde Themen, Anbieter, Kurse…";
   }
 });
 

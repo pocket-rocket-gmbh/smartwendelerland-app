@@ -130,7 +130,6 @@ const setLogo = computed(() => {
 });
 
 const checkRoute = () => {
-  console.log(route.value);
   if (route.value.query["kind"]) {
     return true;
   }

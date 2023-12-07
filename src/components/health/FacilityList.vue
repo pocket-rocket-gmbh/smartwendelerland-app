@@ -15,7 +15,10 @@
           <span class="general-font-size">{{ facility?.user_care_facility.name }}</span>
           <div class="divider has-gap"></div>
         </div>
-        <div class="general-font-size-subtitle is-dark-grey facility-name">
+        <div
+          class="general-font-size-subtitle is-dark-grey facility-name hypernate"
+          lang="de"
+        >
           {{ facility.name }}
         </div>
       </div>
@@ -30,7 +33,7 @@
                 :src="mapIcon"
               ></ion-icon>
             </div>
-            <div>
+            <div class="has-irregular-margin">
               <div>
                 {{ facility.street }}
               </div>
@@ -60,59 +63,47 @@
               {{ facility.phone }}
             </div>
           </div>
-          <div class="informations">
-            <div>
-              <a
-                class="is-dark-grey informations-mail"
-                :href="`mailto:${facility.email}`"
-                @click.stop
-              >
-                <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
-              </a>
-            </div>
-            <div>
+          <div class="informations hypernate" lang="de">
+            <a
+              class="is-dark-grey centralize"
+              :href="`mailto:${facility.email}`"
+              @click.stop
+            >
+              <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
+            </a>
+
+            <div class="has-irregular-margin-2">
               {{ facility.email }}
             </div>
           </div>
         </div>
 
-        <div v-else-if="facility?.event_dates.length" :class="[facility.showAllEvents ? 'informations-dates' : 'informations']">
+        <div v-else-if="facility?.event_dates.length" class="course-dates">
           <div>
             <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
           </div>
           <div class="event-chips" v-if="facility?.event_dates.length">
-            <span>Nächster Termin:</span>
-            
-            <div class="dates" v-if="!facility.showAllEvents" mode="ios">
-              <span>{{ getDayOfWeek(facility?.event_dates[0].slice(0, 10)) }},</span>
-              <span>&nbsp; {{ facility?.event_dates[0].slice(0, 10) }}, </span>
-              <span>
-                &nbsp;
-                {{
-                  facility?.event_dates[0].slice(
-                    Math.max(facility?.event_dates[0].length - 5, 1)
-                  )
-                }}
-                Uhr</span
-              >
+            <div class="course-dates has-irregular-margin">
+              <span class="next-event is-health">Termine anzeigen:</span>
               <div>
-                <ion-button
-              v-if="
-                facility.kind !== 'facility' &&
-                facility.kind !== 'news' &&
-                facility.event_dates.length > 2
-              "
-              mode="md"
-              size="small"
-              shape="round"
-              expand="block"
-              class="green-button"
-              @click.stop="showAllEvents(facility)"
-              ><span>+ {{ facility.event_dates.length -1 }}</span>
-              </ion-button
-            >
+                <span
+                  v-if="facility.kind !== 'facility' && facility.kind !== 'news'"
+                  @click.stop="showAllEvents(facility)"
+                >
+                  <ion-icon
+                    v-if="facility.showAllEvents"
+                    size="large"
+                    class="is-health show-more-events"
+                    :src="caretUpOutline"
+                  ></ion-icon>
+                  <ion-icon
+                    v-else
+                    size="large"
+                    class="is-health show-more-events"
+                    :src="caretDownOutline"
+                  ></ion-icon>
+                </span>
               </div>
-
             </div>
           </div>
         </div>
@@ -123,13 +114,15 @@
           <div>
             <ion-icon class="icons" size="large"></ion-icon>
           </div>
-          <div>
+          <div class="">
             <span v-for="event in displayedEvents(facility)" :key="event.index">
               <div class="informations">
-                <div class="dates">
+                <div class="dates list">
                   <span>{{ getDayOfWeek(event.slice(0, 10)) }},&nbsp;</span>
-                  <span>{{ event.slice(0, 10) }},&nbsp;</span>
-                  <span>{{ event.slice(Math.max(event.length - 5, 1)) }} Uhr</span>
+                  <span
+                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
+                    {{ event.slice(11) }} Uhr</span
+                  >
                 </div>
               </div>
             </span>
@@ -182,13 +175,17 @@ import {
   Facility,
 } from "@/stores/health/searchFilter";
 import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useDatetime } from "@/composables/ui/datetime";
 import mapIcon from "@/assets/images/facilities/icon_address.svg";
-import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
+import { caretDownOutline } from "ionicons/icons";
+import { caretUpOutline } from "ionicons/icons";
+
 import calendarIcon from "@/assets/images/facilities/icon_calendar.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
+import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import facilityIcon from "@/assets/images/facilities/facilities.svg";
-import { isPlatform } from "@ionic/vue";
+import { isPlatform, onIonViewDidLeave } from "@ionic/vue";
 import mapMarker from "@/assets/images/facilities/icon_map_marker.svg";
 import { onIonViewWillEnter } from "@ionic/vue";
 
@@ -239,14 +236,20 @@ const openMapsApp = (location: any) => {
 };
 
 const routeAndGo = (facility: Facility) => {
-  filterStore.currentTags;
   router.push({
     path: `/health/care_facilities/${facility.id}`,
     query: {
       tags: JSON.stringify(filterStore.currentTags),
       community: filterStore.currentZip,
+      searchTerm: filterStore.currentSearchTerm,
     },
   });
+  if (router.currentRoute.value.query.kind) {
+    filterStore.mainSearch = false;
+  }
+  if (!router.currentRoute.value.query.kind) {
+    filterStore.mainSearch = true;
+  }
 };
 </script>
 
@@ -271,27 +274,17 @@ const routeAndGo = (facility: Facility) => {
 
 .informations
   display: flex
-  flex-wrap: wrap
-  align-items: center
+  flex-wrap: nowrap
+  align-items: start
   margin-bottom: 10px
 
-.informations-dates
-  display: flex
-  flex-wrap: wrap
-
 .icons
-  height: 30px
-  width: 30px
+  height: 25px
+  width: 25px
   margin-right: 10px
-
-.informations-mail
-  display: flex
-  flex-wrap: wrap
-  align-items: center
 
 .facility-name
   margin-bottom: 10px
-
 a
   text-decoration: none
 
@@ -309,10 +302,25 @@ ion-chip
   display: flex
   flex-wrap: wrap
   align-items: center
-  margin-bottom: 10px
 
 .dates div:last-child
   margin-left: 10px
 .facility-icon
   padding-right: 10px
+
+.has-irregular-margin
+  margin-top: -5px
+
+.has-irregular-margin-2
+  margin-top: -3px
+
+.course-dates
+  display: flex
+  flex-wrap: nowrap
+
+.list
+  margin-top: -2px
+
+.show-more-events
+  margin-left: 10px
 </style>

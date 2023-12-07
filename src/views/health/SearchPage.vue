@@ -37,9 +37,13 @@
           >
         </div>
       </template>
-      <div class="grid-buttons" v-if="facilityKind === 'facility' || facilityKind === 'course'" mode="md">
+      <div
+        class="grid-buttons"
+        v-if="facilityKind === 'facility' || facilityKind === 'course'"
+        mode="md"
+      >
         <div>
-          <div >
+          <div>
             <div class="filter-container">
               <img
                 src="@/assets/images/filter.svg"
@@ -64,6 +68,7 @@
             >Filter löschen</ion-button
           >
         </div>
+
         <div>
           <div v-if="facilityKind === 'facility'">
             <ion-button
@@ -80,7 +85,6 @@
     </div>
     <div class="bottom-actions has-bg-darken-grey general-font-size">
       <div v-if="filterStore.loading">Wird geladen...</div>
-
       <div class="general-font-size" v-else-if="filterStore.filteredResults.length">
         <span>{{ filterStore.filteredResults.length }}</span>
         <span v-if="facilityKind === 'facility'"> Anbieter </span>
@@ -176,13 +180,13 @@ const countSelectedFilters = computed(() => {
 
 const searchLabel = computed(() => {
   if (facilityKind.value === "facility") {
-    return `Finde den passenden ${pageTile.value}`
+    return `Finde den passenden ${pageTile.value}`;
   } else if (facilityKind.value === "course") {
-    return `Finde den passenden ${pageTile.value}`
+    return `Finde den passenden ${pageTile.value}`;
   } else if (facilityKind.value === "event") {
-    return `Finde die passende ${pageTile.value}`
+    return `Finde die passende ${pageTile.value}`;
   } else if (facilityKind.value === "news") {
-    return `Finde den passenden ${pageTile.value}`
+    return `Finde den passenden ${pageTile.value}`;
   } else {
     return "Allgemeine Suche";
   }
@@ -250,11 +254,18 @@ const resetFilter = () => {
   filterStore.currentZip = null;
 };
 
+const lastRoute = router.options.history.state.back;
+
 onIonViewWillLeave(() => {
-  resetFilter();
+  if (typeof lastRoute === 'string' && lastRoute.includes("categories")) {
+    filterStore.currentTags = [];
+    filterStore.currentZip = null;
+  }
+  //resetFilter();
 });
 
 onIonViewWillEnter(() => {
+  console.log("resetting filter");
   if (router.currentRoute.value.query.tags) {
     filterStore.currentTags = JSON.parse(router.currentRoute.value.query.tags as string);
   }

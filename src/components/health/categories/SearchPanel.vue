@@ -2,7 +2,7 @@
   <div class="search-panel">
     <div class="health-panel">
       <div class="gap-1"></div>
-      <div class="has-text-white general-font-size-title text-wrap">
+      <div class="has-text-white general-font-size-subtitle text-wrap">
         Herzlich Willkommen auf deiner Gesundheitsplattform <br />
        im Landkreis Sankt Wendel
       </div>

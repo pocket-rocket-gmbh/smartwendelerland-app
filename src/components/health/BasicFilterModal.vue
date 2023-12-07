@@ -5,16 +5,17 @@
         <ion-title class="general-font-size is-dark-grey" slot="start"
           >Verfeinere hier deine Suche!</ion-title
         >
-        <ion-buttons slot="end">
+       
           <ion-button
-            mode="ios"
-            shape="round"
-            expand="block"
-            class="green-button general-font-size"
-            @click="emitClose()"
-            >Fertig</ion-button
-          >
-        </ion-buttons>
+      
+          mode="md"
+          shape="round"
+          expand="block"
+          class="green-button"
+          @click="emitClose"
+          >Fertig</ion-button
+        >
+       
       </ion-toolbar>
     </ion-header>
     <ion-header>
@@ -34,7 +35,7 @@
 
       <div v-if="!loadingFilters" class="filters">
         <div v-for="filter in mainFilters" :key="filter.id">
-          <div class="filter-name general-font-size-title is-dark-grey">
+          <div class="filter-name general-font-size-subtitle is-dark-grey">
             {{ filter.name }}
           </div>
           <div class="filter-options">

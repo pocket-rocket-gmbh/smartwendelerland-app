@@ -62,6 +62,7 @@ export type Filter = {
 
   basicFilters: string[];
   advancedFilters: any;
+  mainSearch: boolean;
 };
 
 type FilterResponse = {
@@ -79,6 +80,7 @@ const initialFilterState: Filter = {
   loading: false,
   mapFilter: null,
   currentKinds: [],
+  mainSearch: false,
 
   //
   allResults: [],
@@ -101,6 +103,7 @@ export const useFilterStore = defineStore({
         currentKinds: state.currentKinds,
         basicFilters: state.basicFilters,
         advancedFilters: state.advancedFilters,
+        mainSearch: state.mainSearch,
       };
     },
   },

@@ -3,7 +3,7 @@
     <div v-if="!loadingFilters" class="filters">
       <div v-for="filter in advancedFilters" :key="filter.key">
         <div v-for="item in filter.next" :key="item.id">
-          <div v-if="item.next.length" class="filter-name general-font-size-title is-dark-grey">
+          <div v-if="item.next.length" class="filter-name general-font-size-sub-title is-dark-grey">
             {{
               item.title.replace(
                 "(nur von ärztlichen/ therapeutischen Leistungserbringern auszuwählen)",

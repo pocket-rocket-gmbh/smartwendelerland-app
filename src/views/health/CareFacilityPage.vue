@@ -4,7 +4,7 @@
     :show-login="false"
     :title="facility?.name"
     :show-bar="false"
-    :is-facility-page="true"
+    :is-facility-page="isFacilityPage"
   >
     <div class="facility-page" v-if="facility">
       <swiper
@@ -17,25 +17,18 @@
         style="--swiper-pagination-color: #8ab61d; --swiper-pagination-top: 8px"
       >
         <swiper-slide>
-          <img
-            :src="imageCache.cacheableImageUrl(facility.image_url)"
-            class="showroom"
-          />
+          <img :src="imageCache.cacheableImageUrl(facility.image_url)" class="showroom" />
           <img v-if="facility.logo_url" :src="facility.logo_url" class="logo" />
         </swiper-slide>
-        <swiper-slide
-          v-for="(image, index) in facility.sanitized_images"
-          :key="index"
-        >
-          <img
-            :src="imageCache.cacheableImageUrl(image.url)"
-            class="showroom"
-          />
+        <swiper-slide v-for="(image, index) in facility.sanitized_images" :key="index">
+          <img :src="imageCache.cacheableImageUrl(image.url)" class="showroom" />
         </swiper-slide>
         <div class="pagination" />
       </swiper>
 
-      <div class="general-font-size-title is-dark-grey ion-margin-top">
+      <div
+        class="general-font-size-subtitle is-dark-grey ion-margin-top ion-margin-bottom"
+      >
         {{ facility.name }}
         <img
           src="@/assets/images/check-decagram-outline.svg"
@@ -62,50 +55,69 @@
           v-if="facility.tags.length > 3"
           @click.stop="showAllTags(facility)"
         >
-          <span v-if="facility.showAllTags"
-            >- {{ facility.tags.length - 3 }}</span
-          >
+          <span v-if="facility.showAllTags">- {{ facility.tags.length - 3 }}</span>
           <span v-else>+ {{ facility.tags.length - 3 }}</span>
         </ion-button>
       </div>
 
       <div v-if="facility.kind !== 'news'" class="more-infos ion-padding">
         <div>
-          <div class="has-text-health headline is-uppercase ion-margin-bottom">
+          <div class="has-text-health headline is-uppercase informations">
             Kontakt und Infos
           </div>
           <ion-grid>
             <ion-row>
-              <ion-col size="12" size-md="6">
-                <div
-                  v-if="facility.street"
-                  class="info-grid"
-                  @click="openMapsApp(facility.street)"
-                >
+              <ion-col size="12" size-md="6" class="general-font-size is-dark-grey">
+                <div class="informations">
                   <div>
-                    <img src="@/assets/images/facilities/icon_address.svg" />
+                    <ion-icon
+                      @click.stop="routeAndGo(facility?.user_care_facility)"
+                      class="icons"
+                      size="large"
+                      :src="facilityIcon"
+                    ></ion-icon>
                   </div>
-                  <div class="general-font-size is-dark-grey">
-                    <div>{{ facility.street }}</div>
-                    <div>{{ facility.zip }} {{ facility.town }}</div>
+                  <div class="general-font-size">
+                    {{ facility?.user_care_facility.name }}
                   </div>
                 </div>
-                <div v-if="facility.phone" class="info-grid">
-                  <div>
-                    <img src="@/assets/images/facilities/icon_phone.svg" />
+                <div class="informations">
+                  <div @click.stop="openMapsApp(facility.street)">
+                    <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
                   </div>
-                  <div class="general-font-size is-dark-grey">
-                    <a :href="`tel:${facility.phone}`">{{ facility.phone }}</a>
+                  <div class="has-irregular-margin">
+                    <div>
+                      {{ facility.street }}
+                    </div>
+                    <div>
+                      {{ facility.zip }}
+                      <span>
+                        {{ facility.town }}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div v-if="facility.email" class="info-grid">
+                <div class="informations">
                   <div>
-                    <img src="@/assets/images/facilities/icon_mail.svg" />
+                    <a class="is-dark-grey" :href="`tel:${facility.phone}`" @click.stop>
+                      <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
+                    </a>
                   </div>
-                  <div class="general-font-size is-dark-grey" @click.stop>
-                    <a :href="`mailto:${facility.email}`">{{
-                      facility.email
-                    }}</a>
+                  <div>
+                    {{ facility.phone }}
+                  </div>
+                </div>
+                <div class="informations hypernate" lang="de">
+                  <a
+                    class="is-dark-grey centralize"
+                    :href="`mailto:${facility.email}`"
+                    @click.stop
+                  >
+                    <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
+                  </a>
+
+                  <div class="has-irregular-margin-2">
+                    {{ facility.email }}
                   </div>
                 </div>
 
@@ -123,7 +135,7 @@
               <ion-col>
                 <div
                   v-if="facility.website"
-                  class="button-rounded is-uppercase ion-margin-top"
+                  class="button-rounded is-uppercase"
                   @click="handleLinkClick(getWebsiteLink(facility.website))"
                 >
                   Weitere Informationen
@@ -189,6 +201,12 @@
       >
         <i>Inhaltlich verantwortlich: {{ facility.name_responsible_person }}</i>
       </div>
+      <div
+        v-if="facility.name_responsible_person"
+        class="ion-margin-bottom general-font-size is-dark-grey"
+      >
+        <i>Zuletzt geändert: {{ useDatetime().parseDatetime(facility.updated_at) }}</i>
+      </div>
       <div v-if="facility.kind === 'news'" class="news-grid">
         <div>
           <span><img src="@/assets/images/watch.svg" /></span>
@@ -200,9 +218,7 @@
         class="more-infos ion-margin-top ion-padding"
         v-if="facility.event_dates.length > 0"
       >
-        <div
-          class="has-text-health general-font-size is-uppercase ion-margin-bottom"
-        >
+        <div class="has-text-health general-font-size is-uppercase ion-margin-bottom">
           Termine
         </div>
         <div class="ion-margin-bottom general-font-size is-dark-grey">
@@ -220,10 +236,7 @@
             <th>Uhrzeit</th>
           </thead>
           <tbody>
-            <tr
-              v-for="(date, index) in mapDates(facility.event_dates)"
-              :key="index"
-            >
+            <tr v-for="(date, index) in mapDates(facility.event_dates)" :key="index">
               <td class="divider" v-if="showHide">
                 {{ date.toLocaleDateString("de-DE", { weekday: "long" }) }}
               </td>
@@ -242,9 +255,7 @@
               </td>
 
               <td class="divider">
-                {{ date.getHours() }}:{{
-                  formattedDateString(date.getMinutes())
-                }}
+                {{ date.getHours() }}:{{ formattedDateString(date.getMinutes()) }}
                 Uhr
               </td>
             </tr>
@@ -258,9 +269,7 @@
         :key="document.signed_id"
         @click="handleLinkClick(document.url)"
       >
-        <div
-          class="has-text-health is-uppercase general-font-size ion-margin-bottom"
-        >
+        <div class="has-text-health is-uppercase general-font-size ion-margin-bottom">
           Dokumente
         </div>
 
@@ -277,6 +286,7 @@
 <script setup lang="ts">
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination } from "swiper";
+import { useRouter } from "vue-router";
 import "swiper/css";
 import "swiper/css/pagination";
 import { computed, ref } from "vue";
@@ -289,11 +299,22 @@ import { Browser } from "@capacitor/browser";
 import { useImageCache } from "@/composables/ui/imageCache";
 import { useDatetime } from "@/composables/ui/datetime";
 import { isPlatform } from "@ionic/vue";
+import facilityIcon from "@/assets/images/facilities/facilities.svg";
+import mapIcon from "@/assets/images/facilities/icon_address.svg";
+import mailIcon from "@/assets/images/facilities/icon_mail.svg";
+import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
+import { useFilterStore } from "@/stores/health/searchFilter";
 import { checkDecagramOutline } from "@/assets/images/check-decagram-outline.svg";
 
 const route = useRoute();
 const loading = ref(false);
 const imageCache = useImageCache();
+
+const filterStore = useFilterStore();
+
+const router = useRouter();
+
+const isFacilityPage = ref(true);
 
 const facilityId = computed(() => {
   return route.params.id as string;
@@ -313,6 +334,12 @@ const showHide = computed(() => {
 
 const showAllTags = (facility: { showAllTags: boolean }) => {
   facility.showAllTags = !facility.showAllTags;
+};
+
+const routeAndGo = (facility: any) => {
+  router.push({
+    path: `/health/care_facilities/${facility.id}`,
+  });
 };
 
 const formatDescription = computed(() => {
@@ -359,6 +386,12 @@ onIonViewDidEnter(() => {
 });
 
 const generateForceBackUrl = () => {
+  if (filterStore.mainSearch) {
+    return "/health/search";
+  }
+  if (route.query?.searchTerm && !isFacilityPage.value) {
+    return filterStore.currentSearchTerm = route.query?.searchTerm as string;
+  }
   let baseUrl = `/health/search?kind=${facility.value?.kind}`;
   let tags = route.query?.tags;
   let community = route.query?.community;
@@ -426,7 +459,7 @@ const modules = [Pagination];
 .more-infos
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
   border-radius: 10px
-  margin-top: 30px
+  margin-top: 20px
   display: flex
   flex-direction: column
 .info-grid
@@ -514,4 +547,20 @@ ion-chip
   align-items: center
   gap: 10px
 
+.informations
+  display: flex
+  flex-wrap: nowrap
+  align-items: start
+  margin-bottom: 10px
+
+.icons
+  height: 25px
+  width: 25px
+  margin-right: 10px
+
+.has-irregular-margin
+  margin-top: -5px
+
+.has-irregular-margin-2
+  margin-top: -3px
 </style>
