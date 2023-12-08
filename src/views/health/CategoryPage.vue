@@ -15,7 +15,7 @@
       "
     >
       <ion-header>
-        <on-toolbar>
+        <ion-toolbar>
           <ion-title>{{ selectedSubSubCategory?.name }}</ion-title>
           <ion-buttons slot="end">
             <ion-button
@@ -26,7 +26,7 @@
               >Schließen</ion-button
             >
           </ion-buttons>
-        </on-toolbar>
+        </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
         <div class="modal-content">
@@ -37,14 +37,15 @@
         </div>
         <div class="has-gap">
           <ion-button
-          shape="round"
-          expand="block"
-          class="green-button"
-          @click="handleClick(selectedSubSubCategory)"
-        >
-        <span v-if="selectedSubSubCategory?.button_text"> {{ selectedSubSubCategory?.button_text }} </span>
-        <span>mehr erfahren</span>
-        </ion-button>
+            shape="round"
+            expand="block"
+            class="green-button"
+            @click="handleClick(selectedSubSubCategory)"
+          >
+            <span v-if="selectedSubSubCategory?.url && selectedSubSubCategory.url_kind === 'external' && !selectedSubSubCategory?.button_text">Zur Webseite</span>
+            <span v-else-if="selectedSubSubCategory?.button_text">{{ selectedSubSubCategory?.button_text }} </span>
+            <span v-else>Mehr erfahren</span>
+          </ion-button>
         </div>
         
       </ion-content>
@@ -126,6 +127,7 @@ import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
 import {
+  IonToolbar,
   onIonViewDidEnter,
   IonLoading,
   IonModal,
@@ -206,6 +208,7 @@ const setItemsAndGo = (subCategory: any) => {
 };
 
 const handleClick = async (subSubCategory: any) => {
+  console.log(subSubCategory)
   if (subSubCategory.url_kind === "external") {
     await Browser.open({ url: subSubCategory.url });
   }
@@ -218,6 +221,8 @@ onIonViewDidEnter(() => {
 </script>
 
 <style lang="sass" scoped>
+ion-toolbar
+  padding-top: 40px !important
 .modal-image
   width: 200px
   margin-right: 20px

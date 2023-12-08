@@ -35,14 +35,14 @@
   </div>
   <ion-modal :is-open="!!clickedLocation">
     <ion-content id="projectList">
-      <div align="center">
+      <div align="center" class="ion-margin-top">
         <button class="close-button" @click="clickedLocation = null">Schließen</button>
       </div>
       <div class="ion-margin-top">
         <FacilityPanel
           v-if="clickedLocation"
-          @click="navigateToFacility(clickedLocation.id)"
           :facility="clickedLocation"
+          @goToFacility="navigateToFacility"
           :id="clickedLocation.id"
         />
       </div>
@@ -107,10 +107,9 @@ const getLocationsFromFacilies = async (facilities: any[]) => {
   }, 50);
 };
 
-const navigateToFacility = (facilityId: string) => {
+const navigateToFacility = () => {
+  router.push({ path: `/health/care_facilities/${clickedLocation.value.id}` });
   clickedLocation.value = null;
-  // TODO: route to Facility-Details-Page
-  router.push({ path: `/health/care_facilities/${facilityId}` });
 };
 
 const updateLocations = () => {
@@ -166,7 +165,10 @@ onIonViewDidEnter(() => {
   position: relative
 
 .close-button
+  color: black
   font-size: 20px
   background: transparent
-  margin-top: 20px
+  margin-top: 30px
+  width: 100%
+  height: 50px
 </style>

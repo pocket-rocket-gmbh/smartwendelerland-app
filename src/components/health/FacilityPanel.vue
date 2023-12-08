@@ -14,7 +14,7 @@
 
       <div class="ion-margin-top">{{ facility.excerpt }}</div>
     </ion-card-content>
-    <div class="footer" @click="router.push({ path: `/health/care_facilities/${facility.id}`})">Einrichtung ansehen</div>
+    <div class="footer" @click="goToFacility">Einrichtung ansehen</div>
   </ion-card>
 </template>
 
@@ -22,15 +22,19 @@
 import { useImageCache } from "@/composables/ui/imageCache";
 import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon } from "@ionic/vue";
 import { location } from "ionicons/icons";
-import { defineProps } from "vue";
-import { useRouter } from "vue-router";
+import { defineProps, defineEmits } from "vue";
+
+const emit = defineEmits(["goToFacility"]);
 
 const props = defineProps<{
   facility: any;
 }>();
 
 const imageCache = useImageCache();
-const router = useRouter();
+
+const goToFacility = () => {
+  emit("goToFacility");
+};
 </script>
 <style lang="sass" scoped>
 .image-wrapper

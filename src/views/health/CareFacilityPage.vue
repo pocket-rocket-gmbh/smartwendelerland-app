@@ -540,6 +540,7 @@ ion-chip
   font-size: 1.2rem
 
 .facility-page
+  margin-top: 40px
   padding: 10px
 
 .documents

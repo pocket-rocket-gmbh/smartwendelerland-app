@@ -323,4 +323,6 @@ ion-chip
 
 .show-more-events
   margin-left: 10px
+  margin-top: -2px
+  
 </style>
