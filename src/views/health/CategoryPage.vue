@@ -121,6 +121,8 @@
 </template>
 
 <script setup lang="ts">
+import { useFilterStore } from "@/stores/health/searchFilter";
+import { useRouter } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
 import { useRoute } from "vue-router";
@@ -138,6 +140,8 @@ import {
   IonContent,
 } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
+const router = useRouter();
+const filterStore = useFilterStore();
 const route = useRoute();
 const categoryId = computed(() => {
   return `${route.params.id}`;
@@ -211,7 +215,43 @@ const handleClick = async (subSubCategory: any) => {
   console.log(subSubCategory)
   if (subSubCategory.url_kind === "external") {
     await Browser.open({ url: subSubCategory.url });
+  } else {
+
+    if (subSubCategory.url.includes("https://gesundes-wnd.de/public/search")) {
+      let searchUrl = subSubCategory.url.split("/")
+      let filter = searchUrl[searchUrl.length - 1]
+      console.log(filter)
+
+      if (filter === 'courses') {
+        filter = 'course'
+      } else if (filter === 'events') {
+        filter = 'event'
+      } else if (filter === 'facilities') {
+        filter = 'facility'
+      } else if (filter === 'news') {
+        filter = 'news'
+      }
+
+      router.push({
+        path: `/health/search`,
+        query: {
+          kind: filter
+        },
+      });
+    }
+
+
+
+    // router.push({
+    //   path: `/health/search`,
+    //   query: {
+    //     kind: subSubCategory.scope
+    //   },
+    // });
+    detailModalOpen.value = false
   }
+  
+  selectedSubSubCategory.value = null
 };
 
 onIonViewDidEnter(() => {
