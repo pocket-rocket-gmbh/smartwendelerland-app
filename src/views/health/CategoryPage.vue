@@ -219,23 +219,33 @@ const handleClick = async (subSubCategory: any) => {
 
     if (subSubCategory.url.includes("https://gesundes-wnd.de/public/search")) {
       let searchUrl = subSubCategory.url.split("/")
-      let filter = searchUrl[searchUrl.length - 1]
-      console.log(filter)
+      let scope = searchUrl[searchUrl.length - 1]
 
-      if (filter === 'courses') {
-        filter = 'course'
-      } else if (filter === 'events') {
-        filter = 'event'
-      } else if (filter === 'facilities') {
-        filter = 'facility'
-      } else if (filter === 'news') {
-        filter = 'news'
+      if (scope === 'courses') {
+        scope = 'course'
+      } else if (scope === 'events') {
+        scope = 'event'
+      } else if (scope === 'facilities') {
+        scope = 'facility'
+      } else if (scope === 'news') {
+        scope = 'news'
       }
+
+      const parsedUrl = new URL(subSubCategory.url);
+      const searchParams = new URLSearchParams(parsedUrl.search);
+
+      const paramsObject = {};
+      searchParams.forEach((value, key) => {
+        paramsObject[key] = value;
+      });
+
+      const filter = JSON.parse(paramsObject.filter)
+      console.log(filter)
 
       router.push({
         path: `/health/search`,
         query: {
-          kind: filter
+          kind: scope
         },
       });
     }
