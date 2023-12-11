@@ -90,8 +90,7 @@
             "
           >
             {{ subSubCategory.name }}
-          </div>
-          <div
+            <span
             class="content general-font-size is-dark-grey hypernate"
             lang="de"
             @click="
@@ -100,7 +99,9 @@
             "
           >
             {{ subSubCategory.description }}
+          </span>
           </div>
+
           <div class="show-more">
             <ion-button
               shape="round"
