@@ -5,9 +5,11 @@
       class="has-background-white placeholder"
       :placeholder="placeholder"
       v-model="filterStore.currentSearchTerm"
-      :debounce="1000"
-      @ionChange="emitHandleSearch"
       @ionClear="clearSearch"
+      enterkeyhint="search"
+      inputmode="text"
+      @keyup.enter="emitHandleSearch"
+      :animated="true"
     />
   </ion-page>
 </template>
@@ -16,8 +18,6 @@
 import { computed, defineEmits, defineProps } from "vue";
 import { IonSearchbar } from "@ionic/vue";
 import { useFilterStore } from "@/stores/health/searchFilter";
-import { useRouter } from "vue-router";
-import { useRoute } from "vue-router";
 const emit = defineEmits(["handleSearch"]);
 
 const props = defineProps({
