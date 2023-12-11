@@ -1,9 +1,12 @@
 <template>
-  <ion-content>
+  <ion-content class="ion-padding-bottom">
     <div v-if="!loadingFilters" class="filters">
       <div v-for="filter in advancedFilters" :key="filter.key">
         <div v-for="item in filter.next" :key="item.id">
-          <div v-if="item.next.length" class="filter-name general-font-size-sub-title is-dark-grey">
+          <div
+            v-if="item.next.length"
+            class="filter-name general-font-size-subtitle is-dark-grey"
+          >
             {{
               item.title.replace(
                 "(nur von ärztlichen/ therapeutischen Leistungserbringern auszuwählen)",
@@ -47,6 +50,10 @@
               </div>
             </div>
           </div>
+          <div class="gap-1" />
+          <div class="gap-1" />
+          <div class="gap-1" />
+          <div class="gap-1" />
         </div>
       </div>
     </div>

@@ -33,13 +33,13 @@
     </ion-header>
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
 
-      <div v-if="!loadingFilters" class="filters">
+      <div v-if="!loadingFilters" class="filters ion-padding-bottom">
         <div v-for="filter in mainFilters" :key="filter.id">
-          <div class="filter-name general-font-size-subtitle is-dark-grey">
+          <div class="filter-name general-font-size-subtitle is-dark-grey" v-if="hasActiveOptions(filter.id)">
             {{ filter.name }}
           </div>
           <div class="filter-options">
-            <label
+            <div
               :for="option.id"
               class="option"
               v-for="(option, index) in filterOptions.find(
@@ -47,7 +47,8 @@
               ).options"
               :key="index"
             >
-              <div
+              <label
+                v-if="option?.care_facilities_active_count > '0'"
                 :model-value="modelValue.includes(option.id)"
                 @click.prevent="handleOptionSelect(option)"
                 hide-details
@@ -58,8 +59,8 @@
                 }"
               >
                 {{ option.name }}
-              </div>
-            </label>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -142,6 +143,11 @@ const propsModel = ref(props.modelValue);
 
 const emitClose = () => {
   emit("close");
+};
+
+const hasActiveOptions = (filterId:string) => {
+  const options = filterOptions.value.find(({ parentId }) => parentId === filterId)?.options;
+  return options && options.some(option => Number(option?.care_facilities_active_count) > 0);
 };
 
 const communityFilter = ref(null);

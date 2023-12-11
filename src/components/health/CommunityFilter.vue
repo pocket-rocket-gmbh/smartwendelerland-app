@@ -1,5 +1,5 @@
 <template>
-  <ion-content>
+  <ion-content class="ion-padding-top">
     <div class="filter-options communities">
       <label
         :for="community.id"
@@ -71,6 +71,6 @@ const selectCommunityFilterValue = (selectedFilter: any) => {
 defineExpose({ resetFilter });
 </script>
 
-<style>
+<style lang="sass" scoped>
 
 </style>
