@@ -46,7 +46,7 @@
           v-for="tag in displayedTags(facility)"
           :key="tag.id"
         >
-          <span class="break-text">{{ tag.name }}</span>
+          <span class="break-text tag-chip">{{ tag.name }}</span>
         </ion-button>
         <ion-button
           mode="md"
@@ -540,6 +540,7 @@ ion-chip
   font-size: 1.2rem
 
 .facility-page
+  margin-top: 40px
   padding: 10px
 
 .documents
@@ -563,4 +564,7 @@ ion-chip
 
 .has-irregular-margin-2
   margin-top: -3px
+
+.tag-chip
+  text-transform: none
 </style>

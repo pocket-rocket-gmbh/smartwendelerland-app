@@ -91,7 +91,7 @@
         <span v-if="facilityKind === 'course'"> Kurse </span>
         <span v-if="facilityKind === 'event'"> Veranstaltungen </span>
         <span v-if="facilityKind === 'news'"> Beiträge </span>
-        <span v-if="!facilityKind"> Ergebnisse </span>
+        <span v-if="!facilityKind"> Ergebnis<span v-if="filterStore.filteredResults.length > 1">se</span> </span>
         <span v-if="view === 'map'">in deiner Nähe</span>
         gefunden
       </div>

@@ -118,7 +118,7 @@
             <span v-for="event in displayedEvents(facility)" :key="event.index">
               <div class="informations">
                 <div class="dates list">
-                  <span>{{ getDayOfWeek(event.slice(0, 10)) }},&nbsp;</span>
+                  <span>{{ getDayOfWeek(event.slice(0, 10)) }}, &nbsp;</span>
                   <span
                     >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
                     {{ event.slice(11) }} Uhr</span
@@ -155,12 +155,14 @@
         >
 
         <ion-button
-          v-if="facility.kind === 'facility' && router.currentRoute.value.query.kind"
+          v-else-if="facility.kind === 'facility' && router.currentRoute.value.query.kind"
           mode="md"
           shape="round"
           expand="block"
           class="green-button"
-          >Details ansehen</ion-button
+        >
+          Details ansehen
+        </ion-button
         >
       </div>
     </div>
@@ -204,15 +206,15 @@ const displayedEvents = computed(
   }
 );
 
-const getFacilityKind = (facility) => {
+const getFacilityKind = (facility:any) => {
   if (facility && facility.kind === "facility") {
-    return "zur Einrichtung";
+    return "Zur Einrichtung";
   } else if (facility && facility.kind === "event") {
-    return "zur veranstaltung";
+    return "Zur Veranstaltung";
   } else if (facility && facility.kind === "course") {
-    return "zum Kurs";
+    return "Zum Kurs";
   } else if (facility && facility.kind === "news") {
-    return "zum Beitrag";
+    return "Zum Beitrag";
   }
   return "";
 };
@@ -323,4 +325,6 @@ ion-chip
 
 .show-more-events
   margin-left: 10px
+  margin-top: -2px
+  
 </style>
