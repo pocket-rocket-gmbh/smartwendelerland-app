@@ -92,7 +92,7 @@
             {{ subSubCategory.name }}
           </div>
           <div
-            class="content general-font-size is-dark-grey break-text hypernate"
+            class="content general-font-size is-dark-grey hypernate"
             lang="de"
             @click="
               detailModalOpen = true;
@@ -274,13 +274,13 @@ onIonViewDidEnter(() => {
 ion-toolbar
   padding-top: 40px !important
 .modal-image
-  width: 200px
+  width: 250px
   margin-right: 20px
   margin-bottom: 10px
 
 .image-left
-  max-width: 200px
-  max-height: 200px
+  max-width: 250px
+  max-height: 250px
   @media (max-width: 768px)
     display: none
 
