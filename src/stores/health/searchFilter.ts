@@ -7,11 +7,7 @@ import { CollapsibleListItem } from "@/types/collapsibleList";
 
 export const filterSortingDirections = ["Aufsteigend", "Absteigend"] as const;
 
-export type CategoriesFilter =
-  | "category"
-  | "subCategory"
-  | "subSubCategory"
-  | "tags";
+export type CategoriesFilter = "category" | "subCategory" | "subSubCategory" | "tags";
 export type FilterKind = "facility" | "news" | "event" | "course";
 export type FilterType = "filter_facility" | "filter_service";
 export type FilterTag = {
@@ -41,12 +37,14 @@ export type Facility = {
   created_at?: string;
   event_dates?: [];
   showAllEvents?: boolean;
+  tag_category_ids?: string[];
   user?: {
     name: string;
   };
 };
 
 export type Filter = {
+  id: string;
   currentSearchTerm: string;
   currentTags: string[];
   currentZip: string;
@@ -73,6 +71,7 @@ type FilterResponse = {
 };
 
 const initialFilterState: Filter = {
+  id: "",
   currentSearchTerm: "",
   currentTags: [],
   currentZip: null,
@@ -150,33 +149,22 @@ export const useFilterStore = defineStore({
         return;
       }
 
-      const filters: any[] = result?.data?.resources?.filter(
-        (item: Facility) => filterKind === item.kind
-      ); // Filter items for current kind (event/facility/news/course) // hereeeeee!!!!
+      const filters: any[] = result?.data?.resources?.filter((item: Facility) => filterKind === item.kind); // Filter items for current kind (event/facility/news/course) // hereeeeee!!!!
       if (!filters) {
         console.error("No filters!");
         return;
       }
 
-      const serviceFilters = filters.filter(
-        (filter) => filter.filter_type === "filter_service"
-      );
+      const serviceFilters = filters.filter((filter) => filter.filter_type === "filter_service");
       const allFilters = await this.getAllFilters();
 
       const tmpItemsForServiceList: CollapsibleListItem[] = [];
 
-      serviceFilters.forEach((filter) =>
-        this.getItemsAndNext(filter, tmpItemsForServiceList, 0, allFilters)
-      );
+      serviceFilters.forEach((filter) => this.getItemsAndNext(filter, tmpItemsForServiceList, 0, allFilters));
 
       this.advancedFilters = [...tmpItemsForServiceList];
     },
-    async getItemsAndNext(
-      filter: FilterResponse,
-      arrayToAdd: CollapsibleListItem[],
-      layer: number,
-      allFilters: FilterResponse[]
-    ) {
+    async getItemsAndNext(filter: FilterResponse, arrayToAdd: CollapsibleListItem[], layer: number, allFilters: FilterResponse[]) {
       if (layer === 4) {
         return;
       }
@@ -191,22 +179,13 @@ export const useFilterStore = defineStore({
 
       arrayToAdd.push(filterItem);
 
-      const childFilterItems: FilterResponse[] = allFilters.filter(
-        (item) => item.parent_id === filter.id
-      );
+      const childFilterItems: FilterResponse[] = allFilters.filter((item) => item.parent_id === filter.id);
 
       if (!childFilterItems.length) {
         return;
       }
 
-      childFilterItems.forEach((childFilterItem) =>
-        this.getItemsAndNext(
-          childFilterItem,
-          filterItem.next || [],
-          layer + 1,
-          allFilters
-        )
-      );
+      childFilterItems.forEach((childFilterItem) => this.getItemsAndNext(childFilterItem, filterItem.next || [], layer + 1, allFilters));
     },
 
     async getMainFilters(filterType: FilterType, filterKind: FilterKind) {
@@ -220,14 +199,13 @@ export const useFilterStore = defineStore({
       }
 
       const filters: any[] = response?.data?.resources || [];
-      const relevantFilter = filters.find(
-        (filter) =>
-          filter.filter_type === filterType && filter.kind === filterKind
-      );
+      const relevantFilter = filters.find((filter) => filter.filter_type === filterType && filter.kind === filterKind);
 
       if (!relevantFilter) return [];
 
       this.basicFilters = await this.getFilters(relevantFilter.id);
+
+      return this.basicFilters as unknown as Filter[];
     },
 
     async getFilters(parentId: string) {
@@ -247,8 +225,7 @@ export const useFilterStore = defineStore({
       if (relevantFilterResponse.status === ResultStatus.FAILED) {
         throw relevantFilterResponse;
       }
-      const filterItemOptions: any[] =
-        relevantFilterResponse?.data?.resources || [];
+      const filterItemOptions: any[] = relevantFilterResponse?.data?.resources || [];
 
       return filterItemOptions;
     },
@@ -301,15 +278,46 @@ export const useFilterStore = defineStore({
         if (index !== -1) this.currentTags.splice(index, 1);
       });
     },
+    async checkIfMultipleFacilityFiltersAreSelected() {
+      if (!this.currentKinds?.length || !this.currentTags?.length) return [];
+
+      const filterKind = this.currentKinds[0];
+
+      const mainFilters = await this.getMainFilters("filter_facility", filterKind);
+      const allFilters = await this.getAllFilters();
+
+      const allOptions = mainFilters.map((filter) => allFilters.filter((item) => item.parent_id === filter.id));
+
+      for (const block of allOptions) {
+        const multipleOccuredInBlock = block.filter((item) => this.currentTags.includes(item.id));
+        if (multipleOccuredInBlock.length > 1) {
+          return multipleOccuredInBlock;
+        }
+      }
+      return [];
+    },
     async loadAllResults() {
       this.loading = true;
 
       const filters = [];
 
-      if (this.currentTags) {
+      const multipleFacilityFiltersSelected = await this.checkIfMultipleFacilityFiltersAreSelected();
+
+      const tagsToFilter = [...this.currentTags];
+
+      if (multipleFacilityFiltersSelected.length) {
+        multipleFacilityFiltersSelected.forEach((item) => {
+          tagsToFilter.splice(
+            tagsToFilter.findIndex((tag) => tag === item.id),
+            1
+          );
+        });
+      }
+
+      if (tagsToFilter.length) {
         filters.push({
           field: "care_facility_tag_categories",
-          value: this.currentTags,
+          value: tagsToFilter,
         });
       }
 
@@ -341,37 +349,30 @@ export const useFilterStore = defineStore({
 
       this.loading = false;
 
-      this.loadFilteredResults();
+      this.loadFilteredResults(multipleFacilityFiltersSelected);
     },
-    async loadFilteredResults() {
+    loadFilteredResults(filterCategories?: { id: string }[]) {
       if (this.loading || !this.allResults) return;
       const filteredResults: Facility[] = this.allResults
         .filter((result) => {
-          return result.zip && this.currentZip
-            ? result.zip === this.currentZip
-            : true;
+          return result.zip && this.currentZip ? result.zip === this.currentZip : true;
         })
         .filter((result) => {
           return (
-            result.name
-              .toUpperCase()
-              .includes(this.currentSearchTerm.toUpperCase()) ||
+            result.name.toUpperCase().includes(this.currentSearchTerm.toUpperCase()) ||
             (!this.onlySearchInTitle &&
-              (result.description
-                ?.toUpperCase()
-                .includes(this.currentSearchTerm.toUpperCase()) ||
-                result.tags.find((tag) =>
-                  tag.name
-                    .toUpperCase()
-                    .includes(this.currentSearchTerm.toUpperCase())
-                )))
+              (result.description?.toUpperCase().includes(this.currentSearchTerm.toUpperCase()) ||
+                result.tags.find((tag) => tag.name.toUpperCase().includes(this.currentSearchTerm.toUpperCase()))))
           );
+        })
+        .filter((facility) => {
+          if (!filterCategories?.length) return true;
+
+          return filterCategories.some((category) => facility.tag_category_ids.includes(category.id));
         });
 
       if (this.mapFilter) {
-        this.filteredResults = filteredResults.filter(
-          (facility) => facility.id === this.mapFilter
-        );
+        this.filteredResults = filteredResults.filter((facility) => facility.id === this.mapFilter);
         return;
       }
 
