@@ -444,7 +444,8 @@ const modules = [Pagination];
 </script>
 <style lang="sass">
 .header-image img
-  border-radius: 10px
+  border-radius: 20px
+ 
 .tags
   font-size: 1.2rem
   span
@@ -488,6 +489,8 @@ const modules = [Pagination];
   width: 100%
   height: 100%
   object-fit: cover
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
+  border-radius: 100px
 .logo
   position: absolute
   top: 3%
@@ -560,4 +563,5 @@ ion-chip
 
 .tag-chip
   text-transform: none
+
 </style>
