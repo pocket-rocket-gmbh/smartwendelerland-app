@@ -3,7 +3,7 @@
     <ion-header v-if="projekRoute && showBar">
       <ion-toolbar>
         <ion-buttons slot="start" class="ion-padding">
-          <ion-nav-link v-if="forceBack" :routerLink="handleGoBack">
+          <ion-nav-link v-if="forceBack" :routerLink="forceBack">
             <IonIcon :icon="arrowBackOutline" />
           </ion-nav-link>
           <ion-back-button v-else text="" default-href="/" :icon="arrowBackOutline" />
@@ -31,19 +31,14 @@
       <div :class="[isCategoryPage ? 'category-page' : 'back-button']">
         <ion-nav-link
           v-if="(forceBack && !showBar) || isCategoryPage"
-          :routerLink="forceBack"
+          :routerLink="handleForceBack"
         >
           <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
         </ion-nav-link>
-        <div
-          class="page-title is-uppercase is-white "
-          lang="de"
-          v-if="!isFacilityPage"
-        >
-        <span>
-          {{ title }}
-        </span>
-        
+        <div class="page-title is-uppercase is-white" lang="de" v-if="!isFacilityPage">
+          <span>
+            {{ title }}
+          </span>
         </div>
       </div>
       <slot />
@@ -103,12 +98,19 @@ const props = defineProps({
 const router = useRouter();
 const route = router.currentRoute;
 
-const handleGoBack = () => {
-  if(props.isCategoryPage) {
-    return router.options.history.go(-1);
+const wasCategoryPage = computed(() => {
+  if (router.currentRoute.value.query.page) {
+    return true;
   }
-  router.push({ path: props.forceBack });
-};
+  return false;
+});
+
+const handleForceBack = computed(() => {
+  if (wasCategoryPage.value) {
+    return `/health/categories/${router.currentRoute.value.query.id}`;
+  }
+  return props.forceBack;
+});
 
 const projekRoute = computed(() => {
   if (route.value.path.includes("participation")) {
@@ -116,7 +118,6 @@ const projekRoute = computed(() => {
   }
   return false;
 });
-
 </script>
 
 <style scoped>

@@ -1,6 +1,6 @@
 <template>
   <BackButtonLayout
-    force-back="/health/categories"
+    force-back="/health/categories/"
     :show-login="false"
     :title="category?.name"
     :show-bar="true"
@@ -66,8 +66,8 @@
             >
               <span
                 v-if="
-                subSubCategory?.url &&
-                subSubCategory.url_kind === 'external' &&
+                  subSubCategory?.url &&
+                  subSubCategory.url_kind === 'external' &&
                   !subSubCategory?.button_text
                 "
                 >Zur Webseite</span
@@ -77,7 +77,6 @@
               </span>
               <span v-else>Mehr erfahren</span>
             </ion-button>
-          
           </div>
         </div>
       </div>
@@ -184,7 +183,6 @@ const handleClick = async (subSubCategory: any) => {
     if (subSubCategory.url.includes("https://gesundes-wnd.de/public/search")) {
       let searchUrl = subSubCategory.url.split("/");
       let scope = searchUrl[searchUrl.length - 1];
-      console.log(scope, 'uhuhu')
       if (scope === "courses") {
         scope = "course";
       } else if (scope === "events") {
@@ -204,16 +202,13 @@ const handleClick = async (subSubCategory: any) => {
       });
 
       const filter = paramsObject.filter ? JSON.parse(paramsObject.filter) : null;
-
-      console.log(filter?.currentTags, 'tags')
-
-      if(filter && filter?.currentSearchTerm) {
+      if (filter && filter?.currentSearchTerm) {
         filterStore.currentSearchTerm = filter?.currentSearchTerm;
       }
-      if(filter && filter?.currentTags) {
+      if (filter && filter?.currentTags) {
         filterStore.currentTags = filter?.currentTags;
       }
-      if(filter && filter?.currentZip) {
+      if (filter && filter?.currentZip) {
         filterStore.currentZip = filter?.currentZip;
       }
 
@@ -221,7 +216,9 @@ const handleClick = async (subSubCategory: any) => {
         path: `/health/search`,
         query: {
           kind: filter ? filter.currentKinds[0] : scope,
-        },  
+          page: "category",
+          id: categoryId.value,
+        },
       });
     }
   }
