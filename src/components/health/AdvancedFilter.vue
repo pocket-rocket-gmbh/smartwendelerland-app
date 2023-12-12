@@ -50,10 +50,6 @@
               </div>
             </div>
           </div>
-          <div class="gap-1" />
-          <div class="gap-1" />
-          <div class="gap-1" />
-          <div class="gap-1" />
         </div>
       </div>
     </div>

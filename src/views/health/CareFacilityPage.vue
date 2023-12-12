@@ -165,31 +165,22 @@
             >
               Öffnungszeiten
             </div>
-            <div class="general-font-size is-dark-grey ion-no-padding">
-              <ion-row
-                v-for="opening in facility.opening_hours"
-                :key="opening.day"
-                class="divider"
-              >
-                <ion-col size="6" size-md="6">
-                  <ion-label class="is-dark-grey general-font-size">
-                    <span>
-                      {{ opening.day }}
-                    </span>
-                  </ion-label>
-                </ion-col>
-                <ion-col size="6" size-md="6">
-                  <ion-label
-                    v-if="opening.hours.length"
-                    class="is-dark-grey general-font-size"
-                    >{{ opening.hours }}</ion-label
-                  >
-                  <ion-label v-else class="is-dark-grey general-font-size"
-                    >keine Angabe</ion-label
-                  >
-                </ion-col>
-              </ion-row>
-            </div>
+
+            <table class="table-hours is-dark-grey general-font-size">
+              <tbody>
+                <tr v-for="opening in facility.opening_hours" :key="opening.day">
+                  <td class="divider">
+                    <span v-if="showHide">{{ opening.day }}</span>
+                    <span v-else>{{ opening.day.slice(0,2) }}</span>
+                  </td>
+
+                  <td class="divider" v-if="opening.hours.length">
+                    {{ opening.hours }}
+                  </td>
+                  <td v-else class="divider">Keine Angabe</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -445,7 +436,7 @@ const modules = [Pagination];
 <style lang="sass">
 .header-image img
   border-radius: 20px
- 
+
 .tags
   font-size: 1.2rem
   span
@@ -515,6 +506,17 @@ const modules = [Pagination];
     padding: 5px 20px
     text-align: center
 
+.table-hours
+  width: 100%
+  td
+    padding: 5px 20px
+    width: 33%
+    @media (min-width: 400px)
+      width: 33%
+  td:first-child
+    @media (max-width: 600px)
+      width: 0%
+
 .insurance-logo
   height: 25px
   margin-bottom: -3px
@@ -563,5 +565,4 @@ ion-chip
 
 .tag-chip
   text-transform: none
-
 </style>
