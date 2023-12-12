@@ -207,13 +207,6 @@
       >
         <i>Zuletzt geändert: {{ useDatetime().parseDatetime(facility.updated_at) }}</i>
       </div>
-      <div v-if="facility.kind === 'news'" class="news-grid">
-        <div>
-          <span><img src="@/assets/images/watch.svg" /></span>
-          {{ useDatetime().parseDatetime(facility.created_at) }}
-        </div>
-      </div>
-
       <div
         class="more-infos ion-margin-top ion-padding"
         v-if="facility.event_dates.length > 0"
@@ -390,7 +383,7 @@ const generateForceBackUrl = () => {
     return "/health/search";
   }
   if (route.query?.searchTerm && !isFacilityPage.value) {
-    return filterStore.currentSearchTerm = route.query?.searchTerm as string;
+    return (filterStore.currentSearchTerm = route.query?.searchTerm as string);
   }
   let baseUrl = `/health/search?kind=${facility.value?.kind}`;
   let tags = route.query?.tags;

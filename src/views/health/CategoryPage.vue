@@ -6,51 +6,6 @@
     :show-bar="true"
     :is-category-page="true"
   >
-    <ion-modal
-      :is-open="true"
-      v-if="detailModalOpen"
-      @didDismiss="
-        detailModalOpen = false;
-        selectedSubSubCategory = null;
-      "
-    >
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>{{ selectedSubSubCategory?.name }}</ion-title>
-          <ion-buttons slot="end">
-            <ion-button
-              @click="
-                detailModalOpen = false;
-                selectedSubSubCategory = null;
-              "
-              >Schließen</ion-button
-            >
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding">
-        <div class="modal-content">
-          <img :src="selectedSubSubCategory?.image_url" class="modal-image" />
-          <div class="general-font-size is-dark-grey hypernate" lang="de">
-            {{ selectedSubSubCategory?.description }}
-          </div>
-        </div>
-        <div class="has-gap">
-          <ion-button
-            shape="round"
-            expand="block"
-            class="green-button"
-            @click="handleClick(selectedSubSubCategory)"
-          >
-            <span v-if="selectedSubSubCategory?.url && selectedSubSubCategory.url_kind === 'external' && !selectedSubSubCategory?.button_text">Zur Webseite</span>
-            <span v-else-if="selectedSubSubCategory?.button_text">{{ selectedSubSubCategory?.button_text }} </span>
-            <span v-else>Mehr erfahren</span>
-          </ion-button>
-        </div>
-        
-      </ion-content>
-    </ion-modal>
-
     <div v-if="category" class="categories">
       <div class="health-category-tags">
         <span
@@ -91,28 +46,38 @@
           >
             {{ subSubCategory.name }}
             <span
-            class="content general-font-size is-dark-grey hypernate"
-            lang="de"
-            @click="
-              detailModalOpen = true;
-              selectedSubSubCategory = subSubCategory;
-            "
-          >
-            {{ subSubCategory.description }}
-          </span>
+              class="content general-font-size is-dark-grey hypernate"
+              lang="de"
+              @click="
+                detailModalOpen = true;
+                selectedSubSubCategory = subSubCategory;
+              "
+            >
+              {{ subSubCategory.description }}
+            </span>
           </div>
 
           <div class="show-more">
             <ion-button
               shape="round"
+              expand="block"
               class="green-button"
-              @click="
-              detailModalOpen = true;
-              selectedSubSubCategory = subSubCategory;
-            "
+              @click="handleClick(subSubCategory)"
             >
-              Mehr erfahren
+              <span
+                v-if="
+                subSubCategory?.url &&
+                subSubCategory.url_kind === 'external' &&
+                  !subSubCategory?.button_text
+                "
+                >Zur Webseite</span
+              >
+              <span v-else-if="subSubCategory?.button_text"
+                >{{ subSubCategory?.button_text }}
+              </span>
+              <span v-else>Mehr erfahren</span>
             </ion-button>
+          
           </div>
         </div>
       </div>
@@ -213,23 +178,21 @@ const setItemsAndGo = (subCategory: any) => {
 };
 
 const handleClick = async (subSubCategory: any) => {
-  console.log(subSubCategory)
   if (subSubCategory.url_kind === "external") {
     await Browser.open({ url: subSubCategory.url });
   } else {
-
     if (subSubCategory.url.includes("https://gesundes-wnd.de/public/search")) {
-      let searchUrl = subSubCategory.url.split("/")
-      let scope = searchUrl[searchUrl.length - 1]
-
-      if (scope === 'courses') {
-        scope = 'course'
-      } else if (scope === 'events') {
-        scope = 'event'
-      } else if (scope === 'facilities') {
-        scope = 'facility'
-      } else if (scope === 'news') {
-        scope = 'news'
+      let searchUrl = subSubCategory.url.split("/");
+      let scope = searchUrl[searchUrl.length - 1];
+      console.log(scope, 'uhuhu')
+      if (scope === "courses") {
+        scope = "course";
+      } else if (scope === "events") {
+        scope = "event";
+      } else if (scope === "facilities") {
+        scope = "facility";
+      } else if (scope === "news") {
+        scope = "news";
       }
 
       const parsedUrl = new URL(subSubCategory.url);
@@ -240,29 +203,30 @@ const handleClick = async (subSubCategory: any) => {
         paramsObject[key] = value;
       });
 
-      const filter = JSON.parse(paramsObject.filter)
-      console.log(filter)
+      const filter = paramsObject.filter ? JSON.parse(paramsObject.filter) : null;
+
+      console.log(filter?.currentTags, 'tags')
+
+      if(filter && filter?.currentSearchTerm) {
+        filterStore.currentSearchTerm = filter?.currentSearchTerm;
+      }
+      if(filter && filter?.currentTags) {
+        filterStore.currentTags = filter?.currentTags;
+      }
+      if(filter && filter?.currentZip) {
+        filterStore.currentZip = filter?.currentZip;
+      }
 
       router.push({
         path: `/health/search`,
         query: {
-          kind: scope
-        },
+          kind: filter ? filter.currentKinds[0] : scope,
+        },  
       });
     }
-
-
-
-    // router.push({
-    //   path: `/health/search`,
-    //   query: {
-    //     kind: subSubCategory.scope
-    //   },
-    // });
-    detailModalOpen.value = false
   }
-  
-  selectedSubSubCategory.value = null
+
+  selectedSubSubCategory.value = null;
 };
 
 onIonViewDidEnter(() => {

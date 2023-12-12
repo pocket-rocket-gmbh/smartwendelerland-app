@@ -104,6 +104,9 @@ const router = useRouter();
 const route = router.currentRoute;
 
 const handleGoBack = () => {
+  if(props.isCategoryPage) {
+    return router.options.history.go(-1);
+  }
   router.push({ path: props.forceBack });
 };
 

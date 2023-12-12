@@ -55,7 +55,7 @@
                 density="compact"
                 class="options-select"
                 :class="{
-                  'is-selected': selectedFilter?.id === option.id,
+                  'is-selected': multipleSelections?.length ? modelValue.includes(option.id) : selectedFilter?.id === option.id,
                 }"
               >
                 {{ option.name }}
@@ -139,6 +139,8 @@ const filterOptions = ref<FilterOption[]>([]);
 const loadingFilters = ref(false);
 const mainFilters = ref([]);
 
+const multipleSelections = ref<Filter[] | null>();
+
 const propsModel = ref(props.modelValue);
 
 const emitClose = () => {
@@ -215,12 +217,16 @@ onMounted(async () => {
     return [...prev, ...curr.options];
   }, [] as Filter[]);
 
-  const foundFilter = allAvailableOptions.find((option) => {
+  const foundFilters = allAvailableOptions.filter((option) => {
     const doesInclude = props.modelValue.find((item: string) => item === option.id);
     return doesInclude;
   });
 
-  selectedFilter.value = foundFilter;
+  if (foundFilters.length > 1) {
+    multipleSelections.value = foundFilters;
+  }
+
+  selectedFilter.value = foundFilters[0];
   currentStep.value = "types";
 });
 </script>

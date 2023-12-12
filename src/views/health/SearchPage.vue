@@ -91,7 +91,9 @@
         <span v-if="facilityKind === 'course'"> Kurse </span>
         <span v-if="facilityKind === 'event'"> Veranstaltungen </span>
         <span v-if="facilityKind === 'news'"> Beiträge </span>
-        <span v-if="!facilityKind"> Ergebnis<span v-if="filterStore.filteredResults.length > 1">se</span> </span>
+        <span v-if="!facilityKind">
+          Ergebnis<span v-if="filterStore.filteredResults.length > 1">se</span>
+        </span>
         <span v-if="view === 'map'">in deiner Nähe</span>
         gefunden
       </div>
@@ -257,7 +259,7 @@ const resetFilter = () => {
 const lastRoute = router.options.history.state.back;
 
 onIonViewWillLeave(() => {
-  if (typeof lastRoute === 'string' && lastRoute.includes("categories")) {
+  if (typeof lastRoute === "string" && lastRoute.includes("categories")) {
     filterStore.currentTags = [];
     filterStore.currentZip = null;
   }
@@ -265,7 +267,6 @@ onIonViewWillLeave(() => {
 });
 
 onIonViewWillEnter(() => {
-  console.log("resetting filter");
   if (router.currentRoute.value.query.tags) {
     filterStore.currentTags = JSON.parse(router.currentRoute.value.query.tags as string);
   }

@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="general-font-size is-dark-grey">
-        <div v-if="facilityKind !== 'news'">
+        <div v-if="facility.kind !== 'news'">
           <div class="informations">
             <div>
               <ion-icon
@@ -53,7 +53,7 @@
             !facility?.event_dates.length
           "
         >
-          <div class="informations">
+          <div class="informations" v-if="facility.kind !== 'news'">
             <div>
               <a class="is-dark-grey" :href="`tel:${facility.phone}`" @click.stop>
                 <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
@@ -63,7 +63,7 @@
               {{ facility.phone }}
             </div>
           </div>
-          <div class="informations hypernate" lang="de">
+          <div class="informations hypernate" lang="de" v-if="facility.kind !== 'news'">
             <a
               class="is-dark-grey centralize"
               :href="`mailto:${facility.email}`"
@@ -128,24 +128,23 @@
             </span>
           </div>
         </div>
-
-        <div class="contact" v-if="facilityKind === 'news'">
-          <div>
-            <span><img src="@/assets/images/watch.svg" /></span>
-            {{ useDatetime().parseDatetime(facility.created_at) }}
-          </div>
+        <div class="informations" v-if="facility.kind === 'news'">
+          <div v-html="formatDescription(facility)" class="general-font-size is-dark-grey break-text hypernate" />
         </div>
-        <div class="contact" v-if="facilityKind === 'news'">
-          <div v-if="facility.user">
-            <span><img src="@/assets/images/user.svg" /></span>
-            {{ facility.user.name }}
+        <div class="informations" v-if="facility.kind === 'news'">
+          <div>
+            <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
+          </div>
+          <div>
+            {{ useDatetime().parseDate(facility.created_at) }}
           </div>
         </div>
         <ion-button
           v-if="
             !router.currentRoute.value.query.kind ||
             facility.kind === 'course' ||
-            facility.kind === 'event'
+            facility.kind === 'event' ||
+            facility.kind === 'news'
           "
           mode="md"
           shape="round"
@@ -187,6 +186,7 @@ import calendarIcon from "@/assets/images/facilities/icon_calendar.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import facilityIcon from "@/assets/images/facilities/facilities.svg";
+import watchIcon from "@/assets/images/watch.svg";
 import { isPlatform, onIonViewDidLeave } from "@ionic/vue";
 import mapMarker from "@/assets/images/facilities/icon_map_marker.svg";
 import { onIonViewWillEnter } from "@ionic/vue";
@@ -252,6 +252,16 @@ const routeAndGo = (facility: Facility) => {
   if (!router.currentRoute.value.query.kind) {
     filterStore.mainSearch = true;
   }
+};
+
+const formatDescription = (facility:any) => {
+  if (facility) {
+    const cleanedDescription = facility.description
+      .replace(/(<br>\s*)+/g, "")
+      .replace(/(<p>&nbsp;<\/p>\s*)+/g, "<p>&nbsp;</p>");
+    return cleanedDescription;
+  }
+  return "";
 };
 </script>
 
