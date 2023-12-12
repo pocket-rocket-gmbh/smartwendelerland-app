@@ -37,7 +37,7 @@
         />
       </div>
 
-      <div class="tag-chips" v-if="facility.tags.length">
+      <div class="tag-chips " v-if="facility.tags.length">
         <ion-button
           mode="md"
           shape="round"
@@ -65,9 +65,9 @@
           <div class="has-text-health headline is-uppercase informations">
             Kontakt und Infos
           </div>
-          <ion-grid>
+          <ion-grid class="ion-no-padding ion-padding-top">
             <ion-row>
-              <ion-col size="12" size-md="6" class="general-font-size is-dark-grey">
+              <ion-col size="12" size-md="6" class="general-font-size is-dark-grey ion-no-padding">
                 <div class="informations">
                   <div>
                     <ion-icon
@@ -132,7 +132,7 @@
                   </div>
                 </div>
               </ion-col>
-              <ion-col>
+              <ion-col class="ion-no-padding ion-padding-bottom">
                 <div
                   v-if="facility.website"
                   class="button-rounded is-uppercase"
@@ -509,8 +509,8 @@ const modules = [Pagination];
 .table-hours
   width: 100%
   td
-    padding: 5px 20px
-    text-align: center
+    padding: 5px 0
+    text-align: left
 
 .insurance-logo
   height: 25px
