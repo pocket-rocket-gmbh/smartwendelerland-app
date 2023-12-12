@@ -510,12 +510,7 @@ const modules = [Pagination];
   width: 100%
   td
     padding: 5px 20px
-    width: 33%
-    @media (min-width: 400px)
-      width: 33%
-  td:first-child
-    @media (max-width: 600px)
-      width: 0%
+    text-align: center
 
 .insurance-logo
   height: 25px
