@@ -185,7 +185,7 @@
         </div>
       </div>
 
-      <div v-html="formatDescription" class="general-font-size is-dark-grey" />
+      <div v-html="formatDescription" class="general-font-size is-dark-grey hypernate" lang="de" />
       <div
         v-if="facility.name_responsible_person"
         class="ion-margin-bottom general-font-size is-dark-grey"

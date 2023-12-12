@@ -129,7 +129,7 @@
           </div>
         </div>
         <div class="informations" v-if="facility.kind === 'news'">
-          <div v-html="formatDescription(facility)" class="general-font-size is-dark-grey break-text hypernate" />
+          <div v-html="formatDescription(facility)" class="general-font-size is-dark-grey break-text hypernate" lang="de"/>
         </div>
         <div class="informations" v-if="facility.kind === 'news'">
           <div>
