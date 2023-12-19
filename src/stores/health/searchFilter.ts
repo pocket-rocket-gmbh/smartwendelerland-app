@@ -36,6 +36,7 @@ export type Facility = {
   mail?: string;
   created_at?: string;
   event_dates?: [];
+  excerpt?: string;
   showAllEvents?: boolean;
   tag_category_ids?: string[];
   user?: {
