@@ -2,7 +2,7 @@
   <ion-grid>
     <ion-row class="ion-justify-content-center">
       <ion-col size-sm="12" size-md="6" size-lg="3">
-        <div class="ion-padding">
+        <div>
           <swiper
             :slides-per-view="1"
             :space-between="20"
@@ -152,4 +152,4 @@ export default defineComponent({
   place-items: center
   position: absolute
   bottom: 0
-</style>
+ </style>
