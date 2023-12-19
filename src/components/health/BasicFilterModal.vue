@@ -1,13 +1,11 @@
 <template>
   <ion-modal :is-open="true" :can-dismiss="true">
     <ion-header mode="md">
-      <ion-toolbar >
-        <ion-title class="general-font-size is-dark-grey" slot="start"
+      <ion-toolbar>
+        <ion-title class="general-font-size is-dark-grey modal-title" slot="start"
           >Verfeinere hier deine Suche!</ion-title
         >
-       
-          <ion-button
-      
+        <ion-button
           mode="md"
           shape="round"
           expand="block"
@@ -15,7 +13,6 @@
           @click="emitClose"
           >Fertig</ion-button
         >
-       
       </ion-toolbar>
     </ion-header>
     <ion-header>
@@ -32,10 +29,15 @@
       </ion-segment>
     </ion-header>
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
-
       <div v-if="!loadingFilters" class="filters ion-padding-bottom">
         <div v-for="filter in mainFilters" :key="filter.id">
-          <div class="filter-name general-font-size-subtitle is-dark-grey" v-if="hasActiveOptions(filter.id)">
+          <div
+            class="filter-name general-font-size-subtitle is-dark-grey"
+            v-if="hasActiveOptions(filter.id)"
+          >
+            {{ filter.name }}
+          </div>
+          <div v-else class="filter-name general-font-size-subtitle is-dark-grey">
             {{ filter.name }}
           </div>
           <div class="filter-options">
@@ -53,18 +55,31 @@
                 @click.prevent="handleOptionSelect(option)"
                 hide-details
                 density="compact"
-                class="options-select"
+                class="options-select general-font-size"
                 :class="{
-                  'is-selected': multipleSelections?.length ? modelValue.includes(option.id) : selectedFilter?.id === option.id,
+                  'is-selected': multipleSelections?.length
+                    ? modelValue.includes(option.id)
+                    : selectedFilter?.id === option.id,
                 }"
               >
+              <span class="hypernate" lang="de">
                 {{ option.name }}
+              </span>
+                
               </label>
+            <label v-else class="options-select is-disabled hypernate general-font-size" lang="de">
+              {{ option.name }}
+            </label>
             </div>
           </div>
         </div>
       </div>
-      <ion-loading :is-open="loadingFilters" message="Filter werden geladen..." />
+      <ion-loading
+        class="is-dark-grey"
+        mode="md"
+        :is-open="loadingFilters"
+        message="Filter werden geladen..."
+      />
     </ion-content>
     <ion-content v-if="currentStep === 'community'">
       <CommunityFilter
@@ -87,7 +102,6 @@ import CommunityFilter from "@/components/health/CommunityFilter.vue";
 import { FilterKind, useFilterStore } from "@/stores/health/searchFilter";
 import {
   IonButton,
-  IonButtons,
   IonContent,
   IonHeader,
   IonLabel,
@@ -97,7 +111,6 @@ import {
   IonSegmentButton,
   IonTitle,
   IonToolbar,
-  onIonViewWillEnter,
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref } from "vue";
 import AdvancedFilter from "./AdvancedFilter.vue";
@@ -147,9 +160,12 @@ const emitClose = () => {
   emit("close");
 };
 
-const hasActiveOptions = (filterId:string) => {
-  const options = filterOptions.value.find(({ parentId }) => parentId === filterId)?.options;
-  return options && options.some(option => Number(option?.care_facilities_active_count) > 0);
+const hasActiveOptions = (filterId: string) => {
+  const options = filterOptions.value.find(({ parentId }) => parentId === filterId)
+    ?.options;
+  return (
+    options && options.some((option) => Number(option?.care_facilities_active_count) > 0)
+  );
 };
 
 const communityFilter = ref(null);
@@ -237,4 +253,11 @@ ion-segment-button
 
 ion-segment-button::part(indicator-background)
   --color-checked: #8ab61d
+
+.filters
+  margin-bottom: 150px
+
+.modal-title
+  margin-left: -10px
+
 </style>
