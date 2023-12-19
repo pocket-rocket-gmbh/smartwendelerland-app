@@ -121,7 +121,7 @@
     </div>
   </div> -->
 
-  <ion-loading :is-open="loading" message="Kategorien werden geladen..." />
+  <ion-loading class="is-dark-grey" mode="md" :is-open="loading" message="Kategorien werden geladen..." />
 </template>
 
 <script setup lang="ts">
@@ -166,12 +166,12 @@ onMounted(() => {
 
 <style lang="sass" scoped>
 ion-col
-  padding: 2px
+  padding: 10px 10px 0 -10px
 .signal
   color: #e84040
 
 ion-grid.no-margin-padding
-  margin: -5px
+  margin: -10px
   padding: 0
 
 .title
