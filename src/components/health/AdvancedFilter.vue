@@ -15,14 +15,14 @@
             }}
           </div>
           <div class="filter-options">
-            <div v-for="subItem in item.next" :key="subItem.id">
-              <label :for="subItem.id" class="option">
+            <div v-for="subItem in item.next" :key="subItem.id" class="option">
+              <label :for="subItem.id"  >
                 <div
                   :model-value="modelValue.includes(subItem.id)"
                   @click.prevent="toggleSelection(subItem)"
                   hide-details
                   density="compact"
-                  class="options-select communities"
+                  class="options-select general-font-size"
                   :class="{
                     'is-selected': selectedFilters.includes(subItem.id),
                   }"
@@ -58,7 +58,12 @@
     <div class="gap-1" />
     <div class="gap-1" />
     <div class="gap-1" />
-    <ion-loading :is-open="loadingFilters" message="Leistungen werden geladen..." />
+    <ion-loading
+      class="is-dark-grey"
+      mode="md"
+      :is-open="loadingFilters"
+      message="Leistungen werden geladen..."
+    />
   </ion-content>
 </template>
 
