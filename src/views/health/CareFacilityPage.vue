@@ -6,7 +6,14 @@
     :show-bar="false"
     :is-facility-page="isFacilityPage"
   >
-    <div class="facility-page" v-if="facility">
+    <div
+      :class="
+        getPlatforms().some((platform) => platform === 'cordova' || platform === 'ios')
+          ? 'facility-page-ios'
+          : 'facility-page'
+      "
+      v-if="facility"
+    >
       <swiper
         :slides-per-view="1"
         :space-between="20"
@@ -37,7 +44,7 @@
         />
       </div>
 
-      <div class="tag-chips " v-if="facility.tags.length">
+      <div class="tag-chips" v-if="facility.tags.length">
         <ion-button
           mode="md"
           shape="round"
@@ -67,8 +74,12 @@
           </div>
           <ion-grid class="ion-no-padding ion-padding-top">
             <ion-row>
-              <ion-col size="12" size-md="6" class="general-font-size is-dark-grey ion-no-padding">
-                <div class="informations">
+              <ion-col
+                size="12"
+                size-md="6"
+                class="general-font-size is-dark-grey ion-no-padding"
+              >
+                <div class="informations" v-if="facility.kind !== 'facility'">
                   <div>
                     <ion-icon
                       @click.stop="routeAndGo(facility?.user_care_facility)"
@@ -78,7 +89,7 @@
                     ></ion-icon>
                   </div>
                   <div class="general-font-size">
-                    {{ facility?.user_care_facility.name }}
+                    {{ facility?.user_care_facility.name }}a
                   </div>
                 </div>
                 <div class="informations">
@@ -116,18 +127,20 @@
                     <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
                   </a>
 
-                  <div class="has-irregular-margin-2">
+                  <div class="has-irregular-margin-2 mail">
                     {{ facility.email }}
                   </div>
                 </div>
 
                 <div v-if="facility.name_instructor">
                   <div
-                    class="has-text-health is-uppercase ion-margin-bottom ion-margin-top"
+                    class="has-text-health is-uppercase ion-margin-bottom ion-margin-top instructor"
                   >
                     <span>Veranstalter</span>
                   </div>
-                  <div class="general-font-size is-dark-grey">
+                  <div
+                    class="general-font-size is-dark-grey ion-margin-bottom ion-margin-top"
+                  >
                     {{ facility.name_instructor }}
                   </div>
                 </div>
@@ -171,7 +184,7 @@
                 <tr v-for="opening in facility.opening_hours" :key="opening.day">
                   <td class="divider">
                     <span v-if="showHide">{{ opening.day }}</span>
-                    <span v-else>{{ opening.day.slice(0,2) }}</span>
+                    <span v-else>{{ opening.day.slice(0, 2) }}</span>
                   </td>
 
                   <td class="divider" v-if="opening.hours.length">
@@ -185,19 +198,6 @@
         </div>
       </div>
 
-      <div v-html="formatDescription" class="general-font-size is-dark-grey hypernate" lang="de" />
-      <div
-        v-if="facility.name_responsible_person"
-        class="ion-margin-bottom general-font-size is-dark-grey"
-      >
-        <i>Inhaltlich verantwortlich: {{ facility.name_responsible_person }}</i>
-      </div>
-      <div
-        v-if="facility.name_responsible_person"
-        class="ion-margin-bottom general-font-size is-dark-grey"
-      >
-        <i>Zuletzt geändert: {{ useDatetime().parseDatetime(facility.updated_at) }}</i>
-      </div>
       <div
         class="more-infos ion-margin-top ion-padding"
         v-if="facility.event_dates.length > 0"
@@ -248,7 +248,29 @@
       </div>
 
       <div
-        class="more-infos ion-margin-top ion-padding"
+        v-html="formatDescription"
+        class="general-font-size is-dark-grey hypernate"
+        lang="de"
+      />
+      <div
+        class="ion-margin-bottom general-font-size is-dark-grey"
+      >
+        <i
+          >Inhaltlich verantwortlich: {{ facility?.user?.name }} -
+          {{ facility?.user_care_facility?.name }}</i
+        >
+      </div>
+      <div
+        v-if="facility.name_responsible_person && facility?.kind === 'news'"
+        class="ion-margin-bottom general-font-size is-dark-grey"
+      >
+        <i>Autor: {{ facility.name_responsible_person }}</i>
+      </div>
+      <div class="ion-margin-bottom general-font-size is-dark-grey">
+        <i>Zuletzt geändert: {{ useDatetime().parseDate(facility.updated_at) }}</i>
+      </div>
+      <div
+        class="more-infos ion-margin-bottom ion-margin-top ion-padding"
         v-for="document in facility.sanitized_documents"
         :key="document.signed_id"
         @click="handleLinkClick(document.url)"
@@ -264,7 +286,12 @@
       </div>
     </div>
 
-    <ion-loading :is-open="loading" message="Wird geladen..." />
+    <ion-loading
+      class="is-dark-grey"
+      mode="md"
+      :is-open="loading"
+      message="Wird geladen..."
+    />
   </BackButtonLayout>
 </template>
 <script setup lang="ts">
@@ -277,12 +304,11 @@ import { computed, ref } from "vue";
 import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
 import { usePublicApi } from "@/composables/api/public";
 import { useCollectionApi } from "@/composables/api/collectionApi";
-import { onIonViewDidEnter, IonIcon } from "@ionic/vue";
+import { onIonViewDidEnter, IonIcon, getPlatforms, isPlatform } from "@ionic/vue";
 import { useRoute } from "vue-router";
 import { Browser } from "@capacitor/browser";
 import { useImageCache } from "@/composables/ui/imageCache";
 import { useDatetime } from "@/composables/ui/datetime";
-import { isPlatform } from "@ionic/vue";
 import facilityIcon from "@/assets/images/facilities/facilities.svg";
 import mapIcon from "@/assets/images/facilities/icon_address.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
@@ -480,13 +506,16 @@ const modules = [Pagination];
   width: 100%
   height: 100%
   object-fit: cover
-  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.25)
   border-radius: 100px
 .logo
   position: absolute
   top: 3%
   right: 3%
   width: 30%
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
+  background: rgba(0, 0, 0, 0.25)
+  border: 1px solid rgba(0, 0, 0, 0.25)
 
 .button-rounded
   color: var(--ion-color-health)
@@ -508,9 +537,15 @@ const modules = [Pagination];
 
 .table-hours
   width: 100%
+
   td
     padding: 5px 0
     text-align: left
+
+    &:nth-child(2)
+      text-align: left
+      padding-left: 40px
+
 
 .insurance-logo
   height: 25px
@@ -532,8 +567,11 @@ ion-chip
   --color: white
   font-size: 1.2rem
 
-.facility-page
+.facility-page-ios
   margin-top: 40px
+  padding: 10px
+
+.facility-page
   padding: 10px
 
 .documents
@@ -556,8 +594,11 @@ ion-chip
   margin-top: -5px
 
 .has-irregular-margin-2
-  margin-top: -3px
+  margin-top: -2px
 
 .tag-chip
   text-transform: none
+
+.instructor
+  margin-top: 30px
 </style>
