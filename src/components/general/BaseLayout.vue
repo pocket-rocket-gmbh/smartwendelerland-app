@@ -25,34 +25,29 @@
           <UserProfile :user="useUser().currentUser()" />
         </div>
         <ion-icon
-          v-if="healthRoute && showSearchBar"
+          v-if="healthRoute && showSearchBar && !tutorialIsOpen"
           @click="toogleSearchBar"
           :icon="close"
           class="search-icon toogle-search-bar"
         ></ion-icon>
         <ion-icon
-          v-if="healthRoute && !showSearchBar"
+          v-if="healthRoute && !showSearchBar && !tutorialIsOpen"
           @click="toogleSearchBar"
           :icon="searchOutline"
           class="search-icon toogle-search-bar"
         ></ion-icon>
       </ion-toolbar>
-    </ion-header>
-    
-    <ion-header v-if="healthRoute && showSearchBar" mode="md">
-    
-      <div mode="md" class="divider"></div>
-      <ion-toolbar mode="md">
+      <ion-toolbar v-if="healthRoute && showSearchBar" mode="md">
+        <div class="divider"></div>
         <SearchBar
           class="search-bar"
           :loading="loading"
           @handleSearch="handleSearch"
           :header="true"
           :debounce="2000"
+          :set-focus="true"
         />
       </ion-toolbar>
-   
-
     </ion-header>
     <ion-content :fullscreen="true">
       <slot />
@@ -61,14 +56,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonIcon,
-  IonContent,
-} from "@ionic/vue";
+import { computed, ref, watch } from "vue";
+import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from "@ionic/vue";
 import { useRouter } from "vue-router";
 import { logInOutline, logInSharp } from "ionicons/icons";
 import UserProfile from "@/components/UserProfile.vue";
@@ -83,6 +72,10 @@ import logoMain from "@/assets/images/logo.png";
 const router = useRouter();
 const route = router.currentRoute;
 
+watch(router.currentRoute, () => {
+  showSearchBar.value = false
+});
+
 const loading = ref(false);
 const filterStore = useFilterStore();
 
@@ -94,6 +87,13 @@ const toogleSearchBar = () => {
 
 const projekRoute = computed(() => {
   if (route.value.path.includes("participation")) {
+    return true;
+  }
+  return false;
+});
+
+const tutorialIsOpen = computed(() => {
+  if (route.value.path.includes("landing")) {
     return true;
   }
   return false;
@@ -135,6 +135,7 @@ const checkRoute = () => {
   }
   return false;
 };
+
 </script>
 
 <style lang="sass">
@@ -143,10 +144,10 @@ const checkRoute = () => {
   margin-left: 10px
 ion-icon
   font-size: 32px
-  padding-right: 20px
+  margin-right: 10px
 
 ion-toolbar
-  --min-height: 80px
+  --min-height: 70px
 
 .main-toolbar
   display: flex
@@ -162,7 +163,7 @@ ion-toolbar
   align-items: center
   align-content: center
   flex-wrap: wrap
-  margin-right: 10px
+  margin-left: 10px
   margin-left: auto
   justify-content: end
 
