@@ -5,7 +5,7 @@
         <ion-col size-sm="12" size-md="12" size-lg="12">
           <ion-nav-link routerLink="/landing/participation">
             <div class="pile has-background-project" align="center">
-              <img class="icon-project" src="@/assets/images/panel_project.svg" alt="project" />
+              <img src="@/assets/images/panel_project.svg" alt="project" />
               <div class="headline">meinWND</div>
             </div>
           </ion-nav-link>
@@ -13,9 +13,9 @@
       </ion-row>
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="12" size-md="12" size-lg="12">
-          <ion-nav-link routerLink="/health/categories">
+          <ion-nav-link routerLink="/landing/health">
             <div class="pile has-background-health" align="center">
-              <img class="icon-health" src="@/assets/images/panel_health.svg" alt="health" />
+              <img src="@/assets/images/panel_health.svg" alt="health" />
               <div class="headline">gesundesWND</div>
             </div>
           </ion-nav-link>
@@ -56,7 +56,7 @@ onMounted(() => {
 
 <style lang="sass" scoped>
 .pile
-  width: 90%
+  width: 100%
   padding: 20px
   border-radius: 20px
   margin: 0 auto
@@ -76,8 +76,6 @@ onMounted(() => {
     font-size: 2rem
     text-align: center
     margin-top: 20px
-    @media (max-width: 768px)
-    font-size: 2rem
 
 .main-page
   display: flex
@@ -87,11 +85,5 @@ onMounted(() => {
   height: 100%
   gap: 5%
 
-.icon-health
-  width: 250px
 
-.icon-project
-  height: 300px
-  @media (max-width: 768px)
-    height: 200px
 </style>
