@@ -2,7 +2,8 @@
   <ion-page>
     <ion-searchbar
       mode="md"
-      class="has-background-white placeholder"
+      class="has-background-white placeholder ion-no-padding main-search-bar"
+      :class="(getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'main-search-bar-ios' : 'main-search-bar'"
       :placeholder="placeholder"
       v-model="filterStore.currentSearchTerm"
       @ionClear="clearSearch"
@@ -15,9 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineEmits, defineProps } from "vue";
-import { IonSearchbar } from "@ionic/vue";
+import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
+import { IonSearchbar, getPlatforms } from "@ionic/vue";
 import { useFilterStore } from "@/stores/health/searchFilter";
+
 const emit = defineEmits(["handleSearch"]);
 
 const props = defineProps({
@@ -33,13 +35,32 @@ const props = defineProps({
     type: Boolean,
     required: false,
   },
+  setFocus: {
+    type: Boolean,
+    required: false,
+  },
 });
+
+const handleSetFocus = () => {
+  let elem = document.querySelector(".placeholder input") as HTMLInputElement;
+  if (elem) {
+    elem.focus();
+  }
+};
 
 const placeholder = computed(() => {
   if (props.placeHolderText && !props.loading) {
     return props.placeHolderText;
   } else {
     return "Finde Themen, Anbieter, Kurse…";
+  }
+});
+
+onMounted(() => {
+  if (props.setFocus) {
+    setTimeout(() => {
+      handleSetFocus();
+    }, 100);
   }
 });
 
@@ -62,4 +83,11 @@ ion-searchbar
   --background-color: white
   --border-radius: 7px
   --box-shadow: none
+
+.main-search-bar
+  margin-top: 70px
+
+.main-search-bar-ios
+  margin-top: 110px
+
 </style>
