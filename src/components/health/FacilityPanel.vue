@@ -3,32 +3,80 @@
     <div class="image-wrapper">
       <img :src="imageCache.cacheableImageUrl(facility.imageUrl)" />
     </div>
+    <div class="ion-padding-start ion-padding-bottom">
+      <div class="informations general-font-size">
+        <div @click.stop="openMapsApp(facility.street)">
+          <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+        </div>
+        <div class="has-irregular-margin">
+          <div>
+            {{ filterStore.filteredResults[0].street }}
+          </div>
+          <div>
+            {{ filterStore.filteredResults[0].zip }}
+            <span>
+              {{ filterStore.filteredResults[0].town }}
+            </span>
+          </div>
+        </div>
+      </div>
 
-    <ion-card-header>
-      <ion-card-title>{{ facility.name }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <strong v-if="facility.community && facility.zip && facility.town">
-        <ion-icon :icon="location"></ion-icon> {{ facility.community.name }} | {{ facility.zip }} - {{ facility.town }}
-      </strong>
+      <div class="informations general-font-size">
+        <div>
+          <a
+            class="is-dark-grey"
+            :href="`tel:${filterStore.filteredResults[0].phone}`"
+            @click.stop
+          >
+            <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
+          </a>
+        </div>
+        <div>
+          {{ filterStore.filteredResults[0].phone }}
+        </div>
+      </div>
+      <div class="informations general-font-size hypernate" lang="de">
+        <a
+          class="is-dark-grey centralize mail"
+          :href="`mailto:${filterStore.filteredResults[0].email}`"
+          @click.stop
+        >
+          <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
+        </a>
 
-      <div class="ion-margin-top">{{ facility.excerpt }}</div>
-    </ion-card-content>
+        <div class="has-irregular-margin-2">
+          {{ filterStore.filteredResults[0].email }}
+        </div>
+      </div>
+    </div>
     <div class="footer" @click="goToFacility">Einrichtung ansehen</div>
   </ion-card>
 </template>
 
 <script setup lang="ts">
 import { useImageCache } from "@/composables/ui/imageCache";
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon } from "@ionic/vue";
-import { location } from "ionicons/icons";
 import { defineProps, defineEmits } from "vue";
+import { useFilterStore } from "@/stores/health/searchFilter";
+import { IonIcon, isPlatform } from "@ionic/vue";
+import mapIcon from "@/assets/images/facilities/icon_address.svg";
+import mailIcon from "@/assets/images/facilities/icon_mail.svg";
+import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
+
+const filterStore = useFilterStore();
 
 const emit = defineEmits(["goToFacility"]);
 
 const props = defineProps<{
   facility: any;
 }>();
+
+const openMapsApp = (location: any) => {
+  if (isPlatform("android")) {
+    window.location.href = `https://maps.google.com/?q=${location}`;
+  } else {
+    window.location.href = `maps://maps.apple.com/?q=${location}`;
+  }
+};
 
 const imageCache = useImageCache();
 
@@ -58,4 +106,24 @@ const goToFacility = () => {
   font-size: 16px
   line-height: 22px
   text-transform: uppercase
+
+.informations
+  display: flex
+  flex-wrap: nowrap
+  align-items: start
+  margin-bottom: 10px
+
+.icons
+  height: 25px
+  width: 25px
+  margin-right: 10px
+
+.has-irregular-margin
+  margin-top: -5px
+
+.has-irregular-margin-2
+  margin-top: -2px
+
+.mail
+  text-transform: lowercase
 </style>
