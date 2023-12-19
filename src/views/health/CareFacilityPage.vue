@@ -24,7 +24,7 @@
         style="--swiper-pagination-color: #8ab61d; --swiper-pagination-top: 8px"
       >
         <swiper-slide>
-          <img :src="imageCache.cacheableImageUrl(facility.image_url)" class="showroom" />
+          <img v-if="facility.image_url" :src="imageCache.cacheableImageUrl(facility.image_url)" class="showroom" />
           <img v-if="facility.logo_url" :src="facility.logo_url" class="logo" />
         </swiper-slide>
         <swiper-slide v-for="(image, index) in facility.sanitized_images" :key="index">

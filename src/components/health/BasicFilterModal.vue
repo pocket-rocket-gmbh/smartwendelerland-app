@@ -31,6 +31,7 @@
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
       <div v-if="!loadingFilters" class="filters ion-padding-bottom">
         <div v-for="filter in mainFilters" :key="filter.id">
+          <div class="divider"></div>
           <div
             class="filter-name general-font-size-subtitle is-dark-grey"
             v-if="hasActiveOptions(filter.id)"
@@ -40,7 +41,7 @@
           <div v-else class="filter-name general-font-size-subtitle is-dark-grey">
             {{ filter.name }}
           </div>
-          <div class="filter-options">
+          <div class="filter-options ion-padding-bottom">
             <div
               :for="option.id"
               class="option"
@@ -260,4 +261,7 @@ ion-segment-button::part(indicator-background)
 .modal-title
   margin-left: -10px
 
+ion-modal
+  --width: 100%
+  --height: 100%
 </style>

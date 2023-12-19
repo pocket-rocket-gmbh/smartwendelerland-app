@@ -27,7 +27,7 @@
           lat: 49.523656,
         }"
         :auto-fit="false"
-        :min-zoom="10"
+        :min-zoom="11"
         :theme="'green'"
         @markerClick="mapMarkerClick"
       />
@@ -179,8 +179,8 @@ onIonViewDidEnter(() => {
   height: 500px
 
 .mapcontainer
-  width: 100%
-  height: 100%
+  width: 100vw
+  height: 100vh
   position: relative
 
 .close-button
@@ -199,5 +199,9 @@ onIonViewDidEnter(() => {
   height: 20px
   border: 1px solid #636362
   margin: 10px
+
+ion-modal
+  --width: 100%
+  --height: 100%
 
 </style>

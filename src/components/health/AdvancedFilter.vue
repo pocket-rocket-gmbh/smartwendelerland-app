@@ -3,6 +3,7 @@
     <div v-if="!loadingFilters" class="filters">
       <div v-for="filter in advancedFilters" :key="filter.key">
         <div v-for="item in filter.next" :key="item.id">
+          <div class="divider"></div>
           <div
             v-if="item.next.length"
             class="filter-name general-font-size-subtitle is-dark-grey"
@@ -14,7 +15,7 @@
               )
             }}
           </div>
-          <div class="filter-options">
+          <div class="filter-options ion-padding-bottom">
             <div v-for="subItem in item.next" :key="subItem.id" class="option">
               <label :for="subItem.id"  >
                 <div

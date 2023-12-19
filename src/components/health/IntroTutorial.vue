@@ -1,7 +1,7 @@
 <template>
   <ion-grid>
     <ion-row class="ion-justify-content-center">
-      <ion-col size-sm="12" size-md="6" size-lg="3">
+      <ion-col size-sm="12" size-md="12" size-lg="12">
         <div class="general-font-size">
           <swiper
             :slides-per-view="1"
