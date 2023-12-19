@@ -34,10 +34,23 @@
     </div>
   </div>
   <ion-modal :is-open="!!clickedLocation">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start" class=" back-button">
+          <IonIcon
+            @click="clickedLocation = null"
+            class="back-button-icon"
+            :icon="arrowBackOutline"
+          />
+        </ion-buttons>
+        <ion-title class="ion-no-padding modal-title">
+          <span class="is-dark-grey">
+            {{ clickedLocation?.name }}
+          </span>
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
     <ion-content id="projectList">
-      <div align="center" class="ion-margin-top">
-        <button class="close-button" @click="clickedLocation = null">Schließen</button>
-      </div>
       <div class="ion-margin-top">
         <FacilityPanel
           v-if="clickedLocation"
@@ -55,10 +68,11 @@ import MapWidget from "@/components/MapWidget.vue";
 import ParticipationProjectListPanel from "@/components/participation/ProjectListPanel.vue";
 import { useFilterStore } from "@/stores/health/searchFilter";
 import { MapLocation } from "@/types/MapLocation";
-import { IonContent, IonModal, onIonViewDidEnter } from "@ionic/vue";
+import { IonContent, IonModal, onIonViewDidEnter, IonIcon } from "@ionic/vue";
 import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import FacilityPanel from "./FacilityPanel.vue";
+import { arrowBackOutline } from "ionicons/icons";
 
 const filterStore = useFilterStore();
 const locations = ref<MapLocation[]>([]);
@@ -75,7 +89,12 @@ const getLocationsFromFacilies = async (facilities: any[]) => {
   const updatedLocations: MapLocation[] = [];
 
   for (const facility of facilities) {
-    if (facility?.geocode_address?.length && facility?.geocode_address[0] && facility?.geocode_address[0]?.lon && facility?.geocode_address[0]?.lat) {
+    if (
+      facility?.geocode_address?.length &&
+      facility?.geocode_address[0] &&
+      facility?.geocode_address[0]?.lon &&
+      facility?.geocode_address[0]?.lat
+    ) {
       updatedLocations.push({
         id: facility.id,
         latitude: parseFloat(facility?.geocode_address[0]?.lat),
@@ -168,7 +187,17 @@ onIonViewDidEnter(() => {
   color: black
   font-size: 20px
   background: transparent
-  margin-top: 30px
   width: 100%
-  height: 50px
+
+
+.back-button-icon
+  font-size: 12px
+  padding: 10px
+  border-radius: 50%
+  background: white
+  width: 20px
+  height: 20px
+  border: 1px solid #636362
+  margin: 10px
+
 </style>
