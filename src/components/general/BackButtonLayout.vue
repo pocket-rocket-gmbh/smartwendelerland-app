@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header v-if="projekRoute && showBar">
       <ion-toolbar>
-        <ion-buttons slot="start" class="ion-padding">
+        <ion-buttons slot="start">
           <ion-nav-link v-if="forceBack" :routerLink="forceBack">
             <IonIcon :icon="arrowBackOutline" />
           </ion-nav-link>
@@ -28,15 +28,25 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <div :class="[isCategoryPage ? 'category-page' : 'back-button']">
+      <div
+        :class="[
+          isCategoryPage
+            ? 'category-page'
+            : (getPlatforms().some(platform => platform === 'cordova' || platform === 'ios'))
+            ? 'back-button is-ios'
+            : 'back-button',
+            isCategoryPage && (getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'category-page-ios' : ''
+        ]"
+        v-if="view === 'list'"
+      >
         <ion-nav-link
           v-if="(forceBack && !showBar) || isCategoryPage"
           :routerLink="handleForceBack"
         >
           <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
         </ion-nav-link>
-        <div class="page-title is-uppercase is-white" lang="de" v-if="!isFacilityPage">
-          <span>
+        <div class="is-uppercase is-white break-text hypernate" :class="(getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'page-title-ios' : 'page-title'" lang="de" v-if="!isFacilityPage">
+          <span class="breakt-text hypernate">
             {{ title }}
           </span>
         </div>
@@ -57,6 +67,7 @@ import {
   IonBackButton,
   IonButtons,
   IonNavLink,
+  getPlatforms,
 } from "@ionic/vue";
 import {
   logInOutline,
@@ -92,6 +103,10 @@ const props = defineProps({
   isCategoryPage: {
     type: Boolean,
     default: false,
+  },
+  view: {
+    type: String,
+    default: "list",
   },
 });
 
@@ -133,12 +148,12 @@ ion-icon {
 .back-button {
   position: absolute;
   padding-left: 10px;
+  padding-top: 10px;
   z-index: 99;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   width: 100%;
-  margin-top: 30px;
 }
 .back-button-icon {
   font-size: 12px;
@@ -147,15 +162,27 @@ ion-icon {
   background: white;
   width: 20px;
   height: 20px;
-  margin-top: 50%;
-  margin-bottom: 15px;
+  margin-top: 10px;
+  margin-bottom: 14px;
   border: 1px solid #636362;
+}
+
+.is-ios {
+  margin-top: 40px;
 }
 
 .page-title {
   font-size: 1.5rem;
-  margin-left: 10px;
   font-weight: 600;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.page-title-ios {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  padding-left: 10px;
 }
 
 .category-page {
@@ -167,10 +194,18 @@ ion-icon {
   flex-wrap: nowrap;
   align-items: center;
   width: 100%;
-  padding: 30px 10px;
+  padding: 20px 10px 10px
 }
 
-.not-category-page {
-  margin-top: 20px;
+.category-page-ios {
+  background: linear-gradient(66deg, #91a80d 0%, #bac323 46.88%, #9ea100 95.31%);
+  position: absolute;
+  padding-left: 10px;
+  z-index: 99;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+  padding: 50px 10px 20px 10px;
 }
 </style>
