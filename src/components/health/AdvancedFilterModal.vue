@@ -42,7 +42,7 @@
       <div class="gap-1" />
       <div class="gap-1" />
       <div class="gap-1" />
-      <ion-loading :is-open="loadingFilters" message="Filter werden geladen..." />
+      <ion-loading class="is-dark-grey" mode="md" :is-open="loadingFilters" message="Filter werden geladen..." />
     </ion-content>
   </ion-modal>
 </template>
