@@ -6,7 +6,7 @@
     :show-bar="true"
     :is-category-page="true"
   >
-    <div v-if="category" class="categories">
+    <div v-if="category" :class="(getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'categories-ios' : 'categories'">
       <div class="health-category-tags">
         <span
           v-for="subCategory in subCategories"
@@ -20,7 +20,7 @@
           {{ subCategory.name }}
         </span>
       </div>
-      <div class="ion-padding-start ion-padding-end is-dark-grey is-justified">
+      <div class="ion-padding-start ion-padding-end is-dark-grey hypernate" lang="de">
         <div
           class="general-font-size is-dark-grey"
           v-html="currentSubCategory?.description"
@@ -59,6 +59,7 @@
 
           <div class="show-more">
             <ion-button
+              mode="md"
               shape="round"
               expand="block"
               class="green-button"
@@ -81,7 +82,7 @@
         </div>
       </div>
     </div>
-    <ion-loading :is-open="loading" message="Wird geladen..." />
+    <ion-loading class="is-dark-grey" mode="md" :is-open="loading" message="Wird geladen..." />
   </BackButtonLayout>
 </template>
 
@@ -103,6 +104,7 @@ import {
   IonButtons,
   IonButton,
   IonContent,
+  getPlatforms,
 } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
 const router = useRouter();
@@ -247,7 +249,13 @@ ion-toolbar
     display: none
 
 .categories
-  margin: 150px 0 0 0
+  margin: 120px 0 0 0
+
+.categories-ios
+  margin: 170px 0 0 0
+
+.show-more
+  margin-top: 10px 
 
 .modal-content
   display: flex
