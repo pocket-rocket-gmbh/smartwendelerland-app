@@ -10,10 +10,14 @@
         <div
           v-if="facility.kind !== 'facility'"
           @click.stop="routeAndGo(facility?.user_care_facility)"
+          class="header-facility-name"
         >
-          <img class="facility-icon" :src="facilityIcon" />
+          <img class="icons" :src="facilityIcon" />
           <span class="general-font-size">{{ facility?.user_care_facility.name }}</span>
-          <div class="divider has-gap"></div>
+        </div>
+        <div v-if="facility.kind !== 'facility'" class="divider has-gap"></div>
+        <div class="informations" v-if="facility.kind === 'news'">
+          {{ useDatetime().parseDate(facility.created_at) }}
         </div>
         <div
           class="general-font-size-subtitle is-dark-grey facility-name hypernate"
@@ -46,13 +50,7 @@
             </div>
           </div>
         </div>
-        <div
-          v-if="
-            facilityKind === 'facility' ||
-            facilityKind === 'news' ||
-            !facility?.event_dates.length
-          "
-        >
+        <div>
           <div class="informations" v-if="facility.kind !== 'news'">
             <div>
               <a class="is-dark-grey" :href="`tel:${facility.phone}`" @click.stop>
@@ -72,20 +70,37 @@
               <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
             </a>
 
-            <div class="has-irregular-margin-2">
+            <div class="has-irregular-margin-2 mail">
               {{ facility.email }}
             </div>
           </div>
         </div>
 
-        <div v-else-if="facility?.event_dates.length" class="course-dates">
+        <div v-if="facility?.event_dates.length" class="course-dates">
           <div>
             <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
+            <span
+              class="event-dates is-health"
+              :class="[facility?.event_dates.length >= 10 ? 'two-numbers-date' : '']"
+              >{{ facility?.event_dates.length }}</span
+            >
           </div>
           <div class="event-chips" v-if="facility?.event_dates.length">
-            <div class="course-dates has-irregular-margin">
-              <span class="next-event is-health">Termine anzeigen:</span>
-              <div>
+            <div class="course-dates">
+              <div class="list" v-for="event in facility.event_dates" :key="event">
+                <div v-if="facility?.event_dates.length === 1">
+                  <span>{{ getDayOfWeek(event.slice(0, 10)) }}, &nbsp;</span>
+                  <span
+                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
+                    {{ event.slice(11) }} Uhr</span
+                  >
+                </div>
+              </div>
+
+              <span v-if="facility?.event_dates.length > 1" class="next-event is-health"
+                >Termine anzeigen:</span
+              >
+              <div v-if="facility?.event_dates.length > 1">
                 <span
                   v-if="facility.kind !== 'facility' && facility.kind !== 'news'"
                   @click.stop="showAllEvents(facility)"
@@ -129,15 +144,11 @@
           </div>
         </div>
         <div class="informations" v-if="facility.kind === 'news'">
-          <div v-html="formatDescription(facility)" class="general-font-size is-dark-grey break-text hypernate" lang="de"/>
-        </div>
-        <div class="informations" v-if="facility.kind === 'news'">
-          <div>
-            <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
-          </div>
-          <div>
-            {{ useDatetime().parseDate(facility.created_at) }}
-          </div>
+          <div
+            v-html="facility.excerpt"
+            class="general-font-size is-dark-grey break-text hypernate"
+            lang="de"
+          />
         </div>
         <ion-button
           v-if="
@@ -149,7 +160,7 @@
           mode="md"
           shape="round"
           expand="block"
-          class="green-button"
+          class="green-button ion-margin-top"
           >{{ getFacilityKind(facility) }}</ion-button
         >
 
@@ -158,38 +169,29 @@
           mode="md"
           shape="round"
           expand="block"
-          class="green-button"
+          class="green-button ion-margin-top"
         >
           Details ansehen
-        </ion-button
-        >
+        </ion-button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, ref, defineEmits } from "vue";
-import {
-  useFilterStore,
-  filterSortingDirections,
-  Facility,
-} from "@/stores/health/searchFilter";
+import { computed, defineProps } from "vue";
+import { useFilterStore, Facility } from "@/stores/health/searchFilter";
 import { useRouter } from "vue-router";
-import { useRoute } from "vue-router";
 import { useDatetime } from "@/composables/ui/datetime";
 import mapIcon from "@/assets/images/facilities/icon_address.svg";
 import { caretDownOutline } from "ionicons/icons";
 import { caretUpOutline } from "ionicons/icons";
-
-import calendarIcon from "@/assets/images/facilities/icon_calendar.svg";
+import calendarIconNews from "@/assets/images/facilities/icon_calendar.svg";
+import calendarIcon from "@/assets/images/facilities/icon_calendar_dates.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import facilityIcon from "@/assets/images/facilities/facilities.svg";
-import watchIcon from "@/assets/images/watch.svg";
-import { isPlatform, onIonViewDidLeave } from "@ionic/vue";
-import mapMarker from "@/assets/images/facilities/icon_map_marker.svg";
-import { onIonViewWillEnter } from "@ionic/vue";
+import { isPlatform } from "@ionic/vue";
 
 const router = useRouter();
 const filterStore = useFilterStore();
@@ -206,7 +208,7 @@ const displayedEvents = computed(
   }
 );
 
-const getFacilityKind = (facility:any) => {
+const getFacilityKind = (facility: any) => {
   if (facility && facility.kind === "facility") {
     return "Zur Einrichtung";
   } else if (facility && facility.kind === "event") {
@@ -253,16 +255,6 @@ const routeAndGo = (facility: Facility) => {
     filterStore.mainSearch = true;
   }
 };
-
-const formatDescription = (facility:any) => {
-  if (facility) {
-    const cleanedDescription = facility.description
-      .replace(/(<br>\s*)+/g, "")
-      .replace(/(<p>&nbsp;<\/p>\s*)+/g, "<p>&nbsp;</p>");
-    return cleanedDescription;
-  }
-  return "";
-};
 </script>
 
 <style lang="sass" scoped>
@@ -296,7 +288,7 @@ const formatDescription = (facility:any) => {
   margin-right: 10px
 
 .facility-name
-  margin-bottom: 10px
+  margin-bottom: 20px
 a
   text-decoration: none
 
@@ -317,24 +309,45 @@ ion-chip
 
 .dates div:last-child
   margin-left: 10px
-.facility-icon
-  padding-right: 10px
+.header-facility-name
+  display: flex
+  flex-wrap: nowrap
+  align-items: center
+  margin-bottom: 10px
+
+.next-event
+  margin-bottom: 2px
 
 .has-irregular-margin
   margin-top: -5px
 
 .has-irregular-margin-2
-  margin-top: -3px
+  margin-top: -2px
 
 .course-dates
   display: flex
   flex-wrap: nowrap
+  align-items: center
 
 .list
   margin-top: -2px
 
 .show-more-events
   margin-left: 10px
-  margin-top: -2px
-  
+  margin-top: 1px
+  display: flex
+
+.event-dates
+  position: absolute
+  left: 25px
+  padding-top: 3px
+  font-size: 12px
+  font-weight: 600
+  margin-left: 5px
+
+.two-numbers-date
+  left: 22px
+
+.mail
+  text-transform: lowercase
 </style>
