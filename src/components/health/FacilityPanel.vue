@@ -1,6 +1,6 @@
 <template>
   <ion-card>
-    <div class="image-wrapper">
+    <div class="image-wrapper ion-padding-bottom">
       <img :src="imageCache.cacheableImageUrl(facility.imageUrl)" />
     </div>
     <div class="ion-padding-start ion-padding-bottom">
