@@ -27,27 +27,29 @@
           lat: 49.523656,
         }"
         :auto-fit="false"
-        :min-zoom="11"
+        :min-zoom="10"
         :theme="'green'"
         @markerClick="mapMarkerClick"
       />
     </div>
   </div>
   <ion-modal :is-open="!!clickedLocation">
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start" class=" back-button">
+    <ion-header class="no-border" mode="ios">
+      <ion-toolbar mode="md">
+        <ion-buttons slot="start" class="back-button">
           <IonIcon
             @click="clickedLocation = null"
             class="back-button-icon"
             :icon="arrowBackOutline"
           />
         </ion-buttons>
-        <ion-title class="ion-no-padding modal-title">
-          <span class="is-dark-grey">
-            {{ clickedLocation?.name }}
-          </span>
-        </ion-title>
+        <ion-label mode="md" v-if="clickedLocation?.name">
+          <div class="page-title">
+            <span class="is-dark-grey general-font-size">
+              {{ clickedLocation?.name }}
+            </span>
+          </div>
+        </ion-label>
       </ion-toolbar>
     </ion-header>
     <ion-content id="projectList">
@@ -182,13 +184,14 @@ onIonViewDidEnter(() => {
   width: 100vw
   height: 100vh
   position: relative
+  @media (max-width: 365px)
+    height: 100%
 
 .close-button
   color: black
   font-size: 20px
   background: transparent
   width: 100%
-
 
 .back-button-icon
   font-size: 12px
@@ -197,11 +200,21 @@ onIonViewDidEnter(() => {
   background: white
   width: 20px
   height: 20px
+  margin-left: -4px
+  margin-right: 10px
+  margin-bottom: 5px
   border: 1px solid #636362
-  margin: 10px
+
+ion-toolbar
+  --min-height: 70px
 
 ion-modal
   --width: 100%
   --height: 100%
 
+.page-title
+  font-size: 1.5rem
+  font-weight: 600
+  margin-top: -5px
+  line-height: 27px
 </style>
