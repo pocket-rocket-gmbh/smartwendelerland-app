@@ -3,7 +3,6 @@
     <ion-searchbar
       mode="md"
       class="has-background-white placeholder ion-no-padding main-search-bar"
-      :class="(getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'main-search-bar-ios' : 'main-search-bar'"
       :placeholder="placeholder"
       v-model="filterStore.currentSearchTerm"
       @ionClear="clearSearch"
@@ -17,7 +16,7 @@
 
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
-import { IonSearchbar, getPlatforms } from "@ionic/vue";
+import { IonSearchbar } from "@ionic/vue";
 import { useFilterStore } from "@/stores/health/searchFilter";
 
 const emit = defineEmits(["handleSearch"]);
@@ -36,6 +35,10 @@ const props = defineProps({
     required: false,
   },
   setFocus: {
+    type: Boolean,
+    required: false,
+  },
+  categoryPage: {
     type: Boolean,
     required: false,
   },
@@ -85,9 +88,6 @@ ion-searchbar
   --box-shadow: none
 
 .main-search-bar
-  margin-top: 70px
-
-.main-search-bar-ios
-  margin-top: 110px
+  margin-top: 0px
 
 </style>
