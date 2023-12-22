@@ -1,6 +1,6 @@
 <template>
   <ion-grid class="no-margin-padding">
-    <ion-row>
+    <ion-row class="categories-row">
       <ion-col
         size-xs="12"
         size-sm="6"
@@ -166,13 +166,12 @@ onMounted(() => {
 
 <style lang="sass" scoped>
 ion-col
-  padding: 10px 10px 0 -10px
+  --ion-grid-column-padding: 10px
 .signal
   color: #e84040
 
 ion-grid.no-margin-padding
   margin: -10px
-  padding: 0
 
 .title
   margin-top: 40px
@@ -187,4 +186,7 @@ ion-grid.no-margin-padding
   margin: 4px
   align-content: center
   justify-content: center
+
+.categories-row
+  margin: 3px -10px
 </style>
