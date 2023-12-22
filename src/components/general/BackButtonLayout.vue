@@ -6,7 +6,12 @@
           <ion-nav-link v-if="forceBack" :routerLink="forceBack">
             <IonIcon :icon="arrowBackOutline" />
           </ion-nav-link>
-          <ion-back-button v-else text="" default-href="/" :icon="arrowBackOutline" />
+          <ion-back-button
+            v-else
+            text=""
+            default-href="/"
+            :icon="arrowBackOutline"
+          />
         </ion-buttons>
         <ion-icon
           v-if="!useUser().loggedIn() && showLogin"
@@ -28,34 +33,35 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <div
-        :class="[
-          isCategoryPage
-            ? 'category-page'
-            : (getPlatforms().some(platform => platform === 'cordova' || platform === 'ios'))
-            ? 'back-button is-ios'
-            : 'back-button',
-            isCategoryPage && (getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'category-page-ios' : ''
-        ]"
-        v-if="view === 'list'"
+      <ion-header
+        class="no-border"
+        mode="ios"
+        v-if="!projekRoute && view !== 'map'"
       >
-        <ion-nav-link
-          v-if="(forceBack && !showBar) || isCategoryPage"
-          :routerLink="handleForceBack"
-        >
-          <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
-        </ion-nav-link>
-        <div class="is-uppercase is-white break-text hypernate" :class="(getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'page-title-ios' : 'page-title'" lang="de" v-if="!isFacilityPage">
-          <span class="breakt-text hypernate">
-            {{ title }}
-          </span>
-        </div>
-      </div>
+        <ion-toolbar mode="md" color="health">
+          <ion-buttons slot="start">
+            <ion-nav-link
+              v-if="(forceBack && !showBar) || isCategoryPage"
+              :routerLink="handleForceBack"
+            >
+              <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
+            </ion-nav-link>
+          </ion-buttons>
+          <ion-label mode="md" v-if="title">
+            <div class="page-title">
+              <span class="is-white">
+                {{ title }}
+              </span>
+            </div>
+          </ion-label>
+        </ion-toolbar>
+      </ion-header>
+
       <slot />
     </ion-content>
   </ion-page>
 </template>
-
+/* */
 <script setup lang="ts">
 import { defineProps, computed } from "vue";
 import {
@@ -67,15 +73,8 @@ import {
   IonBackButton,
   IonButtons,
   IonNavLink,
-  getPlatforms,
 } from "@ionic/vue";
-import {
-  logInOutline,
-  logInSharp,
-  personCircleOutline,
-  personCircleSharp,
-  arrowBackOutline,
-} from "ionicons/icons";
+import { logInOutline, logInSharp, arrowBackOutline } from "ionicons/icons";
 import { useRouter } from "vue-router";
 import { useUser } from "@/composables/user/user";
 import UserProfile from "@/components/UserProfile.vue";
@@ -145,16 +144,6 @@ ion-icon {
   padding-right: 20px;
 }
 
-.back-button {
-  position: absolute;
-  padding-left: 10px;
-  padding-top: 10px;
-  z-index: 99;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  width: 100%;
-}
 .back-button-icon {
   font-size: 12px;
   padding: 10px;
@@ -163,49 +152,26 @@ ion-icon {
   width: 20px;
   height: 20px;
   margin-top: 10px;
-  margin-bottom: 14px;
   border: 1px solid #636362;
 }
 
-.is-ios {
-  margin-top: 40px;
+ion-toolbar {
+  --border-style: none;
+  --border-width: 0px;
+  padding-bottom: 5px;
+  margin-bottom: -10px;
+  background: linear-gradient(
+    90deg,
+    #91a80d 0%,
+    #bac323 46.88%,
+    #9ea100 95.31%
+  );
+  /* background: linear-gradient(66deg, red, green, blue); */
 }
-
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 10px;
-  padding-left: 10px;
-}
-
-.page-title-ios {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 10px;
-  padding-left: 10px;
-}
-
-.category-page {
-  background: linear-gradient(66deg, #91a80d 0%, #bac323 46.88%, #9ea100 95.31%);
-  position: absolute;
-  padding-left: 10px;
-  z-index: 99;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  width: 100%;
-  padding: 20px 10px 10px
-}
-
-.category-page-ios {
-  background: linear-gradient(66deg, #91a80d 0%, #bac323 46.88%, #9ea100 95.31%);
-  position: absolute;
-  padding-left: 10px;
-  z-index: 99;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  width: 100%;
-  padding: 50px 10px 20px 10px;
+  padding: 4px 10px 0px 10px;
+  line-height: 27px;
 }
 </style>
