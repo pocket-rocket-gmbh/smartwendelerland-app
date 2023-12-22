@@ -133,7 +133,7 @@
             <span v-for="event in displayedEvents(facility)" :key="event.index">
               <div class="informations">
                 <div class="dates list">
-                  <span>{{ getDayOfWeek(event.slice(0, 10)) }}, &nbsp;</span>
+                  <span>{{ getDayOfWeek(event.slice(0, 10)) }},&nbsp;</span>
                   <span
                     >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
                     {{ event.slice(11) }} Uhr</span
@@ -322,7 +322,7 @@ ion-chip
   margin-top: -5px
 
 .has-irregular-margin-2
-  margin-top: -2px
+  margin-top: -3px
 
 .course-dates
   display: flex
