@@ -20,20 +20,21 @@
       @close="advancedFilterModalOpen = false"
     />
 
-    <div class="health-top-panel" v-if="view === 'list'">
+    <div
+      class="health-top-panel"
+      v-if="view === 'list'"
+      :class="[
+        facilityKind !== 'facility' && facilityKind !== 'course' ? 'has-no-buttons' : '',
+      ]"
+    >
       <div
         :class="
-          getPlatforms().some(
-            (platform) => platform === 'cordova' || platform === 'ios'
-          )
+          getPlatforms().some((platform) => platform === 'ios')
             ? 'search-col-ios'
             : 'search-col'
         "
       >
-        <SearchBar
-          @handleSearch="handleSearch"
-          :placeHolderText="placeHolderText"
-        />
+        <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" />
       </div>
 
       <template v-if="!facilityKind">
@@ -52,9 +53,7 @@
       </template>
       <div
         :class="
-          getPlatforms().some(
-            (platform) => platform === 'cordova' || platform === 'ios'
-          )
+          getPlatforms().some((platform) => platform === 'ios')
             ? 'grid-buttons-ios'
             : 'grid-buttons'
         "
@@ -76,8 +75,7 @@
         <div>
           <ion-button
             v-if="
-              (facilityKind && facilityKind === 'facility') ||
-              facilityKind === 'course'
+              (facilityKind && facilityKind === 'facility') || facilityKind === 'course'
             "
             mode="ios"
             class="transparent"
@@ -96,49 +94,31 @@
               expand="block"
               shape="round"
               @click="toggleView"
-              >{{
-                view === "list" ? "Kartenansicht" : "Listenansicht"
-              }}</ion-button
+              >{{ view === "list" ? "Kartenansicht" : "Listenansicht" }}</ion-button
             >
           </div>
         </div>
       </div>
     </div>
-    <div class="bottom-actions has-bg-darken-grey general-font-size" :class="[ view === 'map' && (getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'is-ios' : '']">
+    <div
+      class="has-bg-darken-grey general-font-size"
+      :class="[view === 'list' ? 'bottom-actions' : 'bottom-actions absolute']"
+    >
       <div v-if="filterStore.loading">Wird geladen...</div>
-      <div
-        class="general-font-size"
-        v-else-if="filterStore.filteredResults.length"
-      >
+      <div class="general-font-size" v-else-if="filterStore.filteredResults.length">
         <span>{{ filterStore.filteredResults.length }}</span>
         <span v-if="facilityKind === 'facility'"> Anbieter </span>
         <span v-if="facilityKind === 'course'"> Kurse </span>
-        <span
-          v-if="
-            facilityKind === 'event' && filterStore.filteredResults.length > 1
-          "
-        >
+        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length > 1">
           Veranstaltungen
         </span>
-        <span
-          v-if="
-            facilityKind === 'event' && filterStore.filteredResults.length === 1
-          "
-        >
+        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length === 1">
           Veranstaltung
         </span>
-        <span
-          v-if="
-            facilityKind === 'news' && filterStore.filteredResults.length > 1
-          "
-        >
+        <span v-if="facilityKind === 'news' && filterStore.filteredResults.length > 1">
           Beiträge
         </span>
-        <span
-          v-if="
-            facilityKind === 'news' && filterStore.filteredResults.length === 1
-          "
-        >
+        <span v-if="facilityKind === 'news' && filterStore.filteredResults.length === 1">
           Beitrag
         </span>
         <span v-if="!facilityKind">
@@ -147,9 +127,7 @@
         <span v-if="view === 'map'">in deiner Nähe</span>
         gefunden
       </div>
-      <div class="general-font-size" v-else>
-        Leider keine Ergebnisse gefunden.
-      </div>
+      <div class="general-font-size" v-else>Leider keine Ergebnisse gefunden.</div>
     </div>
     <IonIcon
       v-if="view === 'map'"
@@ -158,7 +136,7 @@
       @click="toggleView"
     />
     <div>
-      <div class="facility-list">
+      <div :class="[view === 'list' ? 'facility-list' : 'map-view']">
         <FacilityList v-if="view === 'list'" :facility-kind="facilityKind" />
         <FacilityMap v-else-if="view === 'map'" />
       </div>
@@ -277,9 +255,7 @@ const addParamsToLocation = (params: any) => {
       "?" +
       Object.keys(params)
         .map((key) => {
-          return (
-            encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
-          );
+          return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
         })
         .join("&")
   );
@@ -297,9 +273,7 @@ const toggleView = () => {
 };
 
 const filteredKinds = computed(() => {
-  return Array.from(
-    new Set(filterStore.filteredResults.map((result) => result.kind))
-  );
+  return Array.from(new Set(filterStore.filteredResults.map((result) => result.kind)));
 });
 
 const getMappedKindName = (kind: "facility" | "news" | "event" | "course") => {
@@ -337,18 +311,12 @@ onIonViewWillLeave(() => {
 
 onIonViewWillEnter(() => {
   if (router.currentRoute.value.query.tags) {
-    filterStore.currentTags = JSON.parse(
-      router.currentRoute.value.query.tags as string
-    );
+    filterStore.currentTags = JSON.parse(router.currentRoute.value.query.tags as string);
   }
   if (router.currentRoute.value.query.community) {
-    filterStore.currentZip = router.currentRoute.value.query
-      .community as string;
+    filterStore.currentZip = router.currentRoute.value.query.community as string;
   }
-  if (
-    router.currentRoute.value.query.tags &&
-    router.currentRoute.value.query.community
-  ) {
+  if (router.currentRoute.value.query.tags && router.currentRoute.value.query.community) {
     router.push({ path: `/health/search?kind=${facilityKind.value}` });
   }
 });
@@ -395,7 +363,7 @@ onIonViewWillLeave(() => {
   align-items: center
 
 .grid-buttons-ios
-  margin: -10px 0 10px 0
+  margin: -5px 0 10px 0
   display: grid
   grid-template-columns: 11% 42% 43%
   gap: 2%
@@ -430,6 +398,7 @@ onIonViewWillLeave(() => {
 
 .buttons
   display: grid
+  margin: 20px 0
   grid-template-columns: 49% 49%
   gap: 2%
   justify-content: space-between
@@ -447,6 +416,13 @@ onIonViewWillLeave(() => {
   color: white
   text-align: center
 
+.absolute
+  position: absolute
+  z-index: 99999
+  height: 65px
+
+.map-view
+  margin-top: -40px
 .filter-container
   display: flex
   align-items: center
@@ -463,10 +439,10 @@ onIonViewWillLeave(() => {
   width: 50px
 
 .search-col
-  margin: 50px 0 0 0
+  margin: 10px 0 0 0
 
 .search-col-ios
-  margin: 100px 0 30px 0
+  margin: 10px 0 30px 0
 
 ion-button
   --background-activated: none
@@ -484,14 +460,15 @@ ion-button
   background: white
   width: 20px
   height: 20px
-  margin-left: 15px
-  margin-top: 15px
+  margin-left: 4px
+  margin-top: 10px
   margin-bottom: 15px
   border: 1px solid #636362
-
-.is-ios
-  margin-top: 40px
+  z-index: 99999
 
 .facility-list
   padding: 10px
+
+.has-no-buttons
+  padding-bottom: 20px
 </style>
