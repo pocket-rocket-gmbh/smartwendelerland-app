@@ -1,5 +1,6 @@
 <template>
-  <ion-content class="ion-padding-top ">
+  <div class="divider"></div>
+  <ion-content class="ion-padding-top">
     <div class="filter-options communities content-wrap">
       <label
         :for="community.id"
