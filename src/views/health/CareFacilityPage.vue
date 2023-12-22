@@ -7,11 +7,7 @@
     :is-facility-page="isFacilityPage"
   >
     <div
-      :class="
-        getPlatforms().some((platform) => platform === 'cordova' || platform === 'ios')
-          ? 'facility-page-ios'
-          : 'facility-page'
-      "
+      class="facility-page"
       v-if="facility"
     >
       <swiper
@@ -24,7 +20,11 @@
         style="--swiper-pagination-color: #8ab61d; --swiper-pagination-top: 8px"
       >
         <swiper-slide>
-          <img v-if="facility.image_url" :src="imageCache.cacheableImageUrl(facility.image_url)" class="showroom" />
+          <img
+            v-if="facility.image_url"
+            :src="imageCache.cacheableImageUrl(facility.image_url)"
+            class="showroom"
+          />
           <img v-if="facility.logo_url" :src="facility.logo_url" class="logo" />
         </swiper-slide>
         <swiper-slide v-for="(image, index) in facility.sanitized_images" :key="index">
@@ -36,7 +36,6 @@
       <div
         class="general-font-size-subtitle is-dark-grey ion-margin-top ion-margin-bottom"
       >
-        {{ facility.name }}
         <img
           src="@/assets/images/check-decagram-outline.svg"
           class="insurance-logo"
@@ -252,9 +251,7 @@
         class="general-font-size is-dark-grey hypernate"
         lang="de"
       />
-      <div
-        class="ion-margin-bottom general-font-size is-dark-grey"
-      >
+      <div class="ion-margin-bottom general-font-size is-dark-grey">
         <i
           >Inhaltlich verantwortlich: {{ facility?.user?.name }} -
           {{ facility?.user_care_facility?.name }}</i
@@ -271,16 +268,19 @@
       </div>
       <div
         class="more-infos ion-margin-bottom ion-margin-top ion-padding"
-        v-for="document in facility.sanitized_documents"
-        :key="document.signed_id"
-        @click="handleLinkClick(document.url)"
+        v-if="facility.sanitized_documents.length > 0"
       >
         <div class="has-text-health is-uppercase general-font-size ion-margin-bottom">
           Dokumente
         </div>
 
-        <div class="general-font-size is-dark-grey documents">
-          <img src="@/assets/images/download.svg" width="24" />
+        <div
+          class="general-font-size is-dark-grey ion-margin-bottom documents"
+          v-for="document in facility.sanitized_documents"
+          :key="document.signed_id"
+          @click="handleLinkClick(document.url)"
+        >+
+          <img src="@/assets/images/download.svg" min-width="24" />
           <span>{{ document.name }}.pdf</span>
         </div>
       </div>
@@ -506,7 +506,6 @@ const modules = [Pagination];
   width: 100%
   height: 100%
   object-fit: cover
-  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.25)
   border-radius: 100px
 .logo
   position: absolute
@@ -516,6 +515,12 @@ const modules = [Pagination];
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
   background: rgba(0, 0, 0, 0.25)
   border: 1px solid rgba(0, 0, 0, 0.25)
+
+.logo img
+  width: 100%
+  height: 1%
+  object-fit: contain
+  border-radius: 100px
 
 .button-rounded
   color: var(--ion-color-health)
@@ -567,11 +572,8 @@ ion-chip
   --color: white
   font-size: 1.2rem
 
-.facility-page-ios
-  margin-top: 40px
-  padding: 10px
-
 .facility-page
+  margin-top: 20px
   padding: 10px
 
 .documents
@@ -601,4 +603,7 @@ ion-chip
 
 .instructor
   margin-top: 30px
+
+.mail
+  text-transform: lowercase
 </style>
