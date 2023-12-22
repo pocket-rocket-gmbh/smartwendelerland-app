@@ -6,7 +6,7 @@
     :show-bar="true"
     :is-category-page="true"
   >
-    <div v-if="category" :class="(getPlatforms().some(platform => platform === 'cordova' || platform === 'ios')) ? 'categories-ios' : 'categories'">
+    <div v-if="category" class="categories">
       <div class="health-category-tags">
         <span
           v-for="subCategory in subCategories"
@@ -249,10 +249,7 @@ ion-toolbar
     display: none
 
 .categories
-  margin: 120px 0 0 0
-
-.categories-ios
-  margin: 170px 0 0 0
+  margin: 20px 0 0 0
 
 .show-more
   margin-top: 10px 
