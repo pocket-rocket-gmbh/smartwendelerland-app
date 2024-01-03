@@ -109,6 +109,9 @@ export default defineComponent({
   @media (max-width: 365px)
     gap: 10px
     height: 60vh
+  @media (min-width: 768px)
+    font-size: 2rem
+    line-height: 2.5rem
   .circle
     margin: 0 auto
     background: white
@@ -121,17 +124,24 @@ export default defineComponent({
     @media (max-width: 365px)
       width: 70px
       height: 70px
+      display: none
+    @media (min-width: 768px)
+      width: 150px
+      height: 150px
+
     img
       width: 70%
       margin-top: -5px
-      @media (max-width: 365px)
-        margin-top: 0px
+     
   .headline
     font-style: normal
     font-weight: 500
     font-size: 27px
     color: #FFFFFF
     margin: 10px 0
+    @media (min-width: 768px)
+      font-size: 2.5rem
+      line-height: 2.5rem
 .pagination
   text-align: center
 .forward
