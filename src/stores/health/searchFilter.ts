@@ -55,13 +55,17 @@ export type Filter = {
   currentKinds: FilterKind[];
 
   //
+  allUnalteredResults: Facility[];
   allResults: Facility[];
   filteredResults: Facility[];
   onlySearchInTitle: boolean;
 
-  basicFilters: string[];
   advancedFilters: any;
   mainSearch: boolean;
+
+  allFilters: null | any[];
+  allCommunities: null | any[];
+  mainFilters: null | any[];
 };
 
 type FilterResponse = {
@@ -83,11 +87,15 @@ const initialFilterState: Filter = {
   mainSearch: false,
 
   //
+  allUnalteredResults: [],
   allResults: [],
   filteredResults: [],
   onlySearchInTitle: false,
-  basicFilters: [],
   advancedFilters: [],
+
+  allFilters: null,
+  allCommunities: null,
+  mainFilters: null,
 };
 
 export const useFilterStore = defineStore({
@@ -101,7 +109,7 @@ export const useFilterStore = defineStore({
         currentTags: state.currentTags,
         filterSort: state.filterSort,
         currentKinds: state.currentKinds,
-        basicFilters: state.basicFilters,
+        mainFilters: state.mainFilters,
         advancedFilters: state.advancedFilters,
         mainSearch: state.mainSearch,
       };
@@ -109,6 +117,8 @@ export const useFilterStore = defineStore({
   },
   actions: {
     async getAllFilters() {
+      if (this.allFilters) return this.allFilters;
+
       const api = useCollectionApi();
       api.setBaseApi(usePublicApi("health"));
       api.setEndpoint(`tag_categories?show_all=${true}`);
@@ -126,7 +136,9 @@ export const useFilterStore = defineStore({
         throw response;
       }
 
-      return (response?.data?.resources || []) as any[];
+      this.allFilters = response?.data?.resources || [];
+
+      return this.allFilters;
     },
     async getItems(filterKind: string) {
       const api = useCollectionApi();
@@ -188,8 +200,22 @@ export const useFilterStore = defineStore({
 
       childFilterItems.forEach((childFilterItem) => this.getItemsAndNext(childFilterItem, filterItem.next || [], layer + 1, allFilters));
     },
+    async loadAllCommunities() {
+      if (this.allCommunities) return this.allCommunities;
 
+      const api = useCollectionApi();
+      api.setBaseApi(usePublicApi("health"));
+      api.setEndpoint(`communities`);
+
+      await api.retrieveCollection();
+
+      this.allCommunities = api.items.value;
+
+      return this.allCommunities;
+    },
     async getMainFilters(filterType: FilterType, filterKind: FilterKind) {
+      if (this.mainFilters) return this.mainFilters;
+
       const api = useCollectionApi();
       api.setBaseApi(usePublicApi("health"));
       api.setEndpoint(`tag_categories`);
@@ -204,9 +230,9 @@ export const useFilterStore = defineStore({
 
       if (!relevantFilter) return [];
 
-      this.basicFilters = await this.getFilters(relevantFilter.id);
+      this.mainFilters = await this.getFilters(relevantFilter.id);
 
-      return this.basicFilters as unknown as Filter[];
+      return this.mainFilters as unknown as Filter[];
     },
 
     async getFilters(parentId: string) {
@@ -295,11 +321,24 @@ export const useFilterStore = defineStore({
           return multipleOccuredInBlock;
         }
       }
+
       return [];
     },
-    async loadAllResults() {
-      this.loading = true;
+    async loadUnalteredAllResults() {
+      const options = {
+        page: 1,
+        per_page: 1000,
+      };
 
+      const api = useCollectionApi();
+      api.setBaseApi(usePublicApi("health"));
+      api.setEndpoint(`care_facilities`);
+
+      await api.retrieveCollection(options as any);
+
+      this.allUnalteredResults = api.items.value;
+    },
+    async loadAllResults() {
       const filters = [];
 
       const multipleFacilityFiltersSelected = await this.checkIfMultipleFacilityFiltersAreSelected();
@@ -322,33 +361,17 @@ export const useFilterStore = defineStore({
         });
       }
 
-      const options = {
-        page: 1,
-        per_page: 1000,
-        sort_by: "name",
-        sort_order: this.filterSort == "Aufsteigend" ? "ASC" : "DESC",
-        searchQuery: null as any,
-        concat: false,
-        filters,
-      };
-
-      const api = useCollectionApi();
-      api.setBaseApi(usePublicApi("health"));
-      api.setEndpoint(`care_facilities`);
-      if (this.currentKinds && this.currentKinds.length) {
-        api.setEndpoint(`care_facilities?kind=${this.currentKinds.join(",")}`);
-      }
-
-      const response = await api.retrieveCollection(options as any);
-
-      if (response.status !== ResultStatus.SUCCESSFUL) {
-        console.error(response);
-        return;
-      }
-
-      this.allResults = response.data.resources as any[];
-
-      this.loading = false;
+      this.allResults = this.allUnalteredResults
+        .filter((result) => {
+          return this.currentKinds.length ? this.currentKinds.includes(result.kind) : true;
+        })
+        .filter((result) => {
+          return result.zip && this.currentZip ? result.zip === this.currentZip : true;
+        })
+        .filter((result) => {
+          if (!this.currentTags.length) return true;
+          return result.tag_category_ids?.find((tag) => this.currentTags.includes(tag));
+        });
 
       this.loadFilteredResults(multipleFacilityFiltersSelected);
     },

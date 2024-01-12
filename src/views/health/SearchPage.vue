@@ -11,7 +11,6 @@
       v-model="filterStore.currentTags"
       v-if="basicFilterModalOpen"
       @close="basicFilterModalOpen = false"
-      @selectBasicFilter="selectBasicFilter"
     />
     <AdvancedFilterModal
       v-if="advancedFilterModalOpen"
@@ -177,7 +176,7 @@ import { arrowBackOutline } from "ionicons/icons";
 const filterStore = useFilterStore();
 const advancedFilterModalOpen = ref(false);
 const basicFilterModalOpen = ref(false);
-const basicFilter = ref(null);
+
 const advancedFilter = ref(null);
 const communityFilter = ref(null);
 const communityFilterRef = ref(null);
@@ -283,15 +282,8 @@ const getMappedKindName = (kind: "facility" | "news" | "event" | "course") => {
   if (kind === "event") return "Zu den Veranstaltungen";
 };
 
-const selectBasicFilter = (filter: any) => {
-  basicFilter.value = filter;
-  // currently supporting only one filter
-  // filterStore.currentTags = [filter.id]
-  // startSearch()
-};
 
 const resetFilter = () => {
-  basicFilter.value = null;
   communityFilter.value = null;
   communityFilterRef.value = null;
   filterStore.currentSearchTerm = "";
@@ -338,11 +330,9 @@ const handleSearch = () => {
 };
 
 onIonViewWillEnter(async () => {
-  facilityKind.value = route.query.kind as FilterKind;
-  // if (facilityKind.value) {
-  // }
   filterStore.filteredResults = [];
-  await startSearch();
+  facilityKind.value = route.query.kind as FilterKind;
+  await setFacilityKind(facilityKind.value);
 });
 
 onIonViewWillLeave(() => {

@@ -88,7 +88,7 @@
         @selectCommunityFilter="selectCommunityFilter"
       />
     </ion-content>
-    <ion-content v-if="currentStep === 'filter'">
+    <ion-content v-if="currentStep === 'filter'" >
       <AdvancedFilter
         :filter-kind="filterKind"
         :model-value="modelValue"
@@ -213,8 +213,7 @@ const handleOptionSelect = (option: Filter) => {
 
 onMounted(async () => {
   loadingFilters.value = true;
-  await useFilterStore().getMainFilters("filter_facility", props.filterKind);
-  mainFilters.value = useFilterStore().basicFilters;
+  mainFilters.value = await useFilterStore().getMainFilters("filter_facility", props.filterKind)
   const allFilters = await useFilterStore().getAllFilters();
 
   const allOptions = mainFilters.value.map((filter) =>

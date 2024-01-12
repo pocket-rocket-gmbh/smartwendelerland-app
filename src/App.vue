@@ -12,43 +12,44 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonSpinner, IonRouterOutlet } from '@ionic/vue'
-import { computed, onMounted } from 'vue'
-import { usePollStore } from '@/stores/poll'
-import { useAppStateStore } from '@/stores/appState'
-import { useMe } from '@/composables/user/me'
-import { useEnvStore } from './stores/env'
-import { useFilterStore } from '@/stores/health/searchFilter'
+import { IonApp, IonSpinner, IonRouterOutlet } from "@ionic/vue";
+import { computed, onMounted } from "vue";
+import { usePollStore } from "@/stores/poll";
+import { useAppStateStore } from "@/stores/appState";
+import { useMe } from "@/composables/user/me";
+import { useEnvStore } from "./stores/env";
+import { useFilterStore } from "@/stores/health/searchFilter";
 
-const appState = useAppStateStore()
+const appState = useAppStateStore();
 
 const isStaging = computed(() => {
-  return useEnvStore().env === 'staging'
-})
+  return useEnvStore().env === "staging";
+});
 
 const toggleEnv = () => {
-  localStorage.removeItem('smawela--env')
-  window.location.reload()
-}
+  localStorage.removeItem("smawela--env");
+  window.location.reload();
+};
 
 onMounted(async () => {
-  console.log('Loading App...')
-  const startTime = Date.now()
+  console.log("Loading App...");
+  const startTime = Date.now();
 
-  await useMe().fetchMyUser()
-  useAppStateStore().setAppLoadingProgress(0.3)
-  await usePollStore().setPublicPoll()
-  
+  await useMe().fetchMyUser();
+  useAppStateStore().setAppLoadingProgress(0.3);
+  await usePollStore().setPublicPoll();
   // trigger load filters for health scope
-  await useFilterStore().getMainFilters('filter_facility', 'facility')
-  useAppStateStore().setAppLoadingProgress(0.75)
-  await useFilterStore().getItems('facility')
-  useAppStateStore().setAppLoadingProgress(0.90)
+  await useFilterStore().getMainFilters("filter_facility", "facility");
+  useAppStateStore().setAppLoadingProgress(0.6);
+  await useFilterStore().loadUnalteredAllResults();
+  useAppStateStore().setAppLoadingProgress(0.75);
+  await useFilterStore().getItems("facility");
+  useAppStateStore().setAppLoadingProgress(0.9);
   await useFilterStore().loadAllResults();
-  useAppStateStore().setAppLoadingProgress(1.0)
-  console.log('App loaded - duration: ' + (Date.now() - startTime) + ' ms')
-  useAppStateStore().setAppLoading(false)
-})
+  useAppStateStore().setAppLoadingProgress(1.0);
+  console.log("App loaded - duration: " + (Date.now() - startTime) + " ms");
+  useAppStateStore().setAppLoading(false);
+});
 </script>
 
 <style scoped lang="sass">
