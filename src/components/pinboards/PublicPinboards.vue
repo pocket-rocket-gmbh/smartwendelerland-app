@@ -1,24 +1,70 @@
 <template>
   <div class="ion-padding">
-    <div class="headline">Ideenpinnwände</div>
     <p>Hier findest du aktuelle Themen und Anregungen aus dem Landkreis. 
     Zu jeder Pinnwand kannst du deine eigene Idee beitragen oder die Ideen 
     von anderen Nutzern lesen.</p>
-    <ion-select v-if="categories.length > 0" class="ion-margin-bottom" cancel-text="Abbrechen" placeholder="Kategorien wählen" :multiple="true" v-model="selectedCategoryIds" @ionChange="getItems">
-      <ion-select-option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name_with_pinboards_count }}</ion-select-option>
-    </ion-select>
-    <ion-grid v-if="pinboards.length > 0">
+
+    <div @click="categoriesModalIsOpen = true">
+      <div class="filter-select">
+        Kategorien wählen
+      </div>
+    </div>
+
+    <ion-modal :is-open="categoriesModalIsOpen" :can-dismiss="true">
+      <ion-header mode="md">
+        <ion-toolbar>
+          <ion-title class="general-font-size is-dark-grey modal-title" slot="start"
+            >Verfeinere hier deine Suche!</ion-title
+          >
+          <ion-button
+            slot="end"
+            mode="md"
+            expand="block"
+            class="blue-button"
+            @click="
+              categoriesModalIsOpen = false;
+              getItems();
+            "
+            >Fertig</ion-button
+          >
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding-top">
+        <div class="communities content-wrap">
+          <div
+            v-for="(category, index) in categories"
+            :key="index"
+            :value="category.id"
+            class="filter-options"
+            :model-value="selectedCategoryIds"
+          >
+            <label
+              class="options-select-project"
+              hide-details
+              density="compact"
+              :class="{
+                'is-slected-filter': selectedCategoryIds.includes(category.id),
+              }"
+              @click.prevent="selectCategoryFilterValue(category)"
+            >
+              {{category.name_with_pinboards_count }}
+            </label>
+          </div>
+        </div>
+      </ion-content>
+    </ion-modal>
+    <ion-grid v-if="pinboards.length > 0" class="content-grid">
       <ion-row>
         <ion-col size-xs="12" size-sm="12" size-lg="6" v-for="(pinboard, index ) in pinboards" :key="index">
           <ion-nav-link :routerLink="`/pinboards/${pinboard.id}`" class="pinboard-box">
             <div class="content ion-margin-bottom" v-if="pinboard.is_active" :class="[(useDatetime().isInPast(pinboard.end_time) ? 'bg-inactive' : 'bg-white is-clickable')]">
-              <h3>{{ pinboard.headline }}</h3>
+              <h3 >{{ pinboard.headline }}</h3>
               <p class="my-3" v-html="pinboard.content"></p>
               <span
                 class="chip"
                 v-for="(category, index) in pinboard.categories" :key="index"
               >
-                <ion-icon :icon="copyOutline" />
+                <ion-icon :icon="copyOutline" size="small"/>
                 {{ category.name }}
               </span>
               <div class="divider" />
@@ -45,7 +91,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { IonNavLink, IonIcon, IonSelect, IonSelectOption, IonGrid, IonRow, IonCol } from '@ionic/vue';
+import { IonNavLink, IonIcon, IonSelect, IonSelectOption, IonGrid, IonRow, IonCol, IonModal, } from '@ionic/vue';
 import { useDatetime } from '@/composables/ui/datetime';
 import { useCollectionApi } from '@/composables/api/collectionApi';
 import { usePublicApi } from '@/composables/api/public';
@@ -54,6 +100,8 @@ const loading = ref(false)
 const api = useCollectionApi()
 api.setBaseApi(usePublicApi())
 api.setEndpoint('pinboards')
+
+const categoriesModalIsOpen = ref(false);
 
 const pinboards = api.items
 const selectedCategoryIds = ref([])
@@ -83,6 +131,19 @@ const getPublicCategories = async () => {
   loading.value = false
 }
 
+const selectCategoryFilterValue = (category: { id: number }) => {
+      const categoryId = category.id;
+      const isSelected = selectedCategoryIds.value.includes(categoryId);
+      if (isSelected) {
+        selectedCategoryIds.value = selectedCategoryIds.value.filter(
+          (id) => id !== categoryId
+        );
+      } else {
+        selectedCategoryIds.value.push(categoryId);
+      }
+    };
+
+
 onMounted(() => {
   getPublicCategories()
   getItems()
@@ -90,4 +151,40 @@ onMounted(() => {
 </script>
 
 <style lang="sass" scoped>
+
+.filter-select
+  background: #358BBC
+  color: white
+  display: grid
+  place-items: center
+  padding: 10px
+  font-weight: 600
+  font-size: 16px
+  line-height: 22px
+  text-transform: uppercase
+
+
+.filters-select
+  display: flex
+  flex-wrap: nowrap
+  justify-content: space-evenly
+  align-content: center
+  margin: 15px 0
+
+.blue-button
+  --background: #358BBC
+  --color: white
+  text-transform: uppercase
+  margin-right: 10px
+
+.is-slected-filter
+  background: #358BBC
+  color: white
+
+.content-grid
+  margin-top: 15px
+
+ion-modal
+  --width: 100%
+  --height: 100%
 </style>
