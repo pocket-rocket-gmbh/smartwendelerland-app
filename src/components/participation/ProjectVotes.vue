@@ -83,7 +83,7 @@ export default defineComponent({
   color: #58595E
   font-style: normal
   font-weight: 600
-  margin-top: 5 px
+  margin-top: 10px
 .is-small .result
   top: 10px
 </style>
