@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout force-back="/participation/projects">
+  <BackButtonLayout force-back="/participation/projects" :is-project-page="true">
     <ion-content class="ion-padding">
       <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
@@ -53,7 +53,7 @@
                   <ion-icon :icon="locationOutline"></ion-icon> {{ project.community.name }} | {{ project.zip }} - {{ project.town }}
                 </strong>
               </div>
-              <div class="ion-margin-top">
+              <div class="ion-margin-top dates">
                 <ion-icon :icon="calendarOutline"></ion-icon> {{ useDatetime().getTimeRangeString(project) }}
               </div>
               <div v-if="project.costs"><ion-icon :icon="cashOutline"></ion-icon> {{ useCurrency().getCurrencyFromNumber(project.costs) }}</div>
@@ -364,7 +364,6 @@ export default defineComponent({
 .expand
   margin-left: -10px
   margin-right: -10px
-  margin-top: -10px
 .header
   line-height: 22px
   margin-top: 10px
@@ -382,6 +381,10 @@ ion-textarea
   z-index: 1
   position: absolute
   bottom: 0px
+
+.dates
+  display: flex
+  align-items: center
 
 .item-box
   background: white
