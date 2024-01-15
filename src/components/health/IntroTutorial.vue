@@ -8,18 +8,19 @@
             :space-between="20"
             :modules="modules"
             :pagination="{ el: '.pagination' }"
+            :ref="'mySwiper'"
           >
             <swiper-slide>
               <div class="slide">
                 <div class="circle">
-                  <img src="@/assets/images/tutorial/icon_virus.svg" />
+                  <img src="@/assets/images/tutorial/icon-tutorial-start.svg" />
                 </div>
                 <div class="headline" lang="de">
                   Willkommen in der gesundesWND-App
                 </div>
-                <div class="hypernate ion-no-padding tutorial-description" lang="de">
-                  Gesundheitsanbieter, News, Veranstaltungen- wir informieren dich rund um
-                  dieThemen Gesundheit, Prävention und Pflege im Smart Wendeler Land.
+                <div class="ion-no-padding tutorial-description" lang="de">
+                  Gesundheitsanbieter, News, Veranstaltungen wir informieren dich rund um
+                  die Themen Gesundheit, Prävention und Pflege im Smart Wendeler Land.
                 </div>
               </div>
             </swiper-slide>
@@ -31,13 +32,13 @@
                 <div class="headline" lang="de">
                   Erlebe das Gesundheitsangebot im Smart Wendeler Land
                 </div>
-                <div class="hypernate ion-no-padding tutorial-description" lang="de">
+                <div class="ion-no-padding tutorial-description" lang="de">
                   Lass dich inspirieren oder finde mit unserer Such- und Filterfunktion
                   gezielt den passenden Gesundheitsanbieter für dich.
                 </div>
               </div>
             </swiper-slide>
-            <swiper-slide>
+            <swiper-slide v-slot="{ isActive }">
               <div class="slide">
                 <div class="circle">
                   <img src="@/assets/images/main-categories/icon_app_events.svg" />
@@ -45,10 +46,11 @@
                 <div class="headline" lang="de">
                   Entdecke vielfältige Veranstaltungs- und Kursangebote
                 </div>
-                <div class="hypernate ion-no-padding tutorial-description" lang="de">
+                {{ setIsActive(isActive) }}
+                <div class="ion-no-padding tutorial-description" lang="de">
                   Wir unterstützen dich bei der Suche nach dem passenden Präventionskurs
                   aus den Bereichen Entspannung, Ernährung, Fitness oder Sucht und
-                  informiere dich über bevorstehende Events.
+                  informieren dich über bevorstehende Events.
                 </div>
               </div>
             </swiper-slide>
@@ -63,7 +65,7 @@
     </ion-row>
   </ion-grid>
   <div class="bottom-skip-tutorial general-font-size" @click="skipIntro">
-    Intro überspringen
+    Intro {{ introText }}
   </div>
 </template>
 
@@ -72,7 +74,7 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { IonGrid, IonRow, IonCol } from "@ionic/vue";
 import { useRouter } from "vue-router";
 
@@ -85,8 +87,20 @@ export default defineComponent({
       localStorage.setItem("gesundheitsplattform_tutorial_skipped", "true");
       router.push({ path: "/health/categories" });
     };
+
+    const introText = ref('')
+
+    const setIsActive = (isActive: boolean) => {
+      if (isActive) {
+        introText.value = "Abschließen"
+      } else {
+        introText.value = "Überspringen"
+      }
+    };
     return {
       skipIntro,
+      setIsActive,
+      introText,
       modules: [Pagination],
     };
   },
@@ -168,7 +182,9 @@ export default defineComponent({
   position: absolute
   bottom: 0
 
-.swiper-pagination-bullet .swiper-pagination-bullet-active
-  background-color: black!important
-  color: red!important
+</style>
+<style lang="css">
+.swiper-pagination-bullet-active {
+  background-color: #8AB61D;
+}
 </style>
