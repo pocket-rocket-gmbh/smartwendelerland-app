@@ -80,6 +80,7 @@
           <div>
             <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
             <span
+            
               class="event-dates is-health"
               :class="[facility?.event_dates.length >= 10 ? 'two-numbers-date' : '']"
               >{{ facility?.event_dates.length }}</span
@@ -344,6 +345,7 @@ ion-chip
   font-size: 12px
   font-weight: 600
   margin-left: 5px
+  margin-bottom: 1px
 
 .two-numbers-date
   left: 22px
