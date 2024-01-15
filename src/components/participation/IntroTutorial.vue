@@ -14,9 +14,7 @@
                 <div class="circle">
                   <img src="@/assets/images/tutorial-sheep.png" />
                 </div>
-                <div class="headline">
-                  “Willkommen in der Smart Wendeler App”
-                </div>
+                <div class="headline">“Willkommen in der Smart Wendeler App”</div>
                 <p>In diesem Intro erfährst du, was du in der App machen kannst.</p>
               </div>
             </swiper-slide>
@@ -25,32 +23,30 @@
                 <div class="circle">
                   <img src="@/assets/images/tutorial-rating.png" />
                 </div>
-                <div class="headline">
-                  Bürgerumfragen
-                </div>
+                <div class="headline">Bürgerumfragen</div>
                 <p>Nimm an Umfragen teil und sag uns deine Meinung.</p>
               </div>
             </swiper-slide>
             <swiper-slide>
               <div class="slide">
                 <div class="circle">
-                  <img src="@/assets/images/tutorial-poll.png" />
+                  <img src="@/assets/images/tutorial-poll.svg" />
                 </div>
-                <div class="headline">
-                  Projekte bewerten
-                </div>
+                <div class="headline">Projekte bewerten</div>
                 <p>Gib deine Stimme zu einem Projekt ab und gestalte mit.</p>
               </div>
             </swiper-slide>
-            <swiper-slide>
+            <swiper-slide v-slot="{ isActive }">
               <div class="slide">
                 <div class="circle">
                   <img src="@/assets/images/tutorial-feedback.png" />
                 </div>
-                <div class="headline">
-                  Community
-                </div>
-                <p>Kommuniziere mit dem Projektteam und Projektbeteiligten, oder teile das Projekt mit Freunden.</p>
+                <div class="headline">Community</div>
+                {{ setIsActive(isActive) }}
+                <p>
+                  Kommuniziere mit dem Projektteam und Projektbeteiligten, oder teile das
+                  Projekt mit Freunden.
+                </p>
               </div>
             </swiper-slide>
             <div class="pagination" />
@@ -63,37 +59,46 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div class="bottom-skip-tutorial" @click="skipIntro">
-    Intro überspringen
-  </div>
+  <div class="bottom-skip-tutorial" @click="skipIntro">Intro {{ introText }}</div>
 </template>
 
 <script lang="ts">
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Pagination } from 'swiper'
-import 'swiper/css'
-import "swiper/css/pagination"
-import { defineComponent } from 'vue'
-import { IonGrid, IonRow, IonCol } from '@ionic/vue'
-import { useRouter } from 'vue-router'
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Pagination } from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
+import { defineComponent, ref } from "vue";
+import { IonGrid, IonRow, IonCol } from "@ionic/vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: 'LandingPage',
+  name: "LandingPage",
   components: { IonGrid, IonRow, IonCol, Swiper, SwiperSlide },
   setup() {
-
-    const router = useRouter()
+    const router = useRouter();
     const skipIntro = () => {
-      localStorage.setItem('projektplattform_tutorial_skipped', 'true')
-      router.push({ path: '/participation/projects'})
-    }
+      localStorage.setItem("projektplattform_tutorial_skipped", "true");
+      router.push({ path: "/participation/projects" });
+    };
+
+    const introText = ref("");
+
+    const setIsActive = (isActive: boolean) => {
+      if (isActive) {
+        introText.value = "Abschließen";
+      } else {
+        introText.value = "Überspringen";
+      }
+    };
 
     return {
       skipIntro,
-      modules: [Pagination]
-    }
-  }
-})
+      setIsActive,
+      introText,
+      modules: [Pagination],
+    };
+  },
+});
 </script>
 
 <style lang="sass" scoped>
@@ -152,4 +157,4 @@ export default defineComponent({
   place-items: center
   position: absolute
   bottom: 0
- </style>
+</style>
