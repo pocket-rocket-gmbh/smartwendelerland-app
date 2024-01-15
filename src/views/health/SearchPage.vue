@@ -128,6 +128,7 @@
       </div>
       <div class="general-font-size" v-else>Leider keine Ergebnisse gefunden.</div>
     </div>
+    
     <IonIcon
       v-if="view === 'map'"
       class="back-button-icon"
@@ -346,7 +347,7 @@ onIonViewWillLeave(() => {
   color: white
 
 .grid-buttons
-  margin: 20px 0 10px 0
+  margin: 20px 10px 10px 0
   display: grid
   grid-template-columns: 9% 44% 44%
   gap: 2%
@@ -450,7 +451,7 @@ ion-button
   background: white
   width: 20px
   height: 20px
-  margin-left: 4px
+  margin-left: 10px
   margin-top: 10px
   margin-bottom: 15px
   border: 1px solid #636362
@@ -458,6 +459,14 @@ ion-button
 
 .facility-list
   padding: 10px
+
+ion-toolbar
+  --border-style: none
+  --border-width: 0px
+  padding-bottom: 5px
+  margin-bottom: -10px
+
+
 
 .has-no-buttons
   padding-bottom: 20px
