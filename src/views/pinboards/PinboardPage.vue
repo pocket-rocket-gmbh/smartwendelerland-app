@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout>
+  <BackButtonLayout title="Ideen" :has-ideas="true" force-back="/pinboards" >
     <PublicPinboard />
   </BackButtonLayout>
 </template>
