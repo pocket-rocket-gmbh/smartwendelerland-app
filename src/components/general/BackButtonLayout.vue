@@ -5,6 +5,7 @@
         <ion-buttons slot="start">
           <ion-nav-link v-if="forceBack" :routerLink="forceBack">
             <IonIcon :icon="arrowBackOutline" />
+           
           </ion-nav-link>
           <ion-back-button
             v-else
@@ -33,23 +34,25 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
+      
       <ion-header
         class="no-border"
         mode="ios"
-        v-if="!projekRoute && view !== 'map'"
+        v-if="view !== 'map' && !isProjectPage"
       >
-        <ion-toolbar mode="md" color="health">
+        <ion-toolbar mode="md" :color="isProject ? 'pinboard' : 'health'">
+          
           <ion-buttons slot="start">
             <ion-nav-link
-              v-if="(forceBack && !showBar) || isCategoryPage"
+              v-if="(forceBack && !showBar) || isCategoryPage || isProject || hasIdeas"
               :routerLink="handleForceBack"
             >
               <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
             </ion-nav-link>
           </ion-buttons>
-          <ion-label mode="md" v-if="title">
+          <ion-label mode="md" >
             <div class="page-title">
-              <span class="is-white">
+              <span v-if="title" class="is-white">
                 {{ title }}
               </span>
             </div>
@@ -107,6 +110,18 @@ const props = defineProps({
     type: String,
     default: "list",
   },
+  isProject: {
+    type: Boolean,
+    default: false,
+  },
+  isProjectPage: {
+    type: Boolean,
+    default: false,
+  },
+  hasIdeas: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const router = useRouter();
@@ -122,6 +137,9 @@ const wasCategoryPage = computed(() => {
 const handleForceBack = computed(() => {
   if (wasCategoryPage.value) {
     return `/health/categories/${router.currentRoute.value.query.id}`;
+  }
+  if (!props.forceBack && props.isProject) {
+    return "/participation/projects";
   }
   return props.forceBack;
 });
@@ -151,7 +169,7 @@ ion-icon {
   background: white;
   width: 20px;
   height: 20px;
-  margin-top: 10px;
+  margin: 10px 6px 0;
   border: 1px solid #636362;
 }
 
