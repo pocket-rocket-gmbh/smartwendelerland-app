@@ -15,12 +15,11 @@
                 <div class="circle">
                   <img src="@/assets/images/tutorial/icon-tutorial-start.svg" />
                 </div>
-                <div class="headline" lang="de">
-                  Willkommen in der gesundesWND-App
-                </div>
+                <div class="headline" lang="de">Willkommen in der gesundesWND-App</div>
                 <div class="ion-no-padding tutorial-description" lang="de">
-                  Gesundheitsanbieter, News, Veranstaltungen wir informieren dich rund um
-                  die Themen Gesundheit, Prävention und Pflege im Smart Wendeler Land.
+                  Gesundheitsanbieter, News, Veranstaltungen und Kurse. Wir informieren
+                  dich rund um die Themen Gesundheit, Prävention und Pflege im Smart
+                  Wendeler Land.
                 </div>
               </div>
             </swiper-slide>
@@ -88,13 +87,13 @@ export default defineComponent({
       router.push({ path: "/health/categories" });
     };
 
-    const introText = ref('')
+    const introText = ref("");
 
     const setIsActive = (isActive: boolean) => {
       if (isActive) {
-        introText.value = "Abschließen"
+        introText.value = "Abschließen";
       } else {
-        introText.value = "Überspringen"
+        introText.value = "Überspringen";
       }
     };
     return {
@@ -146,7 +145,7 @@ export default defineComponent({
     img
       width: 70%
       margin-top: -5px
-     
+
   .headline
     font-style: normal
     font-weight: 500
@@ -181,10 +180,9 @@ export default defineComponent({
   place-items: center
   position: absolute
   bottom: 0
-
 </style>
 <style lang="css">
 .swiper-pagination-bullet-active {
-  background-color: #8AB61D;
+  background-color: #8ab61d;
 }
 </style>

@@ -344,8 +344,7 @@ ion-chip
   padding-top: 3px
   font-size: 12px
   font-weight: 600
-  margin-left: 5px
-  margin-bottom: 1px
+  margin-left: 5px 
 
 .two-numbers-date
   left: 22px

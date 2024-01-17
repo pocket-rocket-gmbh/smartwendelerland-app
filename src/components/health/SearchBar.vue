@@ -18,6 +18,7 @@
 import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
 import { IonSearchbar } from "@ionic/vue";
 import { useFilterStore } from "@/stores/health/searchFilter";
+import { IonPage, IonIcon, IonButton } from "@ionic/vue";
 
 const emit = defineEmits(["handleSearch"]);
 

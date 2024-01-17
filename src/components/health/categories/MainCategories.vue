@@ -70,7 +70,7 @@
       >
         <div
           class="health-category-box"
-          @click="router.push({ path: `/health/categories/${category.id}` })"
+          @click="setRouteAndGo(category.id)"
         >
           <div align="center">
             <img
@@ -161,6 +161,10 @@ const getCategories = async () => {
 onMounted(() => {
   getCategories();
 });
+
+const setRouteAndGo = (route: string) => {
+  router.push({ path: `/health/categories/${route}` });
+};
 
 </script>
 

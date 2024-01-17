@@ -109,6 +109,12 @@
         <span v-if="facilityKind === 'facility'"> Anbieter </span>
         <span v-if="facilityKind === 'course'"> Kurse </span>
         <span v-if="facilityKind === 'event' && filterStore.filteredResults.length > 1">
+          Kurse
+        </span>
+        <span v-if="facilityKind === 'course' && filterStore.filteredResults.length === 1">
+          Kurs
+        </span>
+        <span v-if="facilityKind === 'course' && filterStore.filteredResults.length > 1">
           Veranstaltungen
         </span>
         <span v-if="facilityKind === 'event' && filterStore.filteredResults.length === 1">

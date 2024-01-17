@@ -87,15 +87,26 @@
 </template>
 
 <script setup lang="ts">
+import { useFilterStore } from "@/stores/health/searchFilter";
+import { useRouter } from "vue-router";
+import { computed, onMounted, ref } from "vue";
+import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
+import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
-import { useFilterStore } from "@/stores/health/searchFilter";
-import { Browser } from "@capacitor/browser";
 import {
-  onIonViewDidEnter
+  IonToolbar,
+  onIonViewDidEnter,
+  IonLoading,
+  IonModal,
+  IonHeader,
+  IonTitle,
+  IonButtons,
+  IonButton,
+  IonContent,
+  getPlatforms,
 } from "@ionic/vue";
-import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { Browser } from "@capacitor/browser";
 const router = useRouter();
 const filterStore = useFilterStore();
 const route = useRoute();
