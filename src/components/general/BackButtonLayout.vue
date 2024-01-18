@@ -76,7 +76,7 @@ import {
   IonBackButton,
   IonButtons,
   IonNavLink,
-  IonLabel
+  IonLabel,
 } from "@ionic/vue";
 import { logInOutline, logInSharp, arrowBackOutline } from "ionicons/icons";
 import { useRouter } from "vue-router";

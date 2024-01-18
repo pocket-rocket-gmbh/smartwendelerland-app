@@ -125,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonGrid, IonRow, IonCol, IonLoading, onIonViewDidEnter } from "@ionic/vue";
+import { IonGrid, IonRow, IonCol, IonLoading } from "@ionic/vue";
 import { ref } from "vue";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";

@@ -4,7 +4,7 @@
       <div class="gap-1"></div>
       <div class="has-text-white general-font-size-subtitle text-wrap">
         Herzlich Willkommen auf deiner Gesundheitsplattform <br />
-       im Landkreis Sankt Wendel
+        im Landkreis Sankt Wendel
       </div>
       <div class="gap-1"></div>
       <div class="has-text-white general-font-size-subtitle text-wrap">
@@ -16,9 +16,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
-<style lang="sass" scoped>
-
-</style>
+<style lang="sass" scoped></style>

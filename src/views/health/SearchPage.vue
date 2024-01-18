@@ -33,9 +33,8 @@
             : 'search-col'
         "
       >
-        <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" />
+        <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" /> 
       </div>
-
       <template v-if="!facilityKind">
         <div class="buttons flex-wrap">
           <ion-button
@@ -107,14 +106,13 @@
       <div class="general-font-size" v-else-if="filterStore.filteredResults.length">
         <span>{{ filterStore.filteredResults.length }}</span>
         <span v-if="facilityKind === 'facility'"> Anbieter </span>
-        <span v-if="facilityKind === 'course'"> Kurse </span>
-        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length > 1">
+        <span v-if="facilityKind === 'course' && filterStore.filteredResults.length > 1">
           Kurse
         </span>
         <span v-if="facilityKind === 'course' && filterStore.filteredResults.length === 1">
           Kurs
         </span>
-        <span v-if="facilityKind === 'course' && filterStore.filteredResults.length > 1">
+        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length > 1">
           Veranstaltungen
         </span>
         <span v-if="facilityKind === 'event' && filterStore.filteredResults.length === 1">
@@ -338,8 +336,10 @@ const handleSearch = () => {
 
 onIonViewWillEnter(async () => {
   filterStore.filteredResults = [];
-  facilityKind.value = route.query.kind as FilterKind;
-  await setFacilityKind(facilityKind.value);
+  if (route.query.kind) {
+    facilityKind.value = route.query.kind as FilterKind;
+    await setFacilityKind(facilityKind.value);
+  }
 });
 
 onIonViewWillLeave(() => {

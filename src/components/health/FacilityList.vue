@@ -192,7 +192,7 @@ import calendarIcon from "@/assets/images/facilities/icon_calendar_dates.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import facilityIcon from "@/assets/images/facilities/facilities.svg";
-import { isPlatform } from "@ionic/vue";
+import { isPlatform, IonIcon, IonButton } from "@ionic/vue";
 
 const router = useRouter();
 const filterStore = useFilterStore();
