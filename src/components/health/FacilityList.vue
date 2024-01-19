@@ -4,7 +4,6 @@
       v-for="facility in filterStore.filteredResults"
       :key="facility.id"
       class="facility-box"
-      @click="routeAndGo(facility)"
     >
       <div class="is-dark-grey">
         <div
@@ -156,21 +155,24 @@
             !router.currentRoute.value.query.kind ||
             facility.kind === 'course' ||
             facility.kind === 'event' ||
-            facility.kind === 'news'
+            facility.kind === 'news' ||
+            facility.kind !== 'facility'
           "
           mode="md"
           shape="round"
           expand="block"
           class="green-button ion-margin-top"
+          @click="routeAndGo(facility)"
           >{{ getFacilityKind(facility) }}</ion-button
         >
 
         <ion-button
-          v-else-if="facility.kind === 'facility' && router.currentRoute.value.query.kind"
+          v-else-if="router.currentRoute.value.query.kind"
           mode="md"
           shape="round"
           expand="block"
           class="green-button ion-margin-top"
+          @click="routeAndGo(facility)"
         >
           Details ansehen
         </ion-button>
@@ -210,7 +212,7 @@ const displayedEvents = computed(
 );
 
 const getFacilityKind = (facility: any) => {
-  if (facility && facility.kind === "facility") {
+  if (facility && facility.kind === "facility" && router.currentRoute.value.query.kind !== "facility") {
     return "Zur Einrichtung";
   } else if (facility && facility.kind === "event") {
     return "Zur Veranstaltung";
@@ -241,6 +243,7 @@ const openMapsApp = (location: any) => {
 };
 
 const routeAndGo = (facility: Facility) => {
+  console.log(facility);
   router.push({
     path: `/health/care_facilities/${facility.id}`,
     query: {
@@ -290,6 +293,7 @@ const routeAndGo = (facility: Facility) => {
 
 .facility-name
   margin-bottom: 20px
+  margin-left: 30px
 a
   text-decoration: none
 

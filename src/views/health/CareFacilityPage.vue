@@ -57,7 +57,7 @@
         <ion-button
           mode="md"
           shape="round"
-          class="green-button"
+          class="green-button-plus"
           v-if="facility.tags.length > 3"
           @click.stop="showAllTags(facility)"
         >
@@ -566,6 +566,7 @@ const modules = [Pagination];
   display: flex
   align-content: center
   flex-wrap: wrap
+  gap: 5px
 
 ion-chip
   --background: var(--ion-color-health)
@@ -606,4 +607,10 @@ ion-chip
 
 .mail
   text-transform: lowercase
+
+ion-button
+  --padding-top: 10px
+  --padding-bottom: 10px
+  --padding-start: 10px
+  --padding-end: 10px
 </style>

@@ -18,7 +18,10 @@
     <ion-header>
       <ion-segment value="types" mode="md">
         <ion-segment-button @click.prevent="changeCurrentStep('types')" value="types">
-          <ion-label class="general-font-size">Branche</ion-label>
+          <ion-label class="general-font-size"
+            ><span v-if="filterKind === 'course'">Themengebiet</span
+            ><span v-else>Branche</span></ion-label
+          >
         </ion-segment-button>
         <ion-segment-button @click.prevent="changeCurrentStep('community')">
           <ion-label class="general-font-size">Gemeinde</ion-label>
@@ -63,14 +66,17 @@
                     : selectedFilter?.id === option.id,
                 }"
               >
-              <span class="hypernate" lang="de">
-                {{ option.name }}
-              </span>
-                
+                <span class="hypernate" lang="de">
+                  {{ option.name }}
+                </span>
               </label>
-            <label v-else class="options-select is-disabled hypernate general-font-size" lang="de">
-              {{ option.name }}
-            </label>
+              <label
+                v-else
+                class="options-select is-disabled hypernate general-font-size"
+                lang="de"
+              >
+                {{ option.name }}
+              </label>
             </div>
           </div>
         </div>
@@ -88,7 +94,7 @@
         @selectCommunityFilter="selectCommunityFilter"
       />
     </ion-content>
-    <ion-content v-if="currentStep === 'filter'" >
+    <ion-content v-if="currentStep === 'filter'">
       <AdvancedFilter
         :filter-kind="filterKind"
         :model-value="modelValue"
@@ -213,7 +219,10 @@ const handleOptionSelect = (option: Filter) => {
 
 onMounted(async () => {
   loadingFilters.value = true;
-  mainFilters.value = await useFilterStore().getMainFilters("filter_facility", props.filterKind)
+  mainFilters.value = await useFilterStore().getMainFilters(
+    "filter_facility",
+    props.filterKind
+  );
   const allFilters = await useFilterStore().getAllFilters();
 
   const allOptions = mainFilters.value.map((filter) =>

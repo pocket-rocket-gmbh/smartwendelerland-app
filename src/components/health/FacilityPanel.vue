@@ -1,6 +1,7 @@
 <template>
   <ion-card>
-    <div class="image-wrapper ion-padding-bottom">
+    <ion-card-content>
+      <div class="image-wrapper ion-padding-bottom">
       <img :src="imageCache.cacheableImageUrl(facility.imageUrl)" />
     </div>
     <div class="ion-padding-start ion-padding-bottom">
@@ -49,8 +50,11 @@
         </div>
       </div>
     </div>
+   
+    </ion-card-content>
     <div class="footer" @click="goToFacility">Einrichtung ansehen</div>
   </ion-card>
+
 </template>
 
 <script setup lang="ts">

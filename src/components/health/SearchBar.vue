@@ -8,7 +8,7 @@
       @ionClear="clearSearch"
       enterkeyhint="search"
       inputmode="text"
-      @keyup.enter="emitHandleSearch"
+      @keyup.enter="handleEnterKey"
       :animated="true"
     />
   </ion-page>
@@ -58,6 +58,18 @@ const placeholder = computed(() => {
     return "Finde Themen, Anbieter, Kurse…";
   }
 });
+
+const handleEnterKey = () => {
+  emitHandleSearch();
+  blurSearchInput();
+};
+
+const blurSearchInput = () => {
+  let elem = document.querySelector(".placeholder input") as HTMLInputElement;
+  if (elem) {
+    elem.blur();
+  }
+};
 
 onMounted(() => {
   if (props.setFocus) {

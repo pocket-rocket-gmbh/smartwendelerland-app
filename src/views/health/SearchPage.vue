@@ -24,14 +24,7 @@
         v-if="facilityKind === 'facility' || facilityKind === 'course'"
         mode="md"
       >
-        <div>
-          <div>
-            <div class="filter-container">
-              <img src="@/assets/images/filter.svg" class="filter-icon" @click="basicFilterModalOpen = true" />
-              <span class="is-white counter">{{ countSelectedFilters }}</span>
-            </div>
-          </div>
-        </div>
+
         <div>
           <ion-button
             v-if="(facilityKind && facilityKind === 'facility') || facilityKind === 'course'"
@@ -49,6 +42,14 @@
             <ion-button mode="ios" :class="['white is-dark-grey', view === 'list' ? 'list' : 'map']" expand="block" shape="round" @click="toggleView">{{
               view === "list" ? "Kartenansicht" : "Listenansicht"
             }}</ion-button>
+          </div>
+        </div>
+        <div>
+          <div>
+            <div class="filter-container">
+              <img src="@/assets/images/filter.svg" class="filter-icon" @click="basicFilterModalOpen = true" />
+              <span class="is-white counter">{{ countSelectedFilters }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -266,16 +267,16 @@ onIonViewWillLeave(() => {
   color: white
 
 .grid-buttons
-  margin: 20px 10px 10px 0
+  margin: 20px 20px 10px 0
   display: grid
-  grid-template-columns: 9% 44% 44%
+  grid-template-columns: 44% 44% 9%
   gap: 2%
   align-items: center
 
 .grid-buttons-ios
   margin: -5px 0 10px 0
   display: grid
-  grid-template-columns: 11% 42% 43%
+  grid-template-columns: 42% 43% 11%
   gap: 2%
   align-items: center
 

@@ -33,7 +33,7 @@
       />
     </div>
   </div>
-  <ion-modal :is-open="!!clickedLocation">
+  <ion-modal :is-open="!!clickedLocation" :onDidDismiss="dismiss">
     <ion-header class="no-border" mode="ios">
       <ion-toolbar mode="md">
         <ion-buttons slot="start" class="back-button">
@@ -70,7 +70,7 @@ import MapWidget from "@/components/MapWidget.vue";
 import ParticipationProjectListPanel from "@/components/participation/ProjectListPanel.vue";
 import { useFilterStore } from "@/stores/health/searchFilter";
 import { MapLocation } from "@/types/MapLocation";
-import { IonContent, IonModal, onIonViewDidEnter, IonIcon } from "@ionic/vue";
+import { IonContent, IonModal, onIonViewDidEnter, IonIcon, IonButtons, IonLabel, IonToolbar, IonHeader } from "@ionic/vue";
 import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import FacilityPanel from "./FacilityPanel.vue";
@@ -130,6 +130,10 @@ const getLocationsFromFacilies = async (facilities: any[]) => {
 
 const navigateToFacility = () => {
   router.push({ path: `/health/care_facilities/${clickedLocation.value.id}` });
+  clickedLocation.value = null;
+};
+
+const dismiss = () => {
   clickedLocation.value = null;
 };
 
@@ -200,7 +204,7 @@ onIonViewDidEnter(() => {
   background: white
   width: 20px
   height: 20px
-  margin-left: -4px
+  margin-left: 10px
   margin-right: 10px
   margin-bottom: 5px
   border: 1px solid #636362
@@ -209,8 +213,8 @@ ion-toolbar
   --min-height: 70px
 
 ion-modal
-  --width: 100%
-  --height: 100%
+  --width: 90%
+  --height: 75vh
 
 .page-title
   font-size: 1.5rem
