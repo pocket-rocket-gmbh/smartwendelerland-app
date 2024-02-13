@@ -13,7 +13,7 @@
             <swiper-slide>
               <div class="slide">
                 <div class="circle">
-                  <img src="@/assets/images/tutorial/icon-tutorial-start.svg" />
+                  <img src="@/assets/images/tutorial/icon_app_tutorial_step1.svg" />
                 </div>
                 <div class="headline" lang="de">Willkommen in der gesundesWND-App</div>
                 <div class="ion-no-padding tutorial-description" lang="de">
@@ -26,7 +26,7 @@
             <swiper-slide>
               <div class="slide">
                 <div class="circle">
-                  <img src="@/assets/images/main-categories/icon_app_facilities.svg" />
+                  <img src="@/assets/images/tutorial/icon_app_tutorial_step2.svg" />
                 </div>
                 <div class="headline" lang="de">
                   Erlebe das Gesundheitsangebot im Smart Wendeler Land
@@ -40,7 +40,7 @@
             <swiper-slide v-slot="{ isActive }">
               <div class="slide">
                 <div class="circle">
-                  <img src="@/assets/images/main-categories/icon_app_events.svg" />
+                  <img src="@/assets/images/tutorial/icon_app_tutorial_step3.svg" />
                 </div>
                 <div class="headline" lang="de">
                   Entdecke vielfältige Veranstaltungs- und Kursangebote
