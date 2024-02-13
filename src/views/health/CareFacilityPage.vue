@@ -513,8 +513,9 @@ const modules = [Pagination];
   right: 3%
   width: 30%
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.15)
-  background: rgba(0, 0, 0, 0.25)
-  border: 1px solid rgba(0, 0, 0, 0.25)
+  background: white
+  border: 1px solid rgba(0, 0, 0, 0.15)
+  padding: 1px
 
 .logo img
   width: 100%
