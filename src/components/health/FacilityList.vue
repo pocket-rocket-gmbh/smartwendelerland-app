@@ -243,7 +243,6 @@ const openMapsApp = (location: any) => {
 };
 
 const routeAndGo = (facility: Facility) => {
-  console.log(facility);
   router.push({
     path: `/health/care_facilities/${facility.id}`,
     query: {
@@ -293,7 +292,7 @@ const routeAndGo = (facility: Facility) => {
 
 .facility-name
   margin-bottom: 20px
-  margin-left: 30px
+  margin-left: 35px
 a
   text-decoration: none
 
