@@ -9,7 +9,7 @@
     <div v-if="category" class="categories">
       <div class="health-category-tags">
         <span
-          v-for="subCategory in subCategories"
+          v-for="subCategory in category.sub_categories"
           :key="subCategory.id"
           @click="setItemsAndGo(subCategory)"
           :class="[
@@ -27,7 +27,7 @@
         />
       </div>
       <div
-        v-for="subSubCategory in subSubCategories"
+        v-for="subSubCategory in category.sub_sub_categories"
         :key="subSubCategory.id"
         class="health-sub-category-box"
       >
@@ -82,7 +82,12 @@
         </div>
       </div>
     </div>
-    <ion-loading class="is-dark-grey" mode="md" :is-open="loading" message="Wird geladen..." />
+    <ion-loading
+      class="is-dark-grey"
+      mode="md"
+      :is-open="loading"
+      message="Wird geladen..."
+    />
   </BackButtonLayout>
 </template>
 
@@ -95,16 +100,9 @@ import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
 import {
-  IonToolbar,
   onIonViewDidEnter,
   IonLoading,
-  IonModal,
-  IonHeader,
-  IonTitle,
-  IonButtons,
   IonButton,
-  IonContent,
-  getPlatforms,
 } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
 const router = useRouter();
@@ -114,7 +112,6 @@ const categoryId = computed(() => {
   return `${route.params.id}`;
 });
 const currentSubCategory = ref(null) as any;
-const subCategories = ref([]) as any;
 const loading = ref(false);
 const category = ref(null) as any;
 const categoryApi = useCollectionApi();
@@ -130,52 +127,8 @@ const getCategory = async () => {
   loading.value = false;
 };
 
-const categoriesApi = useCollectionApi();
-categoriesApi.setBaseApi(usePublicApi("health"));
-const getSubCategories = async () => {
-  categoriesApi.setEndpoint(`categories/${categoryId.value}/sub_categories`);
-  const options = {
-    page: 1,
-    per_page: 1000,
-    sort_by: "menu_order",
-    sort_order: "ASC",
-    searchQuery: null,
-    concat: false,
-    filters: [],
-  };
-  const res = await categoriesApi.retrieveCollection(options);
-  subCategories.value = res.data.resources;
-  if (res.data.resources.length > 0) {
-    setItemsAndGo(res.data.resources[0]);
-  }
-};
-
-const subSubCategories = ref(null);
-const listApi = useCollectionApi();
-listApi.setBaseApi(usePublicApi("health"));
-
-const getSubSubCategories = async () => {
-  listApi.setEndpoint(
-    `categories/${categoryId.value}/sub_categories/${currentSubCategory.value.id}/sub_sub_categories`
-  );
-  const options = {
-    page: 1,
-    per_page: 1000,
-    sort_by: "menu_order",
-    sort_order: "ASC",
-    searchQuery: null,
-    concat: false,
-    filters: [],
-  };
-  loading.value = true;
-  await listApi.retrieveCollection(options);
-  loading.value = false;
-  subSubCategories.value = listApi.items.value as any;
-};
-
 const setItemsAndGo = (subCategory: any) => {
   currentSubCategory.value = subCategory;
-  getSubSubCategories();
 };
 
 const handleClick = async (subSubCategory: any) => {
@@ -230,7 +183,6 @@ const handleClick = async (subSubCategory: any) => {
 
 onIonViewDidEnter(() => {
   getCategory();
-  getSubCategories();
 });
 </script>
 
@@ -252,7 +204,7 @@ ion-toolbar
   margin: 20px 0 0 0
 
 .show-more
-  margin-top: 10px 
+  margin-top: 10px
 
 .modal-content
   display: flex
