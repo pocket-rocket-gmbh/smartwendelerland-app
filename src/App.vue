@@ -7,7 +7,9 @@
       </div>
     </div>
     <ion-router-outlet v-else />
-    <div class="staging-batch" v-if="isStaging" @click="toggleEnv">Testsystem verlassen</div>
+    <div class="staging-batch" v-if="isStaging" @click="toggleEnv">
+      Testsystem verlassen
+    </div>
   </ion-app>
 </template>
 
@@ -22,6 +24,9 @@ import { useFilterStore } from "@/stores/health/searchFilter";
 
 const appState = useAppStateStore();
 
+
+const filterStore = useFilterStore();
+
 const isStaging = computed(() => {
   return useEnvStore().env === "staging";
 });
@@ -31,24 +36,49 @@ const toggleEnv = () => {
   window.location.reload();
 };
 
+
 onMounted(async () => {
   console.log("Loading App...");
   const startTime = Date.now();
+  // Participation
+  await useMe().fetchMyUser(),
+  useAppStateStore().setAppLoadingProgress(0.3),
+  await usePollStore().setPublicPoll(),
+  useAppStateStore().setAppLoadingProgress(0.13),
+  // health
 
-  await useMe().fetchMyUser();
-  useAppStateStore().setAppLoadingProgress(0.3);
-  await usePollStore().setPublicPoll();
-  // trigger load filters for health scope
-  await useFilterStore().getMainFilters("filter_facility", "facility");
-  useAppStateStore().setAppLoadingProgress(0.6);
-  await useFilterStore().loadUnalteredAllResults();
-  useAppStateStore().setAppLoadingProgress(0.75);
-  await useFilterStore().getItems("facility");
-  useAppStateStore().setAppLoadingProgress(0.9);
+  //load all filters
+  await useFilterStore().loadAllFilters(),
+  useAppStateStore().setAppLoadingProgress(0.32),
+
+  //load communities
+
+  await useFilterStore().loadAllCommunities(),
+  useFilterStore().loadFilteredCommunities();
+  useAppStateStore().setAppLoadingProgress(0.47),
+
+  //load categories
+
+  await useFilterStore().loadAllCategories(),
+  useAppStateStore().setAppLoadingProgress(0.64),
+
+  //load all results
+
+  await useFilterStore().loadUnalteredAllResults(),
   await useFilterStore().loadAllResults();
-  useAppStateStore().setAppLoadingProgress(1.0);
-  console.log("App loaded - duration: " + (Date.now() - startTime) + " ms");
+  useAppStateStore().setAppLoadingProgress(0.69),
+
+  //load all filters
+  await useFilterStore().loadAllFacilityFilters(),
+  await useFilterStore().loadAllServiceFilters()
+  useFilterStore().loadFilteredFacilityMainFilters();
+
+  useAppStateStore().setAppLoadingProgress(0.80),
+
+  useAppStateStore().setAppLoadingProgress(0.99),
+
   useAppStateStore().setAppLoading(false);
+  console.log("App loaded - duration: " + (Date.now() - startTime) + " ms");
 });
 </script>
 
