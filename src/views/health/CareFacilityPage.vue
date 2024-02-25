@@ -403,13 +403,17 @@ const generateForceBackUrl = () => {
     return (filterStore.currentSearchTerm = route.query?.searchTerm as string);
   }
   let baseUrl = `/health/search?kind=${facility.value?.kind}`;
-  let tags = route.query?.tags;
-  let community = route.query?.community;
-  if (tags) {
-    baseUrl += `&tags=${tags}`;
+  let serviceTags = route.query?.serviceTags;
+  let facilityTags = route.query?.facilityTags;
+  let community = route.query?.communities;
+  if (serviceTags) {
+    baseUrl += `&serviceTags=${serviceTags}`;
+  }
+  if (facilityTags) {
+    baseUrl += `&facilityTags=${facilityTags}`;
   }
   if (community) {
-    baseUrl += `&community=${community}`;
+    baseUrl += `&communities=${community}`;
   }
   return baseUrl;
 };

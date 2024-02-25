@@ -13,7 +13,7 @@
                 0
               )
             "
-            class="general-font-size-subtitle font-weight-bold is-dark-grey"
+            class="general-font-size-subtitle font-weight-bold category-title is-dark-grey"
           >
             {{ item.title }}
           </div>
@@ -202,7 +202,10 @@ onMounted(async () => {
 .the-filter
   display: flex
   flex-wrap: wrap
+  align-items: center
+  align-content: center
+  margin: 10px 0
 
-.filter-options
-  margin-bottom: 30px
+.category-title
+  margin-left: 10px
 </style>

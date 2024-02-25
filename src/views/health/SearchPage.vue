@@ -305,15 +305,20 @@ onIonViewWillLeave(() => {
 });
 
 onIonViewWillEnter(() => {
-  if (router.currentRoute.value.query.tags) {
-    filterStore.currentFacilityTags = JSON.parse(
-      router.currentRoute.value.query.tags as string
+  if (router.currentRoute.value.query.serviceTags) {
+    filterStore.currentServiceTags = JSON.parse(
+      router.currentRoute.value.query.serviceTags as string
     );
   }
-  if (router.currentRoute.value.query.community) {
-    filterStore.currentZips = [router.currentRoute.value.query.community as string];
+  if (router.currentRoute.value.query.facilityTags) {
+    filterStore.currentFacilityTags = JSON.parse(
+      router.currentRoute.value.query.facilityTags as string
+    );
   }
-  if (router.currentRoute.value.query.tags && router.currentRoute.value.query.community) {
+  if (router.currentRoute.value.query.communities) {
+    filterStore.currentZips = [router.currentRoute.value.query.communities as string];
+  }
+  if (router.currentRoute.value.query.serviceTags && router.currentRoute.value.query.facilityTags && router.currentRoute.value.query.community) {
     router.push({ path: `/health/search?kind=${facilityKind.value}` });
   }
 });

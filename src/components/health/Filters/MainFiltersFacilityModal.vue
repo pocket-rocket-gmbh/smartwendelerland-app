@@ -2,35 +2,45 @@
   <div class="divider"></div>
   <ion-content class="ion-padding-top">
     <div class="filter-options content-wrap">
-      <div v-for="filter in filterStore.filteredFacilityMainFilters" :key="filter.id">
+      <div
+        v-for="filter in filterStore.filteredFacilityMainFilters"
+        :key="filter.id"
+      >
         <div
           v-if="hasActiveOptions(filter.id)"
           class="general-font-size-subtitle font-weight-bold is-dark-grey the-filters"
         >
-          <div>{{ filter.name }}</div>
-        <div>
-          <ion-button
-            mode="md"
-            class=""
-            :class="areAllSelected(filter) ? 'green-button' : 'green-button-plus'"
-            @click="handleToggleAll(filter)"
-          >
-            <span>
-              {{ areAllSelected(filter) ? "Alle abwählen" : "Alle auswählen" }}</span
-            ></ion-button
-          >
-        </div>
-
+          <div class="category-title">{{ filter.name }}</div>
+          <div>
+            <ion-button
+              mode="md"
+              class=""
+              :class="
+                areAllSelected(filter) ? 'green-button' : 'green-button-plus'
+              "
+              @click="handleToggleAll(filter)"
+            >
+              <span>
+                {{
+                  areAllSelected(filter) ? "Alle abwählen" : "Alle auswählen"
+                }}</span
+              ></ion-button
+            >
+          </div>
         </div>
         <div class="the-filter">
-          <label class="option" v-for="option in filter.options" :key="option.id">
+          <label
+            class="option"
+            v-for="option in filter.options"
+            :key="option.id"
+          >
             <div
               :model-value="modelValue.includes(option.id)"
               @click.prevent="handleOptionSelect(option)"
               hide-details
               class="options-select communities general-font-size"
               :class="{
-                'is-selected':  modelValue.includes(option.id),
+                'is-selected': modelValue.includes(option.id),
               }"
             >
               {{ option.name }}
@@ -45,7 +55,6 @@
 <script setup lang="ts">
 import { useFilterStore, FilterKind } from "@/stores/health/searchFilter";
 import { ref, watch, onMounted, defineProps, defineEmits } from "vue";
-
 
 type Filter = {
   id: string;
@@ -62,7 +71,6 @@ const emit = defineEmits<{
   (event: "update:modelValue", values: string[]): void;
 }>();
 
-
 const hasActiveOptions = (filterId: string) => {
   const options = filterStore.allFacilityMainFilters.find(
     ({ id }) => id === filterId
@@ -75,7 +83,6 @@ const hasActiveOptions = (filterId: string) => {
 
 const multipleSelections = ref<Filter[]>([]);
 
-const loadingFilters = ref(false);
 const filterStore = useFilterStore();
 
 const handleOptionSelect = (option: Filter) => {
@@ -163,7 +170,6 @@ watch(
     );
   }
 );
-
 </script>
 <style lang="sass" scoped>
 .content-wrap
@@ -175,7 +181,10 @@ watch(
   align-items: center
   align-content: center
   gap: 30px
-  margin: 20px 0
+  margin: 10px 0
+
+.category-title
+  margin-left: 10px
 
 .the-filter
   display: flex
