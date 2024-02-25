@@ -115,6 +115,8 @@ export type Filter = {
   allCommunities: null | any[];
   filteredCommunities: null | any[];
   mainFilters: null | any[];
+
+  mainSearch: boolean;
 };
 
 const initialFilterState: Filter = {
@@ -133,6 +135,7 @@ const initialFilterState: Filter = {
   currentKinds: [],
   allCategories: [],
   filteredCategories: [],
+  mainSearch: false,
 
   //
   allUnalteredResults: [],
@@ -158,6 +161,7 @@ export const useFilterStore = defineStore({
         currentServiceTags: state.currentServiceTags,
         filterSort: state.filterSort,
         currentKinds: state.currentKinds,
+        mainSearch: state.mainSearch,
       };
     },
   },

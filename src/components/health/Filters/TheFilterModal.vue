@@ -59,7 +59,6 @@ import {
   IonContent,
   IonHeader,
   IonLabel,
-  IonLoading,
   IonModal,
   IonSegment,
   IonSegmentButton,
@@ -68,15 +67,6 @@ import {
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref } from "vue";
 
-
-
-const filterStore = useFilterStore();
-
-type Filter = { id: string; name: string };
-type FilterOption = {
-  parentId: string;
-  options: Filter[];
-};
 const currentStep = ref("types");
 const currenStepTitle = ref("Branche wählen");
 
@@ -99,14 +89,7 @@ const props = defineProps<{
   filterKind: FilterKind;
 }>();
 
-const emit = defineEmits(["selectBasicFilter", "close"]);
-
-const selectedFilter = ref<Filter>();
-const filterOptions = ref<FilterOption[]>([]);
-const loadingFilters = ref(false);
-const mainFilters = ref([]);
-
-const multipleSelections = ref<Filter[] | null>();
+const emit = defineEmits(["close"]);
 
 const emitClose = () => {
   emit("close");

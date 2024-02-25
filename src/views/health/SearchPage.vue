@@ -1,26 +1,60 @@
 <template>
-  <BackButtonLayout force-back="/health/categories" :show-login="false" :title="searchLabel" :show-bar="false" :view="view">
-    <TheFilterModal :filter-kind="facilityKind" v-if="TheFilterModalOpen" @close="TheFilterModalOpen = false" />
-    <div class="health-top-panel" v-if="view === 'list'" :class="[facilityKind !== 'facility' && facilityKind !== 'course' ? 'has-no-buttons' : '']">
-      <div :class="getPlatforms().some((platform) => platform === 'ios') ? 'search-col-ios' : 'search-col'">
+  <BackButtonLayout
+    force-back="/health/categories"
+    :show-login="false"
+    :title="searchLabel"
+    :show-bar="false"
+    :view="view"
+  >
+    <TheFilterModal
+      :filter-kind="facilityKind"
+      v-if="TheFilterModalOpen"
+      @close="TheFilterModalOpen = false"
+    />
+    <div
+      class="health-top-panel"
+      v-if="view === 'list'"
+      :class="[
+        facilityKind !== 'facility' && facilityKind !== 'course' ? 'has-no-buttons' : '',
+      ]"
+    >
+      <div
+        :class="
+          getPlatforms().some((platform) => platform === 'ios')
+            ? 'search-col-ios'
+            : 'search-col'
+        "
+      >
         <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" />
       </div>
       <template v-if="!facilityKind">
         <div class="buttons flex-wrap">
-          <ion-button mode="ios" v-for="kind in filteredKinds" :key="kind" expand="block" shape="round" class="transparent" @click="setFacilityKind(kind)">{{
-            getMappedKindName(kind)
-          }}</ion-button>
+          <ion-button
+            mode="ios"
+            v-for="kind in filteredKinds"
+            :key="kind"
+            expand="block"
+            shape="round"
+            class="transparent"
+            @click="setFacilityKind(kind)"
+            >{{ getMappedKindName(kind) }}</ion-button
+          >
         </div>
       </template>
       <div
-        :class="getPlatforms().some((platform) => platform === 'ios') ? 'grid-buttons-ios' : 'grid-buttons'"
+        :class="
+          getPlatforms().some((platform) => platform === 'ios')
+            ? 'grid-buttons-ios'
+            : 'grid-buttons'
+        "
         v-if="facilityKind === 'facility' || facilityKind === 'course'"
         mode="md"
       >
-
         <div>
           <ion-button
-            v-if="(facilityKind && facilityKind === 'facility') || facilityKind === 'course'"
+            v-if="
+              (facilityKind && facilityKind === 'facility') || facilityKind === 'course'
+            "
             mode="ios"
             class="transparent"
             expand="block"
@@ -32,47 +66,85 @@
         </div>
         <div>
           <div v-if="facilityKind === 'facility'">
-            <ion-button mode="ios" :class="['white is-dark-grey', view === 'list' ? 'list' : 'map']" expand="block" shape="round" @click="toggleView">{{
-              view === "list" ? "Kartenansicht" : "Listenansicht"
-            }}</ion-button>
+            <ion-button
+              mode="ios"
+              :class="['white is-dark-grey', view === 'list' ? 'list' : 'map']"
+              expand="block"
+              shape="round"
+              @click="toggleView"
+              >{{ view === "list" ? "Kartenansicht" : "Listenansicht" }}</ion-button
+            >
           </div>
         </div>
         <div>
           <div>
             <div class="filter-container">
-              <img src="@/assets/images/filter.svg" class="filter-icon" @click="TheFilterModalOpen = true" />
+              <img
+                src="@/assets/images/filter.svg"
+                class="filter-icon"
+                @click="TheFilterModalOpen = true"
+              />
               <span class="is-white counter">{{ countSelectedFilters }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="has-bg-darken-grey general-font-size" :class="[view === 'list' ? 'bottom-actions' : 'bottom-actions absolute']">
+    <div
+      class="has-bg-darken-grey general-font-size"
+      :class="[view === 'list' ? 'bottom-actions' : 'bottom-actions absolute']"
+    >
       <div v-if="filterStore.loading">Wird geladen...</div>
       <div class="general-font-size" v-else-if="filterStore.filteredResults.length">
         <span>{{ filterStore.filteredResults.length }}</span>
         <span v-if="facilityKind === 'facility'"> Anbieter </span>
-        <span v-if="facilityKind === 'course' && filterStore.filteredResults.length > 1"> Kurse </span>
-        <span v-if="facilityKind === 'course' && filterStore.filteredResults.length === 1"> Kurs </span>
-        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length > 1"> Veranstaltungen </span>
-        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length === 1"> Veranstaltung </span>
-        <span v-if="facilityKind === 'news' && filterStore.filteredResults.length > 1"> Beiträge </span>
-        <span v-if="facilityKind === 'news' && filterStore.filteredResults.length === 1"> Beitrag </span>
-        <span v-if="!facilityKind"> Ergebnis<span v-if="filterStore.filteredResults.length > 1">se</span> </span>
+        <span v-if="facilityKind === 'course' && filterStore.filteredResults.length > 1">
+          Kurse
+        </span>
+        <span
+          v-if="facilityKind === 'course' && filterStore.filteredResults.length === 1"
+        >
+          Kurs
+        </span>
+        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length > 1">
+          Veranstaltungen
+        </span>
+        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length === 1">
+          Veranstaltung
+        </span>
+        <span v-if="facilityKind === 'news' && filterStore.filteredResults.length > 1">
+          Beiträge
+        </span>
+        <span v-if="facilityKind === 'news' && filterStore.filteredResults.length === 1">
+          Beitrag
+        </span>
+        <span v-if="!facilityKind">
+          Ergebnis<span v-if="filterStore.filteredResults.length > 1">se</span>
+        </span>
         <span v-if="view === 'map'">in deiner Nähe</span>
         gefunden
       </div>
       <div class="general-font-size" v-else>Leider keine Ergebnisse gefunden.</div>
     </div>
 
-    <IonIcon v-if="view === 'map'" class="back-button-icon" :icon="arrowBackOutline" @click="toggleView" />
+    <IonIcon
+      v-if="view === 'map'"
+      class="back-button-icon"
+      :icon="arrowBackOutline"
+      @click="toggleView"
+    />
     <div>
       <div :class="[view === 'list' ? 'facility-list' : 'map-view']">
         <FacilityList v-if="view === 'list'" :facility-kind="facilityKind" />
         <FacilityMap v-else-if="view === 'map'" />
       </div>
     </div>
-    <ion-loading class="is-dark-grey" mode="md" :is-open="loading" message="Ergebnisse werden geladen..." />
+    <ion-loading
+      class="is-dark-grey"
+      mode="md"
+      :is-open="loading"
+      message="Ergebnisse werden geladen..."
+    />
   </BackButtonLayout>
 </template>
 
@@ -85,18 +157,21 @@ import router from "@/router";
 import { FilterKind, useFilterStore } from "@/stores/health/searchFilter";
 import { MapLocation } from "@/types/MapLocation";
 import { debounce } from "@/utils/global.utils";
-import { IonButton, IonIcon, IonLoading, getPlatforms, onIonViewWillEnter, onIonViewWillLeave } from "@ionic/vue";
+import {
+  IonButton,
+  IonIcon,
+  IonLoading,
+  getPlatforms,
+  onIonViewWillEnter,
+  onIonViewWillLeave,
+} from "@ionic/vue";
 import { arrowBackOutline } from "ionicons/icons";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import AdvancedFilterModal from "../../components/health/Filters/MainFiltersFacilityModal.vue";
 import TheFilterModal from "../../components/health/Filters/TheFilterModal.vue";
 
 const filterStore = useFilterStore();
-const advancedFilterModalOpen = ref(false);
 const TheFilterModalOpen = ref(false);
-
-const advancedFilter = ref(null);
 const communityFilter = ref(null);
 const communityFilterRef = ref(null);
 const view = ref("list");
@@ -159,7 +234,12 @@ const searchLabel = computed(() => {
 });
 
 watch(
-  () => [filterStore.currentFacilityTags, filterStore.currentServiceTags, filterStore.currentZips, filterStore.currentSearchTerm],
+  () => [
+    filterStore.currentFacilityTags,
+    filterStore.currentServiceTags,
+    filterStore.currentZips,
+    filterStore.currentSearchTerm,
+  ],
   debounce(() => {
     filterStore.loadAllResults();
   }),
@@ -218,15 +298,17 @@ const lastRoute = router.options.history.state.back;
 onIonViewWillLeave(() => {
   if (typeof lastRoute === "string" && lastRoute.includes("categories")) {
     filterStore.currentFacilityTags = [];
-  filterStore.currentServiceTags = [];
-  filterStore.currentZips = [];
+    filterStore.currentServiceTags = [];
+    filterStore.currentZips = [];
   }
   //resetFilter();
 });
 
 onIonViewWillEnter(() => {
   if (router.currentRoute.value.query.tags) {
-    filterStore.currentFacilityTags = JSON.parse(router.currentRoute.value.query.tags as string);
+    filterStore.currentFacilityTags = JSON.parse(
+      router.currentRoute.value.query.tags as string
+    );
   }
   if (router.currentRoute.value.query.community) {
     filterStore.currentZips = [router.currentRoute.value.query.community as string];

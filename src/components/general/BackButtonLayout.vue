@@ -5,14 +5,8 @@
         <ion-buttons slot="start">
           <ion-nav-link v-if="forceBack" :routerLink="forceBack">
             <IonIcon :icon="arrowBackOutline" />
-           
           </ion-nav-link>
-          <ion-back-button
-            v-else
-            text=""
-            default-href="/"
-            :icon="arrowBackOutline"
-          />
+          <ion-back-button v-else text="" default-href="/" :icon="arrowBackOutline" />
         </ion-buttons>
         <ion-icon
           v-if="!useUser().loggedIn() && showLogin"
@@ -34,14 +28,8 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      
-      <ion-header
-        class="no-border"
-        mode="ios"
-        v-if="view !== 'map' && !isProjectPage"
-      >
+      <ion-header class="no-border" mode="ios" v-if="view !== 'map' && !isProjectPage">
         <ion-toolbar mode="md" :color="isProject ? 'pinboard' : 'health'">
-          
           <ion-buttons slot="start">
             <ion-nav-link
               v-if="(forceBack && !showBar) || isCategoryPage || isProject || hasIdeas"
@@ -50,7 +38,7 @@
               <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
             </ion-nav-link>
           </ion-buttons>
-          <ion-label mode="md" >
+          <ion-label mode="md">
             <div class="page-title">
               <span v-if="title" class="is-white">
                 {{ title }}
@@ -64,7 +52,6 @@
     </ion-content>
   </ion-page>
 </template>
-/* */
 <script setup lang="ts">
 import { defineProps, computed } from "vue";
 import {
@@ -179,12 +166,7 @@ ion-toolbar {
   --border-width: 0px;
   padding-bottom: 5px;
   margin-bottom: -10px;
-  background: linear-gradient(
-    90deg,
-    #91a80d 0%,
-    #bac323 46.88%,
-    #9ea100 95.31%
-  );
+  background: linear-gradient(90deg, #91a80d 0%, #bac323 46.88%, #9ea100 95.31%);
   /* background: linear-gradient(66deg, red, green, blue); */
 }
 .page-title {

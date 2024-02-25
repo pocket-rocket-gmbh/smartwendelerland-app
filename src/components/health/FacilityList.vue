@@ -246,8 +246,9 @@ const routeAndGo = (facility: Facility) => {
   router.push({
     path: `/health/care_facilities/${facility.id}`,
     query: {
-      tags: JSON.stringify(filterStore.currentTags),
-      community: filterStore.currentZip,
+      serviceTags: JSON.stringify(filterStore.currentServiceTags),
+      FacilityTags: JSON.stringify(filterStore.currentFacilityTags),
+      community: JSON.stringify(filterStore.currentZips),
       searchTerm: filterStore.currentSearchTerm,
     },
   });

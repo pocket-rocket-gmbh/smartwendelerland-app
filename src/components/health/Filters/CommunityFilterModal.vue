@@ -12,7 +12,6 @@
         <div
           @click.prevent="handleOptionSelectCommunity(community)"
           hide-details
-          density="compact"
           class="options-select communities general-font-size"
           :class="{
             'is-selected': filterStore.currentZips.includes(community.zip),
