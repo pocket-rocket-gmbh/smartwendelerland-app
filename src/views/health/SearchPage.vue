@@ -1,13 +1,6 @@
 <template>
   <BackButtonLayout force-back="/health/categories" :show-login="false" :title="searchLabel" :show-bar="false" :view="view">
-    <BasicFilterModal :filter-kind="facilityKind" v-model="filterStore.currentTags" v-if="basicFilterModalOpen" @close="basicFilterModalOpen = false" />
-    <AdvancedFilterModal
-      v-if="advancedFilterModalOpen"
-      v-model="filterStore.currentTags"
-      :filter-kind="facilityKind"
-      @close="advancedFilterModalOpen = false"
-    />
-
+    <TheFilterModal :filter-kind="facilityKind" v-if="TheFilterModalOpen" @close="TheFilterModalOpen = false" />
     <div class="health-top-panel" v-if="view === 'list'" :class="[facilityKind !== 'facility' && facilityKind !== 'course' ? 'has-no-buttons' : '']">
       <div :class="getPlatforms().some((platform) => platform === 'ios') ? 'search-col-ios' : 'search-col'">
         <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" />
@@ -47,7 +40,7 @@
         <div>
           <div>
             <div class="filter-container">
-              <img src="@/assets/images/filter.svg" class="filter-icon" @click="basicFilterModalOpen = true" />
+              <img src="@/assets/images/filter.svg" class="filter-icon" @click="TheFilterModalOpen = true" />
               <span class="is-white counter">{{ countSelectedFilters }}</span>
             </div>
           </div>
@@ -96,12 +89,12 @@ import { IonButton, IonIcon, IonLoading, getPlatforms, onIonViewWillEnter, onIon
 import { arrowBackOutline } from "ionicons/icons";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import AdvancedFilterModal from "../../components/health/AdvancedFilterModal.vue";
-import BasicFilterModal from "../../components/health/BasicFilterModal.vue";
+import AdvancedFilterModal from "../../components/health/Filters/MainFiltersFacilityModal.vue";
+import TheFilterModal from "../../components/health/Filters/TheFilterModal.vue";
 
 const filterStore = useFilterStore();
 const advancedFilterModalOpen = ref(false);
-const basicFilterModalOpen = ref(false);
+const TheFilterModalOpen = ref(false);
 
 const advancedFilter = ref(null);
 const communityFilter = ref(null);
@@ -138,11 +131,14 @@ const countSelectedFilters = computed(() => {
   if (filterStore.currentSearchTerm.length) {
     results += 1;
   }
-  if (filterStore.currentTags.length) {
-    results += filterStore.currentTags.length;
+  if (filterStore.currentFacilityTags.length) {
+    results += filterStore.currentFacilityTags.length;
   }
-  if (filterStore.currentZip) {
-    results += 1;
+  if (filterStore.currentServiceTags.length) {
+    results += filterStore.currentServiceTags.length;
+  }
+  if (filterStore.currentZips) {
+    results += filterStore.currentZips.length;
   }
   return results;
 });
@@ -163,7 +159,7 @@ const searchLabel = computed(() => {
 });
 
 watch(
-  () => filterStore.currentTags,
+  () => [filterStore.currentFacilityTags, filterStore.currentServiceTags, filterStore.currentZips, filterStore.currentSearchTerm],
   debounce(() => {
     filterStore.loadAllResults();
   }),
@@ -212,26 +208,28 @@ const resetFilter = () => {
   communityFilter.value = null;
   communityFilterRef.value = null;
   filterStore.currentSearchTerm = "";
-  filterStore.currentTags = [];
-  filterStore.currentZip = null;
+  filterStore.currentFacilityTags = [];
+  filterStore.currentServiceTags = [];
+  filterStore.currentZips = [];
 };
 
 const lastRoute = router.options.history.state.back;
 
 onIonViewWillLeave(() => {
   if (typeof lastRoute === "string" && lastRoute.includes("categories")) {
-    filterStore.currentTags = [];
-    filterStore.currentZip = null;
+    filterStore.currentFacilityTags = [];
+  filterStore.currentServiceTags = [];
+  filterStore.currentZips = [];
   }
   //resetFilter();
 });
 
 onIonViewWillEnter(() => {
   if (router.currentRoute.value.query.tags) {
-    filterStore.currentTags = JSON.parse(router.currentRoute.value.query.tags as string);
+    filterStore.currentFacilityTags = JSON.parse(router.currentRoute.value.query.tags as string);
   }
   if (router.currentRoute.value.query.community) {
-    filterStore.currentZip = router.currentRoute.value.query.community as string;
+    filterStore.currentZips = [router.currentRoute.value.query.community as string];
   }
   if (router.currentRoute.value.query.tags && router.currentRoute.value.query.community) {
     router.push({ path: `/health/search?kind=${facilityKind.value}` });
@@ -249,7 +247,7 @@ const facilityKind = ref<FilterKind>();
 
 const handleSearch = () => {
   filterStore.onlySearchInTitle = false;
-  filterStore.loadFilteredResults();
+  filterStore.loadAllResults();
 };
 
 onIonViewWillEnter(async () => {
