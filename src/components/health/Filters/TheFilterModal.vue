@@ -33,13 +33,12 @@
     </ion-header>
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
       <MainFiltersFacilityModal
-        :filter-kind="filterKind"
+        :filterKind="filterKind"
+        :modelValue="filterStore.currentFacilityTags"
       />
     </ion-content>
     <ion-content v-if="currentStep === 'community'">
-      <CommunityFilterModal
-        ref="communityFilterRef"
-      />
+      <CommunityFilterModal />
     </ion-content>
     <ion-content v-if="currentStep === 'filter'">
       <ServicesFilterModal
@@ -65,10 +64,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/vue";
-import { defineEmits, defineProps, onMounted, ref } from "vue";
+import { defineEmits, defineProps, onMounted, ref, watch } from "vue";
 
 const currentStep = ref("types");
 const currenStepTitle = ref("Branche wählen");
+
+const filterStore = useFilterStore();
 
 const tableTile = () => {
   if (currentStep.value === "types") {
@@ -95,9 +96,80 @@ const emitClose = () => {
   emit("close");
 };
 
+const startedAt = ref<null | "facilities" | "services" | "communities">(null);
+
+const handleStartedAt = (origin: "facilities" | "services" | "communities") => {
+  if (startedAt.value) {
+    startedAt.value = origin;
+    return;
+  }
+
+  if (
+    filterStore.currentFacilityTags.length === 0 &&
+    filterStore.currentServiceTags.length === 0 &&
+    filterStore.currentZips.length === 0
+  ) {
+    if (startedAt.value) {
+      startedAt.value = null;
+      return;
+    }
+    startedAt.value = origin;
+  }
+};
+
+watch(
+  () => filterStore.currentFacilityTags,
+  async () => {
+    await filterStore.loadAllResults();
+
+    handleStartedAt("facilities");
+
+    if (startedAt.value !== "services") filterStore.loadAllServiceFilters();
+    if (startedAt.value !== "communities") filterStore.loadFilteredCommunities();
+  },
+  {
+    deep: true,
+  }
+);
+
+watch(
+  () => filterStore.currentZips,
+  async () => {
+    await filterStore.loadAllResults();
+
+    handleStartedAt("communities");
+
+    if (startedAt.value !== "services") filterStore.loadAllServiceFilters();
+    if (startedAt.value !== "facilities") filterStore.loadFilteredFacilityMainFilters();
+  },
+  {
+    deep: true,
+  }
+);
+
+watch(
+  () => filterStore.currentServiceTags,
+  async () => {
+    await filterStore.loadAllResults();
+
+    handleStartedAt("services");
+
+    if (startedAt.value !== "communities") filterStore.loadFilteredCommunities();
+    if (startedAt.value !== "facilities") filterStore.loadFilteredFacilityMainFilters();
+  },
+  {
+    deep: true,
+  }
+);
+
 
 onMounted(async () => {
   currentStep.value = "types";
+  await filterStore.loadAllResults();
+  filterStore.loadAllServiceFilters();
+
+  await filterStore.loadAllFacilityFilters();
+  filterStore.loadFilteredFacilityMainFilters();
 });
 </script>
 

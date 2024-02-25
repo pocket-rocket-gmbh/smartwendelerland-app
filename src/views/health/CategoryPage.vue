@@ -164,7 +164,7 @@ const handleClick = async (subSubCategory: any) => {
         filterStore.currentTags = filter?.currentTags;
       }
       if (filter && filter?.currentZip) {
-        filterStore.currentZip = filter?.currentZip;
+        filterStore.current4Zip = filter?.currentZip;
       }
 
       router.push({

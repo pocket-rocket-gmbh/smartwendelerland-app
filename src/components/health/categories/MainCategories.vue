@@ -15,7 +15,7 @@
               src="@/assets/images/main-categories/icon_app_facilities.svg"
             />
           </div>
-          <div class="general-font-size-subtitle is-dark-grey text-wrap">Anbietersuches</div>
+          <div class="general-font-size-subtitle is-dark-grey text-wrap">Anbietersuche</div>
         </div>
       </ion-col>
       <ion-col

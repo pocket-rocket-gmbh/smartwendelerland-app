@@ -80,15 +80,18 @@
 </template>
 
 <script setup lang="ts">
-import { useFilterStore } from "@/stores/health/searchFilter";
+import { useFilterStore, FilterKind } from "@/stores/health/searchFilter";
 import type { CollapsibleListItem } from "../../../types/collapsibleList";
 import { IonContent, IonLoading } from "@ionic/vue";
-import { watch, onMounted, ref } from "vue";
+import { watch, onMounted, ref, defineProps } from "vue";
 import { deepToRaw } from "@/utils/global.utils";
 
 const filterStore = useFilterStore();
 
-const dialog = ref(false);
+const props = defineProps<{
+  filterKind: FilterKind;
+}>();
+
 
 const availableItemsForServiceList = ref<CollapsibleListItem[]>([]);
 const expandedItemIds = ref([]);

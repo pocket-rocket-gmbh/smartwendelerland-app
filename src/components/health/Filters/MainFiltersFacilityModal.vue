@@ -25,11 +25,12 @@
         <div class="the-filter">
           <label class="option" v-for="option in filter.options" :key="option.id">
             <div
+              :model-value="modelValue.includes(option.id)"
               @click.prevent="handleOptionSelect(option)"
               hide-details
               class="options-select communities general-font-size"
               :class="{
-                'is-selected': filterStore.filteredFacilityMainFilters.includes(option),
+                'is-selected':  modelValue.includes(option.id),
               }"
             >
               {{ option.name }}
@@ -39,28 +40,36 @@
       </div>
     </div>
   </ion-content>
-  <ion-loading
-    class="is-dark-grey"
-    mode="md"
-    :is-open="loadingFilters"
-    message="Gemeinde werden geladen..."
-  />
 </template>
 
 <script setup lang="ts">
-import { useFilterStore } from "@/stores/health/searchFilter";
-import { ref, watch, onMounted } from "vue";
+import { useFilterStore, FilterKind } from "@/stores/health/searchFilter";
+import { ref, watch, onMounted, defineProps, defineEmits } from "vue";
+
+
 type Filter = {
   id: string;
   name: string;
   care_facilities_active_count: number;
 };
 
+const props = defineProps<{
+  modelValue: string[];
+  filterKind: FilterKind;
+}>();
+
+const emit = defineEmits<{
+  (event: "update:modelValue", values: string[]): void;
+}>();
+
+
 const hasActiveOptions = (filterId: string) => {
-  const options = filterStore.allFacilityMainFilters.find(({ id }) => id === filterId)
-    ?.options;
+  const options = filterStore.allFacilityMainFilters.find(
+    ({ id }) => id === filterId
+  )?.options;
   return (
-    options && options.some((option) => Number(option?.care_facilities_active_count) > 0)
+    options &&
+    options.some((option) => Number(option?.care_facilities_active_count) > 0)
   );
 };
 
@@ -69,31 +78,30 @@ const multipleSelections = ref<Filter[]>([]);
 const loadingFilters = ref(false);
 const filterStore = useFilterStore();
 
-const handleClearTermSearch = () => {
-  if (filterStore.currentSearchTerm) {
-    filterStore.clearTermSearch();
-  }
-  return;
-};
 const handleOptionSelect = (option: Filter) => {
-  const indexOfAlreadySetFilter = filterStore.filteredFacilityMainFilters.findIndex(
-    (item) => item.id === option.id
+  const indexOfAlreadySetFilter = props.modelValue.findIndex(
+    (item) => item === option.id
   );
 
   if (indexOfAlreadySetFilter !== -1) {
-    filterStore.filteredFacilityMainFilters.splice(indexOfAlreadySetFilter, 1);
+    // eslint-disable-next-line vue/no-mutating-props
+    props.modelValue.splice(indexOfAlreadySetFilter, 1);
     multipleSelections.value = multipleSelections.value?.filter(
       (item) => item.id !== option.id
     );
   } else {
-    filterStore.filteredFacilityMainFilters.push(option);
+    // eslint-disable-next-line vue/no-mutating-props
+    props.modelValue.push(option.id);
     multipleSelections.value.push(option);
   }
+
+  emit("update:modelValue", props.modelValue);
 };
 
 const handleToggleAll = (filter: any) => {
-  const options = filterStore.allFacilityMainFilters.find(({ id }) => id === filter.id)
-    ?.options;
+  const options = filterStore.allFacilityMainFilters.find(
+    ({ id }) => id === filter.id
+  )?.options;
   const relevantOptions = options.filter(
     (option) => !!option?.care_facilities_active_count
   );
@@ -102,17 +110,18 @@ const handleToggleAll = (filter: any) => {
 
   if (selectAll) {
     relevantOptions.forEach((option) => {
-      if (!filterStore.filteredFacilityMainFilters.includes(option)) {
+      if (!props.modelValue.includes(option.id)) {
         multipleSelections.value.push(option);
       }
     });
   } else {
     relevantOptions.forEach((option) => {
-      const indexOfAlreadySetFilter = filterStore.filteredFacilityMainFilters.findIndex(
-        (item) => item.id === option.id
+      const indexOfAlreadySetFilter = props.modelValue.findIndex(
+        (item) => item === option.id
       );
       if (indexOfAlreadySetFilter !== -1) {
-        filterStore.filteredFacilityMainFilters.splice(indexOfAlreadySetFilter, 1);
+        // eslint-disable-next-line vue/no-mutating-props
+        props.modelValue.splice(indexOfAlreadySetFilter, 1);
       }
     });
 
@@ -120,11 +129,17 @@ const handleToggleAll = (filter: any) => {
       (item) => !relevantOptions.find((option) => option.id === item.id)
     );
   }
+
+  emit(
+    "update:modelValue",
+    multipleSelections.value.map((item) => item.id)
+  );
 };
 
 const areAllSelected = (filter: any) => {
-  const options = filterStore.allFacilityMainFilters.find(({ id }) => id === filter.id)
-    ?.options;
+  const options = filterStore.allFacilityMainFilters.find(
+    ({ id }) => id === filter.id
+  )?.options;
   const relevantOptions = options.filter(
     (option) => !!option?.care_facilities_active_count
   );
@@ -135,21 +150,20 @@ const areAllSelected = (filter: any) => {
 };
 
 watch(
-  () => filterStore.filteredFacilityMainFilters,
+  () => props.modelValue,
   () => {
-    multipleSelections.value = filterStore.allFacilityMainFilters.reduce((prev, curr) => {
-      const foundOptions = curr.options.filter((option) =>
-        filterStore.filteredFacilityMainFilters.includes(option.id)
-      );
-      return [...prev, ...foundOptions];
-    }, [] as Filter[]);
+    multipleSelections.value = filterStore.allFacilityMainFilters.reduce(
+      (prev, curr) => {
+        const foundOptions = curr.options.filter((option) =>
+          props.modelValue.includes(option.id)
+        );
+        return [...prev, ...foundOptions];
+      },
+      [] as Filter[]
+    );
   }
 );
 
-onMounted(async () => {
-  await useFilterStore().loadAllFacilityFilters(),
-    useFilterStore().loadFilteredFacilityMainFilters();
-});
 </script>
 <style lang="sass" scoped>
 .content-wrap
