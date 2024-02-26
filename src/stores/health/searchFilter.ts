@@ -259,10 +259,12 @@ export const useFilterStore = defineStore({
       }
 
       const filters: any[] = response?.data?.resources || [];
-      const relevantFilter = filters.find((filter) =>
-        filter.filter_type === "filter_facility" && (this.currentKinds.length
-          ? this.currentKinds[0] === filter.kind
-          : true)
+      const relevantFilter = filters.find(
+        (filter) =>
+          filter.filter_type === "filter_facility" &&
+          (this.currentKinds.length
+            ? this.currentKinds[0] === filter.kind
+            : true)
       );
 
       if (!relevantFilter) return [];
@@ -284,7 +286,7 @@ export const useFilterStore = defineStore({
           });
         });
 
-        if (!filteredOptions.length) {
+        if (!filteredOptions?.length) {
           return;
         }
 
@@ -364,7 +366,7 @@ export const useFilterStore = defineStore({
           (item) => item.parent_id === filter.id
         );
 
-        if (!childFilterItems.length) {
+        if (!childFilterItems?.length) {
           return;
         }
 
@@ -414,7 +416,7 @@ export const useFilterStore = defineStore({
           this.currentFacilityTags.includes(item.id)
         );
 
-        if (multipleOccuredInBlock.length) {
+        if (multipleOccuredInBlock?.length) {
           relevantItems.push(multipleOccuredInBlock);
         }
       }
@@ -533,7 +535,7 @@ export const useFilterStore = defineStore({
           return this.currentZips.includes(result?.zip);
         })
         .filter((result) => {
-          if (!this.currentFacilityTags.length) return true;
+          if (!this.currentFacilityTags?.length) return true;
 
           return this.currentFacilityTags.some((facilityTag) => {
             return result.tag_category_ids.includes(facilityTag);

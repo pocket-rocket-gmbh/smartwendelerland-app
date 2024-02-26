@@ -124,6 +124,7 @@ const getCategory = async () => {
   await categoryApi.getItem(categoryId.value);
   category.value = categoryApi.item.value;
   loading.value = false;
+  currentSubCategory.value = category.value.sub_categories[0];
 };
 
 const setItemsAndGo = (subCategory: any) => {
@@ -185,8 +186,8 @@ const handleClick = async (subSubCategory: any) => {
   selectedSubSubCategory.value = null;
 };
 
-onIonViewDidEnter(() => {
-  getCategory();
+onIonViewDidEnter(async () => {
+  await getCategory();
 });
 </script>
 

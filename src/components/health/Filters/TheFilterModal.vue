@@ -46,20 +46,23 @@
       class="is-dark-grey"
       mode="md"
       :is-open="loading"
-      message="Kategorien werden geladen..."
+      v-if="loading"
+      message="Filtern werden geladen..."
     />
-    <ion-content v-if="currentStep === 'types' || !currentStep.length">
-      <MainFiltersFacilityModal
-        :filterKind="filterKind"
-        v-model="filterStore.currentFacilityTags"
-      />
-    </ion-content>
-    <ion-content v-if="currentStep === 'community'">
-      <CommunityFilterModal />
-    </ion-content>
-    <ion-content v-if="currentStep === 'filter'">
-      <ServicesFilterModal :filter-kind="filterKind" />
-    </ion-content>
+    <span v-show="!loading">
+      <ion-content v-if="currentStep === 'types' || !currentStep.length">
+        <MainFiltersFacilityModal
+          :filterKind="filterKind"
+          v-model="filterStore.currentFacilityTags"
+        />
+      </ion-content>
+      <ion-content v-if="currentStep === 'community'">
+        <CommunityFilterModal />
+      </ion-content>
+      <ion-content v-if="currentStep === 'filter'">
+        <ServicesFilterModal :filter-kind="filterKind" />
+      </ion-content>
+    </span>
   </ion-modal>
 </template>
 
@@ -78,6 +81,7 @@ import {
   IonSegmentButton,
   IonTitle,
   IonToolbar,
+  IonLoading
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -189,11 +193,13 @@ watch(
 const loading = ref(false);
 
 onMounted(async () => {
+  loading.value = true;
   currentStep.value = "types";
   startedAt.value = null;
   filterStore.loadAllServiceFilters();
   await filterStore.loadAllFacilityFilters();
   filterStore.loadFilteredFacilityMainFilters();
+  loading.value = false;
 });
 </script>
 

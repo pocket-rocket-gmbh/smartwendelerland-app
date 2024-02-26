@@ -386,9 +386,7 @@ const handleSearch = () => {
 watch(
   () => filterStore.currentKinds,
   async () => {
-  filterStore.loadAllServiceFilters();
-  await filterStore.loadAllFacilityFilters();
-  filterStore.loadFilteredFacilityMainFilters();
+    resetFilter();
   },
   {
     deep: true,
