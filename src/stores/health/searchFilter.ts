@@ -68,6 +68,7 @@ export type Facility = {
   community_id?: string;
   tag_category_ids?: string[];
   user_care_facility?: Facility;
+  showAllEvents?: boolean;
 };
 
 type FilterOption = {
@@ -232,7 +233,6 @@ export const useFilterStore = defineStore({
         (community) => community.care_facilities_active_count > 0
       );
 
-      console.log(this.allCommunities);
       return this.allCommunities;
     },
     async loadAllFilters() {
@@ -255,17 +255,14 @@ export const useFilterStore = defineStore({
 
       const response = await api.retrieveCollection(options as any);
       if (response.status === ResultStatus.FAILED) {
-        console.log("failed");
         throw response;
       }
 
       const filters: any[] = response?.data?.resources || [];
-
-      console.log(filters, "start");
-      const relevantFilter = filters.find(
-        (filter) =>
-          filter.filter_type === "filter_facility" &&
-          filter.kind === this.currentKinds[0]
+      const relevantFilter = filters.find((filter) =>
+        filter.filter_type === "filter_facility" && (this.currentKinds.length
+          ? this.currentKinds[0] === filter.kind
+          : true)
       );
 
       if (!relevantFilter) return [];
@@ -328,11 +325,9 @@ export const useFilterStore = defineStore({
         return;
       }
 
-      const filters: any[] = result?.data?.resources?.filter(
-        (item: Facility) => this.currentKinds.length ? this.currentKinds[0] === item.kind : true
+      const filters: any[] = result?.data?.resources?.filter((item: Facility) =>
+        this.currentKinds.length ? this.currentKinds[0] === item.kind : true
       );
-
-      console.log(filters, "start, norman", this.currentKinds);
 
       if (!filters) {
         console.error("No filters!");

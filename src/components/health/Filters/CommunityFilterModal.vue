@@ -51,6 +51,7 @@ const handleClearTermSearch = () => {
 
 onMounted(async () => {
   await filterStore.loadAllCommunities();
+  filterStore.loadFilteredCommunities();
   handleClearTermSearch();
 });
 </script>

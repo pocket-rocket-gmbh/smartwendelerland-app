@@ -15,7 +15,9 @@
       class="health-top-panel"
       v-if="view === 'list'"
       :class="[
-        facilityKind !== 'facility' && facilityKind !== 'course' ? 'has-no-buttons' : '',
+        facilityKind !== 'facility' && facilityKind !== 'course'
+          ? 'has-no-buttons'
+          : '',
       ]"
     >
       <div
@@ -25,7 +27,10 @@
             : 'search-col'
         "
       >
-        <SearchBar @handleSearch="handleSearch" :placeHolderText="placeHolderText" />
+        <SearchBar
+          @handleSearch="handleSearch"
+          :placeHolderText="placeHolderText"
+        />
       </div>
       <template v-if="!facilityKind">
         <div class="buttons flex-wrap">
@@ -53,7 +58,8 @@
         <div>
           <ion-button
             v-if="
-              (facilityKind && facilityKind === 'facility') || facilityKind === 'course'
+              (facilityKind && facilityKind === 'facility') ||
+              facilityKind === 'course'
             "
             mode="ios"
             class="transparent"
@@ -72,7 +78,9 @@
               expand="block"
               shape="round"
               @click="toggleView"
-              >{{ view === "list" ? "Kartenansicht" : "Listenansicht" }}</ion-button
+              >{{
+                view === "list" ? "Kartenansicht" : "Listenansicht"
+              }}</ion-button
             >
           </div>
         </div>
@@ -95,27 +103,53 @@
       :class="[view === 'list' ? 'bottom-actions' : 'bottom-actions absolute']"
     >
       <div v-if="filterStore.loading">Wird geladen...</div>
-      <div class="general-font-size" v-else-if="filterStore.filteredResults.length">
+      <div
+        class="general-font-size"
+        v-else-if="filterStore.filteredResults.length"
+      >
         <span>{{ filterStore.filteredResults.length }}</span>
         <span v-if="facilityKind === 'facility'"> Anbieter </span>
-        <span v-if="facilityKind === 'course' && filterStore.filteredResults.length > 1">
+        <span
+          v-if="
+            facilityKind === 'course' && filterStore.filteredResults.length > 1
+          "
+        >
           Kurse
         </span>
         <span
-          v-if="facilityKind === 'course' && filterStore.filteredResults.length === 1"
+          v-if="
+            facilityKind === 'course' &&
+            filterStore.filteredResults.length === 1
+          "
         >
           Kurs
         </span>
-        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length > 1">
+        <span
+          v-if="
+            facilityKind === 'event' && filterStore.filteredResults.length > 1
+          "
+        >
           Veranstaltungen
         </span>
-        <span v-if="facilityKind === 'event' && filterStore.filteredResults.length === 1">
+        <span
+          v-if="
+            facilityKind === 'event' && filterStore.filteredResults.length === 1
+          "
+        >
           Veranstaltung
         </span>
-        <span v-if="facilityKind === 'news' && filterStore.filteredResults.length > 1">
+        <span
+          v-if="
+            facilityKind === 'news' && filterStore.filteredResults.length > 1
+          "
+        >
           Beiträge
         </span>
-        <span v-if="facilityKind === 'news' && filterStore.filteredResults.length === 1">
+        <span
+          v-if="
+            facilityKind === 'news' && filterStore.filteredResults.length === 1
+          "
+        >
           Beitrag
         </span>
         <span v-if="!facilityKind">
@@ -124,7 +158,9 @@
         <span v-if="view === 'map'">in deiner Nähe</span>
         gefunden
       </div>
-      <div class="general-font-size" v-else>Leider keine Ergebnisse gefunden.</div>
+      <div class="general-font-size" v-else>
+        Leider keine Ergebnisse gefunden.
+      </div>
     </div>
 
     <IonIcon
@@ -256,7 +292,9 @@ const addParamsToLocation = (params: any) => {
       "?" +
       Object.keys(params)
         .map((key) => {
-          return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
+          return (
+            encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
+          );
         })
         .join("&")
   );
@@ -274,7 +312,9 @@ const toggleView = () => {
 };
 
 const filteredKinds = computed(() => {
-  return Array.from(new Set(filterStore.filteredResults.map((result) => result.kind)));
+  return Array.from(
+    new Set(filterStore.filteredResults.map((result) => result.kind))
+  );
 });
 
 const getMappedKindName = (kind: "facility" | "news" | "event" | "course") => {
@@ -316,9 +356,15 @@ onIonViewWillEnter(() => {
     );
   }
   if (router.currentRoute.value.query.communities) {
-    filterStore.currentZips = [router.currentRoute.value.query.communities as string];
+    filterStore.currentZips = JSON.parse(
+      router.currentRoute.value.query.communities as string
+    );
   }
-  if (router.currentRoute.value.query.serviceTags && router.currentRoute.value.query.facilityTags && router.currentRoute.value.query.community) {
+  if (
+    router.currentRoute.value.query.serviceTags &&
+    router.currentRoute.value.query.facilityTags &&
+    router.currentRoute.value.query.community
+  ) {
     router.push({ path: `/health/search?kind=${facilityKind.value}` });
   }
 });
@@ -336,6 +382,18 @@ const handleSearch = () => {
   filterStore.onlySearchInTitle = false;
   filterStore.loadAllResults();
 };
+
+watch(
+  () => filterStore.currentKinds,
+  async () => {
+  filterStore.loadAllServiceFilters();
+  await filterStore.loadAllFacilityFilters();
+  filterStore.loadFilteredFacilityMainFilters();
+  },
+  {
+    deep: true,
+  }
+);
 
 onIonViewWillEnter(async () => {
   setFacilityKind(route.query.kind as FilterKind);

@@ -12,14 +12,17 @@
           class="header-facility-name"
         >
           <img class="icons" :src="facilityIcon" />
-          <span class="general-font-size">{{ facility?.user_care_facility.name }}</span>
+          <span class="general-font-size">{{
+            facility?.user_care_facility.name
+          }}</span>
         </div>
         <div v-if="facility.kind !== 'facility'" class="divider has-gap"></div>
         <div class="informations" v-if="facility.kind === 'news'">
           {{ useDatetime().parseDate(facility.created_at) }}
         </div>
         <div
-          class="general-font-size-subtitle is-dark-grey facility-name hypernate"
+          :class="facility.kind !== 'news' ? 'facility-name' : ''"
+          class="general-font-size-subtitle is-dark-grey hypernate"
           lang="de"
         >
           {{ facility.name }}
@@ -52,15 +55,27 @@
         <div>
           <div class="informations" v-if="facility.kind !== 'news'">
             <div>
-              <a class="is-dark-grey" :href="`tel:${facility.phone}`" @click.stop>
-                <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
+              <a
+                class="is-dark-grey"
+                :href="`tel:${facility.phone}`"
+                @click.stop
+              >
+                <ion-icon
+                  class="icons"
+                  :src="phoneIcon"
+                  size="large"
+                ></ion-icon>
               </a>
             </div>
             <div>
               {{ facility.phone }}
             </div>
           </div>
-          <div class="informations hypernate" lang="de" v-if="facility.kind !== 'news'">
+          <div
+            class="informations hypernate"
+            lang="de"
+            v-if="facility.kind !== 'news'"
+          >
             <a
               class="is-dark-grey centralize"
               :href="`mailto:${facility.email}`"
@@ -79,15 +94,20 @@
           <div>
             <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
             <span
-            
               class="event-dates is-health"
-              :class="[facility?.event_dates.length >= 10 ? 'two-numbers-date' : '']"
+              :class="[
+                facility?.event_dates.length >= 10 ? 'two-numbers-date' : '',
+              ]"
               >{{ facility?.event_dates.length }}</span
             >
           </div>
           <div class="event-chips" v-if="facility?.event_dates.length">
             <div class="course-dates">
-              <div class="list" v-for="event in facility.event_dates" :key="event">
+              <div
+                class="list"
+                v-for="event in facility.event_dates"
+                :key="event"
+              >
                 <div v-if="facility?.event_dates.length === 1">
                   <span>{{ getDayOfWeek(event.slice(0, 10)) }}, &nbsp;</span>
                   <span
@@ -97,12 +117,16 @@
                 </div>
               </div>
 
-              <span v-if="facility?.event_dates.length > 1" class="next-event is-health"
+              <span
+                v-if="facility?.event_dates.length > 1"
+                class="next-event is-health"
                 >Termine anzeigen:</span
               >
               <div v-if="facility?.event_dates.length > 1">
                 <span
-                  v-if="facility.kind !== 'facility' && facility.kind !== 'news'"
+                  v-if="
+                    facility.kind !== 'facility' && facility.kind !== 'news'
+                  "
                   @click.stop="showAllEvents(facility)"
                 >
                   <ion-icon
@@ -123,7 +147,11 @@
           </div>
         </div>
         <div
-          v-if="facility?.event_dates.length && showAllEvents && facility.showAllEvents"
+          v-if="
+            facility?.event_dates.length &&
+            showAllEvents &&
+            facility.showAllEvents
+          "
           class="informations"
         >
           <div>
@@ -212,7 +240,11 @@ const displayedEvents = computed(
 );
 
 const getFacilityKind = (facility: any) => {
-  if (facility && facility.kind === "facility" && router.currentRoute.value.query.kind !== "facility") {
+  if (
+    facility &&
+    facility.kind === "facility" &&
+    router.currentRoute.value.query.kind !== "facility"
+  ) {
     return "Zur Einrichtung";
   } else if (facility && facility.kind === "event") {
     return "Zur Veranstaltung";
@@ -348,7 +380,7 @@ ion-chip
   padding-top: 3px
   font-size: 12px
   font-weight: 600
-  margin-left: 5px 
+  margin-left: 5px
 
 .two-numbers-date
   left: 22px

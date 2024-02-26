@@ -20,7 +20,10 @@
           {{ subCategory.name }}
         </span>
       </div>
-      <div class="ion-padding-start ion-padding-end is-dark-grey hypernate" lang="de">
+      <div
+        class="ion-padding-start ion-padding-end is-dark-grey hypernate"
+        lang="de"
+      >
         <div
           class="general-font-size is-dark-grey"
           v-html="currentSubCategory?.description"
@@ -99,11 +102,7 @@ import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
 import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
-import {
-  onIonViewDidEnter,
-  IonLoading,
-  IonButton,
-} from "@ionic/vue";
+import { onIonViewDidEnter, IonLoading, IonButton } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
 const router = useRouter();
 const filterStore = useFilterStore();
@@ -156,15 +155,20 @@ const handleClick = async (subSubCategory: any) => {
         paramsObject[key] = value;
       });
 
-      const filter = paramsObject.filter ? JSON.parse(paramsObject.filter) : null;
+      const filter = paramsObject.filter
+        ? JSON.parse(paramsObject.filter)
+        : null;
       if (filter && filter?.currentSearchTerm) {
         filterStore.currentSearchTerm = filter?.currentSearchTerm;
       }
       if (filter && filter?.currentTags) {
-        filterStore.currentTags = filter?.currentTags;
+        filterStore.currentFacilityTags = filter?.currentFacilityTags;
       }
-      if (filter && filter?.currentZip) {
-        filterStore.current4Zip = filter?.currentZip;
+      if (filter && filter?.currentServiceTags) {
+        filterStore.currentServiceTags = filter?.currentServiceTags;
+      }
+      if (filter && filter?.currentZips) {
+        filterStore.currentZips = filter?.currentZips;
       }
 
       router.push({

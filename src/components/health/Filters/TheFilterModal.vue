@@ -2,7 +2,9 @@
   <ion-modal :is-open="true" :can-dismiss="true">
     <ion-header mode="md">
       <ion-toolbar>
-        <ion-title class="general-font-size is-dark-grey modal-title" slot="start"
+        <ion-title
+          class="general-font-size is-dark-grey modal-title"
+          slot="start"
           >Verfeinere hier deine Suche!</ion-title
         >
         <ion-button
@@ -17,20 +19,35 @@
     </ion-header>
     <ion-header>
       <ion-segment value="types" mode="md">
-        <ion-segment-button @click.prevent="changeCurrentStep('types')" value="types">
+        <ion-segment-button
+          @click.prevent="changeCurrentStep('types')"
+          value="types"
+        >
           <ion-label class="general-font-size"
             ><span v-if="filterKind === 'course'">Themengebiet</span
             ><span v-else>Branche</span></ion-label
           >
         </ion-segment-button>
-        <ion-segment-button @click.prevent="changeCurrentStep('community')">
+        <ion-segment-button
+          @click.prevent="changeCurrentStep('community')"
+          value="community"
+        >
           <ion-label class="general-font-size">Gemeinde</ion-label>
         </ion-segment-button>
-        <ion-segment-button @click.prevent="changeCurrentStep('filter')">
+        <ion-segment-button
+          @click.prevent="changeCurrentStep('filter')"
+          value="filter"
+        >
           <ion-label class="general-font-size">Leistung</ion-label>
         </ion-segment-button>
       </ion-segment>
     </ion-header>
+    <ion-loading
+      class="is-dark-grey"
+      mode="md"
+      :is-open="loading"
+      message="Kategorien werden geladen..."
+    />
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
       <MainFiltersFacilityModal
         :filterKind="filterKind"
@@ -41,9 +58,7 @@
       <CommunityFilterModal />
     </ion-content>
     <ion-content v-if="currentStep === 'filter'">
-      <ServicesFilterModal
-        :filter-kind="filterKind"
-      />
+      <ServicesFilterModal :filter-kind="filterKind" />
     </ion-content>
   </ion-modal>
 </template>
@@ -65,6 +80,9 @@ import {
   IonToolbar,
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const currentStep = ref("types");
 const currenStepTitle = ref("Branche wählen");
@@ -101,6 +119,7 @@ const startedAt = ref<null | "facilities" | "services" | "communities">(null);
 const handleStartedAt = (origin: "facilities" | "services" | "communities") => {
   if (startedAt.value) {
     startedAt.value = origin;
+
     return;
   }
 
@@ -125,8 +144,10 @@ watch(
     handleStartedAt("facilities");
 
     if (startedAt.value !== "services") filterStore.loadAllServiceFilters();
-    if (startedAt.value !== "communities") filterStore.loadFilteredCommunities();
+    if (startedAt.value !== "communities")
+      filterStore.loadFilteredCommunities();
   },
+
   {
     deep: true,
   }
@@ -140,7 +161,8 @@ watch(
     handleStartedAt("communities");
 
     if (startedAt.value !== "services") filterStore.loadAllServiceFilters();
-    if (startedAt.value !== "facilities") filterStore.loadFilteredFacilityMainFilters();
+    if (startedAt.value !== "facilities")
+      filterStore.loadFilteredFacilityMainFilters();
   },
   {
     deep: true,
@@ -154,20 +176,22 @@ watch(
 
     handleStartedAt("services");
 
-    if (startedAt.value !== "communities") filterStore.loadFilteredCommunities();
-    if (startedAt.value !== "facilities") filterStore.loadFilteredFacilityMainFilters();
+    if (startedAt.value !== "communities")
+      filterStore.loadFilteredCommunities();
+    if (startedAt.value !== "facilities")
+      filterStore.loadFilteredFacilityMainFilters();
   },
   {
     deep: true,
   }
 );
 
+const loading = ref(false);
 
 onMounted(async () => {
   currentStep.value = "types";
-  await filterStore.loadAllResults();
+  startedAt.value = null;
   filterStore.loadAllServiceFilters();
-
   await filterStore.loadAllFacilityFilters();
   filterStore.loadFilteredFacilityMainFilters();
 });

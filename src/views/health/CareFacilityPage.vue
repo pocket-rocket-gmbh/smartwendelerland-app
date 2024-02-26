@@ -406,13 +406,13 @@ const generateForceBackUrl = () => {
   let serviceTags = route.query?.serviceTags;
   let facilityTags = route.query?.facilityTags;
   let community = route.query?.communities;
-  if (serviceTags) {
+  if (serviceTags?.length) {
     baseUrl += `&serviceTags=${serviceTags}`;
   }
-  if (facilityTags) {
+  if (facilityTags?.length) {
     baseUrl += `&facilityTags=${facilityTags}`;
   }
-  if (community) {
+  if (community?.length) {
     baseUrl += `&communities=${community}`;
   }
   return baseUrl;
