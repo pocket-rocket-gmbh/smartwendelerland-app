@@ -383,16 +383,6 @@ const handleSearch = () => {
   filterStore.loadAllResults();
 };
 
-watch(
-  () => filterStore.currentKinds,
-  async () => {
-    resetFilter();
-  },
-  {
-    deep: true,
-  }
-);
-
 onIonViewWillEnter(async () => {
   setFacilityKind(route.query.kind as FilterKind);
 });
