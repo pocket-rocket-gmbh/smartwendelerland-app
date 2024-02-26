@@ -1,38 +1,11 @@
 <template>
   <ion-page>
-    <ion-header v-if="projekRoute && showBar">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-nav-link v-if="forceBack" :routerLink="forceBack">
-            <IonIcon :icon="arrowBackOutline" />
-          </ion-nav-link>
-          <ion-back-button v-else text="" default-href="/" :icon="arrowBackOutline" />
-        </ion-buttons>
-        <ion-icon
-          v-if="!useUser().loggedIn() && showLogin"
-          @click="router.push('/login')"
-          router-link="/login"
-          :ios="logInOutline"
-          :md="logInSharp"
-          slot="end"
-        ></ion-icon>
-        <div
-          v-else-if="showLogin"
-          @click="router.push('/me')"
-          router-link="/me"
-          slot="end"
-        >
-          <UserProfile :user="useUser().currentUser()" />
-        </div>
-      </ion-toolbar>
-    </ion-header>
-
     <ion-content :fullscreen="true">
-      <ion-header class="no-border" mode="ios" v-if="view !== 'map' && !isProjectPage">
-        <ion-toolbar mode="md" :color="isProject ? 'pinboard' : 'health'">
+      <ion-header class="no-border" mode="ios" v-if="view !== 'map'">
+        <ion-toolbar mode="md" :class="isProjectPage || isMePage ? 'is-project' : 'is-health'">
           <ion-buttons slot="start">
             <ion-nav-link
-              v-if="(forceBack && !showBar) || isCategoryPage || isProject || hasIdeas"
+              v-if="forceBack || isCategoryPage || hasIdeas || isMePage"
               :routerLink="handleForceBack"
             >
               <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
@@ -45,6 +18,23 @@
               </span>
             </div>
           </ion-label>
+          <ion-icon
+            v-if="!useUser().loggedIn() && showLogin"
+            @click="router.push('/login')"
+            router-link="/login"
+            :ios="logInOutline"
+            :md="logInSharp"
+            slot="end"
+            class="login-in-icon"
+          ></ion-icon>
+          <div
+            v-else-if="showLogin"
+            @click="router.push('/me')"
+            router-link="/me"
+            slot="end"
+          >
+            <UserProfile :user="useUser().currentUser()" />
+          </div>
         </ion-toolbar>
       </ion-header>
 
@@ -138,6 +128,13 @@ const projekRoute = computed(() => {
   }
   return false;
 });
+
+const isMePage = computed(() => {
+  if (route.value.path.includes("me")) {
+    return true;
+  }
+  return false;
+});
 </script>
 
 <style scoped>
@@ -152,6 +149,7 @@ ion-icon {
 
 .back-button-icon {
   font-size: 12px;
+  color: #636362;
   padding: 10px;
   border-radius: 50%;
   background: white;
@@ -166,7 +164,6 @@ ion-toolbar {
   --border-width: 0px;
   padding-bottom: 5px;
   margin-bottom: -10px;
-  background: linear-gradient(90deg, #91a80d 0%, #bac323 46.88%, #9ea100 95.31%);
   /* background: linear-gradient(66deg, red, green, blue); */
 }
 .page-title {
@@ -174,5 +171,27 @@ ion-toolbar {
   font-weight: 600;
   padding: 4px 10px 0px 10px;
   line-height: 27px;
+}
+
+.page-title-project {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0 10px 0px 10px;
+  line-height: 27px;
+  margin-top: -5px;
+}
+
+.is-health {
+  --background: linear-gradient(90deg, #91a80d 0%, #bac323 46.88%, #9ea100 95.31%);
+  color: white;
+}
+
+.is-project {
+  --background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%);
+  color: white;
+}
+
+.login-in-icon {
+  margin-top: 5px;
 }
 </style>

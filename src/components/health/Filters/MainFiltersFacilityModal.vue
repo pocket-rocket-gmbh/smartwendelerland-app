@@ -1,7 +1,7 @@
 <template>
   <div class="divider"></div>
-  <ion-content class="ion-padding-top">
-    <div class="filter-options content-wrap">
+  <ion-content>
+    <div class="filter-options">
       <div
         v-for="filter in filterStore.filteredFacilityMainFilters"
         :key="filter.id"

@@ -2,7 +2,7 @@
   <LoginLayout>
     <div align="center">
       <ion-nav-link routerLink="/">
-        <img src="@/assets/images/logo.png" class="logo" />
+        <img src="@/assets/images/logo.png" class="logo-login" />
       </ion-nav-link>
 
       <div class="field">
@@ -129,7 +129,7 @@ export default defineComponent({
 })
 </script>
 <style lang="sass" scoped>
-.logo
+.logo-login
   width: 70%
   margin-top: 20px
 </style>

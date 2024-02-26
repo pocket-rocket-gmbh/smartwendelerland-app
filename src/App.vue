@@ -24,9 +24,6 @@ import { useFilterStore } from "@/stores/health/searchFilter";
 
 const appState = useAppStateStore();
 
-
-const filterStore = useFilterStore();
-
 const isStaging = computed(() => {
   return useEnvStore().env === "staging";
 });
