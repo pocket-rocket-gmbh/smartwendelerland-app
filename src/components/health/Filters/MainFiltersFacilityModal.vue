@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import { useFilterStore, FilterKind } from "@/stores/health/searchFilter";
-import { ref, watch, onMounted, defineProps, defineEmits } from "vue";
+import { ref, watch, defineProps, defineEmits } from "vue";
 
 type Filter = {
   id: string;

@@ -221,7 +221,6 @@ export const useFilterStore = defineStore({
     //   });
     // },
     async loadAllCommunities() {
-
       if (this.allCommunities) return this.allCommunities;
       const api = useCollectionApi();
       api.setBaseApi(usePublicApi("health"));
@@ -261,6 +260,8 @@ export const useFilterStore = defineStore({
       }
 
       const filters: any[] = response?.data?.resources || [];
+
+      console.log(filters, "start");
       const relevantFilter = filters.find(
         (filter) =>
           filter.filter_type === "filter_facility" &&
@@ -286,7 +287,6 @@ export const useFilterStore = defineStore({
           });
         });
 
-        
         if (!filteredOptions.length) {
           return;
         }
@@ -309,7 +309,6 @@ export const useFilterStore = defineStore({
       );
 
       return this.allFacilityMainFilters;
-
     },
     async loadAllServiceFilters() {
       const api = useCollectionApi();
@@ -330,8 +329,10 @@ export const useFilterStore = defineStore({
       }
 
       const filters: any[] = result?.data?.resources?.filter(
-        (item: Facility) => this.currentKinds[0] === item.kind
+        (item: Facility) => this.currentKinds.length ? this.currentKinds[0] === item.kind : true
       );
+
+      console.log(filters, "start, norman", this.currentKinds);
 
       if (!filters) {
         console.error("No filters!");
@@ -490,9 +491,8 @@ export const useFilterStore = defineStore({
       return this.filteredCommunities;
     },
     loadFilteredFacilityMainFilters() {
-      console.log('loaded')
       if (!this.allFacilityMainFilters.length) return;
-     
+
       this.filteredFacilityMainFilters = this.allFacilityMainFilters.filter(
         (mainFilter) => {
           if (!this.filteredResults?.length) return true;

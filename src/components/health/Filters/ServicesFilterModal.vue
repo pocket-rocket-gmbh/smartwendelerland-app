@@ -2,9 +2,12 @@
   <div class="divider"></div>
   <ion-content class="ion-padding-top">
     <div class="filter-options content-wrap">
-      <div v-for="filter in availableItemsForServiceList" :key="filter.id" class="">
+      <div
+        v-for="filter in availableItemsForServiceList"
+        :key="filter.id"
+        class=""
+      >
         <div v-for="item in filter.next" :key="item.id">
-          
           <div
             v-if="
               item.next.length &&
@@ -30,7 +33,8 @@
                 class="align-center"
                 :class="{
                   selected:
-                    isSelectedTagNext(subItem) || expandedItemIds.includes(subItem.id),
+                    isSelectedTagNext(subItem) ||
+                    expandedItemIds.includes(subItem.id),
                 }"
               >
                 <div
@@ -39,7 +43,9 @@
                   density="compact"
                   class="options-select general-font-size"
                   :class="{
-                    'is-selected': filterStore.currentServiceTags.includes(subItem.id),
+                    'is-selected': filterStore.currentServiceTags.includes(
+                      subItem.id
+                    ),
                   }"
                 >
                   <span>
@@ -55,12 +61,22 @@
                     >mdi-menu-up</v-icon
                   >
                   <span v-else>
-                    <v-icon class="is-clickable" size="x-large">mdi-menu-down</v-icon>
+                    <v-icon class="is-clickable" size="x-large"
+                      >mdi-menu-down</v-icon
+                    >
                   </span>
                 </span>
               </div>
-              <div v-if="subItem.next.length && expandedItemIds.includes(subItem.id)">
-                <div class="tag-select" v-for="tag in subItem.next" :key="tag.id">
+              <div
+                v-if="
+                  subItem.next.length && expandedItemIds.includes(subItem.id)
+                "
+              >
+                <div
+                  class="tag-select"
+                  v-for="tag in subItem.next"
+                  :key="tag.id"
+                >
                   <v-divider></v-divider>
                   <v-checkbox
                     :class="{ selected: isSelected(tag.id) }"
@@ -91,7 +107,6 @@ const filterStore = useFilterStore();
 const props = defineProps<{
   filterKind: FilterKind;
 }>();
-
 
 const availableItemsForServiceList = ref<CollapsibleListItem[]>([]);
 const expandedItemIds = ref([]);
@@ -152,47 +167,54 @@ const checkIfFiltersAreInFacilities = (
   return filters;
 };
 
+const emitFiltersUpdated = () => {
+  checkIfFiltersAreInFacilities(
+    availableItemsForServiceList.value,
+    filterStore.allResults
+      .map((facility: any) => facility.tag_category_ids)
+      .flat()
+  );
+};
+
 watch(
   () => filterStore.filteredResults,
   (newValue: any) => {
-    availableItemsForServiceList.value = [...deepToRaw(filterStore.allServiceTags)];
+    availableItemsForServiceList.value = [
+      ...deepToRaw(filterStore.allServiceTags),
+    ];
     checkIfFiltersAreInFacilities(
       availableItemsForServiceList.value,
       newValue.map((facility: any) => facility.tag_category_ids).flat()
     );
 
+
     filterStore.loadAllFacilityFilters();
     emitFiltersUpdated();
   },
+
   {
+    immediate: true,
     deep: true,
   }
 );
 
-const emitFiltersUpdated = () => {
-  checkIfFiltersAreInFacilities(
-    availableItemsForServiceList.value,
-    filterStore.allResults.map((facility: any) => facility.tag_category_ids).flat()
-  );
-};
 watch(
   () => filterStore.allServiceTags,
   () => {
-    availableItemsForServiceList.value = [...deepToRaw(filterStore.allServiceTags)];
+    availableItemsForServiceList.value = [
+      ...deepToRaw(filterStore.allServiceTags),
+    ];
     checkIfFiltersAreInFacilities(
       availableItemsForServiceList.value,
-      filterStore.allResults.map((facility: any) => facility.tag_category_ids).flat()
+      filterStore.allResults
+        .map((facility: any) => facility.tag_category_ids)
+        .flat()
     );
   },
   {
     deep: true,
   }
 );
-
-onMounted(async () => {
-  emitFiltersUpdated();
-  await useFilterStore().loadAllServiceFilters();
-});
 </script>
 
 <style lang="sass" scoped>
