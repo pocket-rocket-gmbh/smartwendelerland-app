@@ -34,7 +34,7 @@
     <ion-content v-if="currentStep === 'types' || !currentStep.length">
       <MainFiltersFacilityModal
         :filterKind="filterKind"
-        :modelValue="filterStore.currentFacilityTags"
+        v-model="filterStore.currentFacilityTags"
       />
     </ion-content>
     <ion-content v-if="currentStep === 'community'">
