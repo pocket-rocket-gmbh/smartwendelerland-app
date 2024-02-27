@@ -20,17 +20,14 @@
           {{ subCategory.name }}
         </span>
       </div>
-      <div
-        class="ion-padding-start ion-padding-end is-dark-grey hypernate"
-        lang="de"
-      >
+      <div class="ion-padding-start ion-padding-end is-dark-grey hypernate" lang="de">
         <div
           class="general-font-size is-dark-grey"
           v-html="currentSubCategory?.description"
         />
       </div>
       <div
-        v-for="subSubCategory in category.sub_sub_categories"
+        v-for="subSubCategory in subSubCategories"
         :key="subSubCategory.id"
         class="health-sub-category-box"
       >
@@ -127,12 +124,36 @@ const getCategory = async () => {
   currentSubCategory.value = category.value.sub_categories[0];
 };
 
+const categoriesApi = useCollectionApi();
+categoriesApi.setBaseApi(usePublicApi("health"));
+const subSubCategories = ref(null);
+const listApi = useCollectionApi();
+listApi.setBaseApi(usePublicApi("health"));
+
+const getSubSubCategories = async () => {
+  listApi.setEndpoint(
+    `categories/${categoryId.value}/sub_categories/${currentSubCategory.value.id}/sub_sub_categories`
+  );
+  const options = {
+    page: 1,
+    per_page: 1000,
+    sort_by: "menu_order",
+    sort_order: "ASC",
+    concat: false,
+  };
+  loading.value = true;
+  await listApi.retrieveCollection(options);
+  loading.value = false;
+  subSubCategories.value = listApi.items.value as any;
+};
+
 const setItemsAndGo = (subCategory: any) => {
   currentSubCategory.value = subCategory;
+  getSubSubCategories();
 };
 
 const handleClick = async (subSubCategory: any) => {
-  if (subSubCategory.url_kind === "external") {
+  if (subSubCategory.url_kind === "external" || subSubCategory?.url.includes(".pdf")) {
     await Browser.open({ url: subSubCategory.url });
   } else {
     if (subSubCategory.url.includes("https://gesundes-wnd.de/public/search")) {
@@ -156,9 +177,7 @@ const handleClick = async (subSubCategory: any) => {
         paramsObject[key] = value;
       });
 
-      const filter = paramsObject.filter
-        ? JSON.parse(paramsObject.filter)
-        : null;
+      const filter = paramsObject.filter ? JSON.parse(paramsObject.filter) : null;
       if (filter && filter?.currentSearchTerm) {
         filterStore.currentSearchTerm = filter?.currentSearchTerm;
       }
@@ -188,6 +207,7 @@ const handleClick = async (subSubCategory: any) => {
 
 onIonViewDidEnter(async () => {
   await getCategory();
+  await getSubSubCategories();
 });
 </script>
 
