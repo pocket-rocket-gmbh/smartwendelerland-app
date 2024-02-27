@@ -233,7 +233,7 @@ const getFacilityKind = (facility: any) => {
     facility &&
     facility.kind === "facility"
   ) {
-    return "zu den Anbietern";
+    return "Zum Anbieter";
   } else if (facility && facility.kind === "event") {
     return "Zur Veranstaltung";
   } else if (facility && facility.kind === "course") {
