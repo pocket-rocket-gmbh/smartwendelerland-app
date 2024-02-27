@@ -118,6 +118,8 @@ export type Filter = {
   mainFilters: null | any[];
 
   mainSearch: boolean;
+
+  startedAt: null | "facilities" | "services" | "communities"
 };
 
 const initialFilterState: Filter = {
@@ -148,6 +150,8 @@ const initialFilterState: Filter = {
   allCommunities: null,
   filteredCommunities: null,
   mainFilters: null,
+
+  startedAt: null,
 };
 
 export const useFilterStore = defineStore({
@@ -163,6 +167,7 @@ export const useFilterStore = defineStore({
         filterSort: state.filterSort,
         currentKinds: state.currentKinds,
         mainSearch: state.mainSearch,
+        startedAt: state.startedAt,
       };
     },
   },
@@ -558,6 +563,25 @@ export const useFilterStore = defineStore({
 
       this.filteredResults = this.allResults;
     },
+
+    handleStartedAt (origin: "facilities" | "services" | "communities") {
+      if (
+        this.currentFacilityTags.length === 0 &&
+        this.currentServiceTags.length === 0 &&
+        this.currentZips.length === 0
+      ) {
+        if (this.startedAt) {
+          this.startedAt = null;
+          return;
+        }
+        this.startedAt = origin
+      } else {
+        if (!this.startedAt) {
+          this.startedAt = origin;
+        }
+      }
+    },
+
     resetAllFilters() {
       this.currentSearchTerm = "";
       this.allFacilityMainFilters = [];

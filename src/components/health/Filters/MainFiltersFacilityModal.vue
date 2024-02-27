@@ -47,6 +47,7 @@
             </div>
           </label>
         </div>
+        <div class="divider ion-margin-top ion-margin-bottom has-divider"></div>
       </div>
     </div>
   </ion-content>
@@ -114,7 +115,6 @@ const handleToggleAll = (filter: any) => {
   );
 
   const selectAll = !areAllSelected(filter);
-
   if (selectAll) {
     relevantOptions.forEach((option) => {
       if (!props.modelValue.includes(option.id)) {
@@ -135,8 +135,8 @@ const handleToggleAll = (filter: any) => {
     multipleSelections.value = multipleSelections.value.filter(
       (item) => !relevantOptions.find((option) => option.id === item.id)
     );
-  }
 
+  }
   emit(
     "update:modelValue",
     multipleSelections.value.map((item) => item.id)
@@ -168,6 +168,9 @@ watch(
       },
       [] as Filter[]
     );
+  },
+  {
+    immediate: true,
   }
 );
 </script>
@@ -192,4 +195,8 @@ watch(
 
 .filter-options
   margin-bottom: 30px
+
+.has-divider
+  margin-left: 10px
+  margin-right: 10px
 </style>

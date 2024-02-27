@@ -2,9 +2,7 @@
   <ion-modal :is-open="true" :can-dismiss="true">
     <ion-header mode="md">
       <ion-toolbar>
-        <ion-title
-          class="general-font-size is-dark-grey modal-title"
-          slot="start"
+        <ion-title class="general-font-size is-dark-grey modal-title" slot="start"
           >Verfeinere hier deine Suche!</ion-title
         >
         <ion-button
@@ -19,10 +17,7 @@
     </ion-header>
     <ion-header>
       <ion-segment value="types" mode="md">
-        <ion-segment-button
-          @click.prevent="changeCurrentStep('types')"
-          value="types"
-        >
+        <ion-segment-button @click.prevent="changeCurrentStep('types')" value="types">
           <ion-label class="general-font-size"
             ><span v-if="filterKind === 'course'">Themengebiet</span
             ><span v-else>Branche</span></ion-label
@@ -34,10 +29,7 @@
         >
           <ion-label class="general-font-size">Gemeinde</ion-label>
         </ion-segment-button>
-        <ion-segment-button
-          @click.prevent="changeCurrentStep('filter')"
-          value="filter"
-        >
+        <ion-segment-button @click.prevent="changeCurrentStep('filter')" value="filter">
           <ion-label class="general-font-size">Leistung</ion-label>
         </ion-segment-button>
       </ion-segment>
@@ -81,7 +73,7 @@ import {
   IonSegmentButton,
   IonTitle,
   IonToolbar,
-  IonLoading
+  IonLoading,
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -118,38 +110,15 @@ const emitClose = () => {
   emit("close");
 };
 
-const startedAt = ref<null | "facilities" | "services" | "communities">(null);
-
-const handleStartedAt = (origin: "facilities" | "services" | "communities") => {
-  if (startedAt.value) {
-    startedAt.value = origin;
-
-    return;
-  }
-
-  if (
-    filterStore.currentFacilityTags.length === 0 &&
-    filterStore.currentServiceTags.length === 0 &&
-    filterStore.currentZips.length === 0
-  ) {
-    if (startedAt.value) {
-      startedAt.value = null;
-      return;
-    }
-    startedAt.value = origin;
-  }
-};
-
 watch(
   () => filterStore.currentFacilityTags,
   async () => {
     await filterStore.loadAllResults();
 
-    handleStartedAt("facilities");
+    filterStore.handleStartedAt("facilities");
 
-    if (startedAt.value !== "services") filterStore.loadAllServiceFilters();
-    if (startedAt.value !== "communities")
-      filterStore.loadFilteredCommunities();
+    if (filterStore.startedAt !== "services") filterStore.loadAllServiceFilters();
+    if (filterStore.startedAt !== "communities") filterStore.loadFilteredCommunities();
   },
 
   {
@@ -162,10 +131,10 @@ watch(
   async () => {
     await filterStore.loadAllResults();
 
-    handleStartedAt("communities");
+    filterStore.handleStartedAt("communities");
 
-    if (startedAt.value !== "services") filterStore.loadAllServiceFilters();
-    if (startedAt.value !== "facilities")
+    if (filterStore.startedAt !== "services") filterStore.loadAllServiceFilters();
+    if (filterStore.startedAt !== "facilities")
       filterStore.loadFilteredFacilityMainFilters();
   },
   {
@@ -178,11 +147,10 @@ watch(
   async () => {
     await filterStore.loadAllResults();
 
-    handleStartedAt("services");
+    filterStore.handleStartedAt("services");
 
-    if (startedAt.value !== "communities")
-      filterStore.loadFilteredCommunities();
-    if (startedAt.value !== "facilities")
+    if (filterStore.startedAt !== "communities") filterStore.loadFilteredCommunities();
+    if (filterStore.startedAt !== "facilities")
       filterStore.loadFilteredFacilityMainFilters();
   },
   {
@@ -195,10 +163,13 @@ const loading = ref(false);
 onMounted(async () => {
   loading.value = true;
   currentStep.value = "types";
-  startedAt.value = null;
   filterStore.loadAllServiceFilters();
-  await filterStore.loadAllFacilityFilters();
-  filterStore.loadFilteredFacilityMainFilters();
+  console.log(filterStore.startedAt)
+  if (filterStore.startedAt !== "facilities") {
+    await filterStore.loadAllFacilityFilters();
+    filterStore.loadFilteredFacilityMainFilters();
+  }
+
   loading.value = false;
 });
 </script>

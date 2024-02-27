@@ -161,7 +161,7 @@
             <span v-for="event in displayedEvents(facility)" :key="event.index">
               <div class="informations">
                 <div class="dates list">
-                  <span>{{ getDayOfWeek(event.slice(0, 10)) }},&nbsp;</span>
+                  <span class="day-of-week">{{ getDayOfWeek(event.slice(0, 10)) }}</span>
                   <span
                     >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
                     {{ event.slice(11) }} Uhr</span
@@ -184,7 +184,7 @@
             facility.kind === 'course' ||
             facility.kind === 'event' ||
             facility.kind === 'news' ||
-            facility.kind !== 'facility'
+            facility.kind === 'facility'
           "
           mode="md"
           shape="round"
@@ -193,17 +193,6 @@
           @click="routeAndGo(facility)"
           >{{ getFacilityKind(facility) }}</ion-button
         >
-
-        <ion-button
-          v-else-if="router.currentRoute.value.query.kind"
-          mode="md"
-          shape="round"
-          expand="block"
-          class="green-button ion-margin-top"
-          @click="routeAndGo(facility)"
-        >
-          Details ansehen
-        </ion-button>
       </div>
     </div>
   </div>
@@ -242,10 +231,9 @@ const displayedEvents = computed(
 const getFacilityKind = (facility: any) => {
   if (
     facility &&
-    facility.kind === "facility" &&
-    router.currentRoute.value.query.kind !== "facility"
+    facility.kind === "facility"
   ) {
-    return "Zur Einrichtung";
+    return "zu den Anbietern";
   } else if (facility && facility.kind === "event") {
     return "Zur Veranstaltung";
   } else if (facility && facility.kind === "course") {
@@ -387,4 +375,7 @@ ion-chip
 
 .mail
   text-transform: lowercase
+
+.day-of-week
+  padding-right: 4px
 </style>
