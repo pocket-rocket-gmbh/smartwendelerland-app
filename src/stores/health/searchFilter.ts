@@ -104,6 +104,7 @@ export type Filter = {
   mapFilter: string;
   currentKinds: FilterKind[];
   allCategories: any[];
+  mainCategories: any[];
   filteredCategories: any[];
 
   //
@@ -137,6 +138,7 @@ const initialFilterState: Filter = {
   mapFilter: null,
   currentKinds: [],
   allCategories: [],
+  mainCategories: [],
   filteredCategories: [],
   mainSearch: false,
 
@@ -457,7 +459,7 @@ export const useFilterStore = defineStore({
       api.setEndpoint(`categories`);
 
       await api.retrieveCollection(options as any);
-
+      this.mainCategories = api.items.value;
       this.allCategories = api.items.value
         .map((item) => {
           return item.sub_sub_categories;
