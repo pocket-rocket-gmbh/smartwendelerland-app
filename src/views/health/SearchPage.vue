@@ -102,10 +102,9 @@
       class="has-bg-darken-grey general-font-size"
       :class="[view === 'list' ? 'bottom-actions' : 'bottom-actions absolute']"
     >
-      <div v-if="filterStore.loading">Wird geladen...</div>
       <div
         class="general-font-size"
-        v-else-if="filterStore.filteredResults.length"
+        v-if="filterStore.filteredResults.length"
       >
         <span>{{ filterStore.filteredResults.length }}</span>
         <span v-if="facilityKind === 'facility'"> Anbieter </span>
