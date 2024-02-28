@@ -116,11 +116,9 @@ const selectedSubSubCategory = ref(null) as any;
 categoryApi.setBaseApi(usePublicApi("health"));
 
 const getCategory = async () => {
-  loading.value = true;
   categoryApi.setEndpoint(`categories`);
   await categoryApi.getItem(categoryId.value);
   category.value = categoryApi.item.value;
-  loading.value = false;
   currentSubCategory.value = category.value.sub_categories[0];
 };
 
@@ -141,9 +139,7 @@ const getSubSubCategories = async () => {
     sort_order: "ASC",
     concat: false,
   };
-  loading.value = true;
   await listApi.retrieveCollection(options);
-  loading.value = false;
   subSubCategories.value = listApi.items.value as any;
 };
 
@@ -153,7 +149,10 @@ const setItemsAndGo = (subCategory: any) => {
 };
 
 const handleClick = async (subSubCategory: any) => {
-  if (subSubCategory.url_kind === "external" || subSubCategory?.url.includes(".pdf")) {
+  if (subSubCategory?.url.includes(".pdf")) {
+    await Browser.open({ url: subSubCategory.url });
+  }
+  if (subSubCategory.url_kind === "external") {
     await Browser.open({ url: subSubCategory.url });
   } else {
     if (subSubCategory.url.includes("https://gesundes-wnd.de/public/search")) {
@@ -206,8 +205,10 @@ const handleClick = async (subSubCategory: any) => {
 };
 
 onIonViewDidEnter(async () => {
+  loading.value = true;
   await getCategory();
   await getSubSubCategories();
+  loading.value = false;
 });
 </script>
 
