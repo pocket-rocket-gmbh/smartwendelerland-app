@@ -52,7 +52,7 @@
     </div>
    
     </ion-card-content>
-    <div class="footer" @click="goToFacility">Einrichtung ansehen</div>
+    <div class="footer" @click="goToFacility">Zum Anbieter</div>
   </ion-card>
 
 </template>
