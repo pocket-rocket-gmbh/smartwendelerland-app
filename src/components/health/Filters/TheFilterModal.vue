@@ -1,5 +1,5 @@
 <template>
-  <ion-modal :is-open="true" :can-dismiss="true">
+  <ion-modal :is-open="true" :can-dismiss="true" :onDidDismiss="emitClose">
     <ion-header mode="md">
       <ion-toolbar>
         <ion-title class="general-font-size is-dark-grey modal-title" slot="start"
@@ -77,8 +77,6 @@ import {
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-
-const router = useRouter();
 
 const currentStep = ref("types");
 const currenStepTitle = ref("Branche wählen");
