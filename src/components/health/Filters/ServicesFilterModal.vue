@@ -89,6 +89,7 @@
               </div>
             </div>
           </div>
+          <div class="divider ion-margin-top ion-margin-bottom has-divider"></div>
         </div>
       </div>
     </div>
@@ -230,4 +231,8 @@ watch(
 
 .category-title
   margin-left: 10px
+
+.has-divider
+  margin-left: 10px
+  margin-right: 10px
 </style>
