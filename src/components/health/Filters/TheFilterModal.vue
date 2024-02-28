@@ -164,7 +164,6 @@ onMounted(async () => {
   loading.value = true;
   currentStep.value = "types";
   filterStore.loadAllServiceFilters();
-  console.log(filterStore.startedAt)
   if (filterStore.startedAt !== "facilities") {
     await filterStore.loadAllFacilityFilters();
     filterStore.loadFilteredFacilityMainFilters();
