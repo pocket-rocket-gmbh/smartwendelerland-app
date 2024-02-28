@@ -224,7 +224,7 @@ const openPDF = (rawPdf: string) => {
     const pdfContentBase64 = rawPdf;
 
     Filesystem.writeFile({
-      path: "AGB.pdf",
+      path: rawPdf,
       data: pdfContentBase64,
       directory: Directory.Data,
     }).then((result) => {
