@@ -8,8 +8,8 @@
   >
     <TheFilterModal
       :filter-kind="facilityKind"
-      v-if="TheFilterModalOpen"
-      @close="TheFilterModalOpen = false"
+      v-if="theFilterModalOpen"
+      @close="theFilterModalOpen = false"
     />
     <div
       class="health-top-panel"
@@ -90,7 +90,7 @@
               <img
                 src="@/assets/images/filter.svg"
                 class="filter-icon"
-                @click="TheFilterModalOpen = true"
+                @click="theFilterModalOpen = true"
               />
               <span class="is-white counter">{{ countSelectedFilters }}</span>
             </div>
@@ -206,7 +206,7 @@ import { useRoute } from "vue-router";
 import TheFilterModal from "../../components/health/Filters/TheFilterModal.vue";
 
 const filterStore = useFilterStore();
-const TheFilterModalOpen = ref(false);
+const theFilterModalOpen = ref(false);
 const communityFilter = ref(null);
 const communityFilterRef = ref(null);
 const view = ref("list");
