@@ -109,9 +109,9 @@
                 :key="event"
               >
                 <div v-if="facility?.event_dates.length === 1">
-                  <span>{{ getDayOfWeek(event.slice(0, 10)) }}, &nbsp;</span>
+                  <span>{{ getDayOfWeek(event.slice(0, 10)) + '., ' }}</span>
                   <span
-                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
+                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + ' '}} um
                     {{ event.slice(11) }} Uhr</span
                   >
                 </div>
@@ -161,9 +161,9 @@
             <span v-for="event in displayedEvents(facility)" :key="event.index">
               <div class="informations">
                 <div class="dates list">
-                  <span class="day-of-week">{{ getDayOfWeek(event.slice(0, 10)) }}</span>
+                  <span class="day-of-week">{{ getDayOfWeek(event.slice(0, 10)) + '., ' }}</span>
                   <span
-                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
+                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + ' '}}um
                     {{ event.slice(11) }} Uhr</span
                   >
                 </div>
