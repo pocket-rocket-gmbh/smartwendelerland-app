@@ -256,7 +256,7 @@ defineProps(["facilityKind"]);
 
 const openMapsApp = (location: any) => {
   if (isPlatform("android")) {
-    window.location.href = `https://maps.google.com/?q=${location}`;
+    window.location.href = `maps.google.com/?q=${location}`;
   } else {
     window.location.href = `maps://maps.apple.com/?q=${location}`;
   }
