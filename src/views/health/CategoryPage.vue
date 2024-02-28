@@ -59,7 +59,6 @@
               {{ subSubCategory.description }}
             </span>
           </div>
-
           <div class="show-more">
             <ion-button
               mode="md"
@@ -91,6 +90,11 @@
       :is-open="loading"
       message="Wird geladen..."
     />
+    <PdfModal
+      v-if="detailModalOpen"
+      :subSubCategory="subSubCategoryLink"
+      @close="detailModalOpen = false"
+    />
   </BackButtonLayout>
 </template>
 
@@ -102,6 +106,7 @@ import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
 import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
+import PdfModal from "@/components/health/PdfModal.vue";
 import {
   onIonViewDidEnter,
   IonLoading,
@@ -109,9 +114,6 @@ import {
   isPlatform,
 } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
-import { dataURLtoFile, fileToBase64 } from "@/utils/file";
-import { Directory, Filesystem } from "@capacitor/filesystem";
-import { FileOpener } from "@awesome-cordova-plugins/file-opener";
 
 const router = useRouter();
 const filterStore = useFilterStore();
@@ -160,10 +162,13 @@ const setItemsAndGo = (subCategory: any) => {
   getSubSubCategories();
 };
 
+const subSubCategoryLink = ref("");
+
 const handleClick = async (subSubCategory: any) => {
   let link = subSubCategory.url;
   if (subSubCategory?.url.includes(".pdf")) {
-    openPdf(link);
+    subSubCategoryLink.value = subSubCategory.url;
+    detailModalOpen.value = true;
   }
   if (
     subSubCategory.url_kind === "external" &&
@@ -224,31 +229,6 @@ const handleClick = async (subSubCategory: any) => {
   }
 
   selectedSubSubCategory.value = null;
-};
-
-const openPdf = async (link: any) => {
-  console.log(link);
-  const pdfUrl = link;
-  const rawPdf = await fileToBase64(pdfUrl);
-  openPDF(rawPdf);
-};
-
-const openPDF = (rawPdf: string) => {
-  if (isPlatform("cordova")) {
-    const pdfContentBase64 = rawPdf;
-
-    Filesystem.writeFile({
-      path: rawPdf,
-      data: pdfContentBase64,
-      directory: Directory.Data,
-    }).then((result) => {
-      FileOpener.open(result.uri, "application/pdf");
-    });
-  } else {
-    const file = dataURLtoFile(rawPdf, "pdf");
-    const url = URL.createObjectURL(file);
-    window.open(url);
-  }
 };
 
 onIonViewDidEnter(async () => {
