@@ -25,19 +25,17 @@
           class="general-font-size-subtitle is-dark-grey hypernate"
           lang="de"
         >
-          {{ facility.name }}
+          {{ facility.name }} - {{ isPlatform("cordova") ? "Ios" : "Android" }}
         </div>
-<div class="divider"></div>
-        <a :href="`geo:${facility.street}`">
-                <ion-icon
-                 
-                  class="icons"
-                  size="large"
-                  :src="mapIcon"
-                ></ion-icon>
-                </a
-              >
-              <div class="divider"></div>
+        <div class="divider"></div>
+        <div v-for="geo in facility.geocode_address" :key="geo.id">
+          <a
+            :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`"
+          >
+            <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+          </a>
+          <div class="divider"></div>
+        </div>
       </div>
       <div class="general-font-size is-dark-grey">
         <div v-if="facility.kind !== 'news'">
@@ -120,9 +118,9 @@
                 :key="event"
               >
                 <div v-if="facility?.event_dates.length === 1">
-                  <span>{{ getDayOfWeek(event.slice(0, 10)) + '., ' }}</span>
+                  <span>{{ getDayOfWeek(event.slice(0, 10)) + "., " }}</span>
                   <span
-                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + ' '}} um
+                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + " " }} um
                     {{ event.slice(11) }} Uhr</span
                   >
                 </div>
@@ -172,9 +170,11 @@
             <span v-for="event in displayedEvents(facility)" :key="event.index">
               <div class="informations">
                 <div class="dates list">
-                  <span class="day-of-week">{{ getDayOfWeek(event.slice(0, 10)) + '., ' }}</span>
+                  <span class="day-of-week">{{
+                    getDayOfWeek(event.slice(0, 10)) + "., "
+                  }}</span>
                   <span
-                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + ' '}}um
+                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + " " }}um
                     {{ event.slice(11) }} Uhr</span
                   >
                 </div>
@@ -241,10 +241,7 @@ const displayedEvents = computed(
 );
 
 const getFacilityKind = (facility: any) => {
-  if (
-    facility &&
-    facility.kind === "facility"
-  ) {
+  if (facility && facility.kind === "facility") {
     return "Zum Anbieter";
   } else if (facility && facility.kind === "event") {
     return "Zur Veranstaltung";
@@ -266,7 +263,7 @@ const getDayOfWeek = (event: string) => {
 
 defineProps(["facilityKind"]);
 
-const openMapsApp = async(location: any) => {
+const openMapsApp = async (location: any) => {
   if (isPlatform("android")) {
     await Browser.open({ url: `maps.google.com/?q=${location}` });
   } else {
