@@ -1,5 +1,12 @@
 <template>
-  <ion-app>
+  <ion-alert
+    v-if="!online"
+    trigger="present-alert"
+    header="Es besteht momentan keine Internetverbindung. Bitte überprüfe deine Verbindung und versuche es später erneut."
+    :buttons="alertButtons"
+    @didDismiss="logResult($event)"
+  ></ion-alert>
+  <ion-app v-else>
     <div v-if="appState.isAppLoading" class="vertical-center">
       <div class="center">
         <ion-spinner />
@@ -14,13 +21,30 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonSpinner, IonRouterOutlet } from "@ionic/vue";
-import { computed, onMounted } from "vue";
+import { IonApp, IonSpinner, IonRouterOutlet, IonAlert } from "@ionic/vue";
+import { computed, onMounted, ref } from "vue";
 import { usePollStore } from "@/stores/poll";
 import { useAppStateStore } from "@/stores/appState";
 import { useMe } from "@/composables/user/me";
 import { useEnvStore } from "./stores/env";
 import { useFilterStore } from "@/stores/health/searchFilter";
+import { useOnline } from "@vueuse/core";
+
+const online = useOnline();
+
+const alertButtons = ref([
+  {
+    text: "Erneut versuchen",
+    role: "confirmed",
+    handler: () => {
+      window.location.reload();
+    },
+  },
+]);
+
+const logResult = (ev: CustomEvent) => {
+  console.log(`Dismissed with role: ${ev.detail.role}`);
+};
 
 const appState = useAppStateStore();
 
@@ -33,48 +57,43 @@ const toggleEnv = () => {
   window.location.reload();
 };
 
-
 onMounted(async () => {
   console.log("Loading App...");
   const startTime = Date.now();
+  console.log(online.value);
   // Participation
   await useMe().fetchMyUser(),
-  useAppStateStore().setAppLoadingProgress(0.3),
-  await usePollStore().setPublicPoll(),
-  useAppStateStore().setAppLoadingProgress(0.13),
-  // health
+    useAppStateStore().setAppLoadingProgress(0.3),
+    await usePollStore().setPublicPoll(),
+    useAppStateStore().setAppLoadingProgress(0.13),
+    // health
 
-  //load all filters
-  await useFilterStore().loadAllFilters(),
-  useAppStateStore().setAppLoadingProgress(0.32),
+    //load all filters
+    await useFilterStore().loadAllFilters(),
+    useAppStateStore().setAppLoadingProgress(0.32),
+    //load communities
 
-  //load communities
-
-  await useFilterStore().loadAllCommunities(),
-  useFilterStore().loadFilteredCommunities();
+    await useFilterStore().loadAllCommunities(),
+    useFilterStore().loadFilteredCommunities();
   useAppStateStore().setAppLoadingProgress(0.47),
+    //load categories
 
-  //load categories
+    await useFilterStore().loadAllCategories(),
+    useAppStateStore().setAppLoadingProgress(0.64),
+    //load all results
 
-  await useFilterStore().loadAllCategories(),
-  useAppStateStore().setAppLoadingProgress(0.64),
-
-  //load all results
-
-  await useFilterStore().loadUnalteredAllResults(),
-  await useFilterStore().loadAllResults();
+    await useFilterStore().loadUnalteredAllResults(),
+    await useFilterStore().loadAllResults();
   useAppStateStore().setAppLoadingProgress(0.69),
-
-  //load all filters
-  await useFilterStore().loadAllFacilityFilters(),
-  await useFilterStore().loadAllServiceFilters()
+    //load all filters
+    await useFilterStore().loadAllFacilityFilters(),
+    await useFilterStore().loadAllServiceFilters();
   useFilterStore().loadFilteredFacilityMainFilters();
+  useFilterStore().loadFilteredCategories();
 
-  useAppStateStore().setAppLoadingProgress(0.80),
-
-  useAppStateStore().setAppLoadingProgress(0.99),
-
-  useAppStateStore().setAppLoading(false);
+  useAppStateStore().setAppLoadingProgress(0.8),
+    useAppStateStore().setAppLoadingProgress(0.99),
+    useAppStateStore().setAppLoading(false);
   console.log("App loaded - duration: " + (Date.now() - startTime) + " ms");
 });
 </script>
