@@ -20,7 +20,10 @@
           {{ subCategory.name }}
         </span>
       </div>
-      <div class="ion-padding-start ion-padding-end is-dark-grey hypernate" lang="de">
+      <div
+        class="ion-padding-start ion-padding-end is-dark-grey hypernate"
+        lang="de"
+      >
         <div
           class="general-font-size is-dark-grey"
           v-html="currentSubCategory?.description"
@@ -99,8 +102,9 @@ import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
 import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
-import { onIonViewDidEnter, IonLoading, IonButton } from "@ionic/vue";
+import { onIonViewDidEnter, IonLoading, IonButton, isPlatform } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
+
 const router = useRouter();
 const filterStore = useFilterStore();
 const route = useRoute();
@@ -148,12 +152,20 @@ const setItemsAndGo = (subCategory: any) => {
   getSubSubCategories();
 };
 
+
 const handleClick = async (subSubCategory: any) => {
+  let link = subSubCategory.url;
   if (subSubCategory?.url.includes(".pdf")) {
-    await Browser.open({ url: subSubCategory.url });
+    if (isPlatform("android")) {
+      link = 'docs.google.com/viewer?url=' + link;
+    }
   }
   if (subSubCategory.url_kind === "external") {
-    await Browser.open({ url: subSubCategory.url });
+    if (isPlatform("android")) {
+      Browser.open({ url: link });
+    } else {
+      await Browser.open({ url: link });
+    }
   } else {
     if (subSubCategory.url.includes("https://gesundes-wnd.de/public/search")) {
       let searchUrl = subSubCategory.url.split("/");
