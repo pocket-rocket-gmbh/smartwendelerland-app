@@ -212,6 +212,7 @@ import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import facilityIcon from "@/assets/images/facilities/facilities.svg";
 import { isPlatform, IonIcon, IonButton } from "@ionic/vue";
+import { Browser } from "@capacitor/browser";
 
 const router = useRouter();
 const filterStore = useFilterStore();
@@ -254,9 +255,9 @@ const getDayOfWeek = (event: string) => {
 
 defineProps(["facilityKind"]);
 
-const openMapsApp = (location: any) => {
+const openMapsApp = async(location: any) => {
   if (isPlatform("android")) {
-    window.location.href = `maps.google.com/?q=${location}`;
+    await Browser.open({ url: `maps.google.com/?q=${location}` });
   } else {
     window.location.href = `maps://maps.apple.com/?q=${location}`;
   }

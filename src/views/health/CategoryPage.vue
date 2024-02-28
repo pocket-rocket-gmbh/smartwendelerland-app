@@ -20,10 +20,7 @@
           {{ subCategory.name }}
         </span>
       </div>
-      <div
-        class="ion-padding-start ion-padding-end is-dark-grey hypernate"
-        lang="de"
-      >
+      <div class="ion-padding-start ion-padding-end is-dark-grey hypernate" lang="de">
         <div
           class="general-font-size is-dark-grey"
           v-html="currentSubCategory?.description"
@@ -104,6 +101,9 @@ import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
 import { onIonViewDidEnter, IonLoading, IonButton, isPlatform } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
+import { dataURLtoFile, fileToBase64 } from '@/utils/file'
+import { Directory, Filesystem } from '@capacitor/filesystem'
+import { FileOpener } from '@awesome-cordova-plugins/file-opener'
 
 const router = useRouter();
 const filterStore = useFilterStore();
@@ -152,15 +152,12 @@ const setItemsAndGo = (subCategory: any) => {
   getSubSubCategories();
 };
 
-
 const handleClick = async (subSubCategory: any) => {
   let link = subSubCategory.url;
   if (subSubCategory?.url.includes(".pdf")) {
-    if (isPlatform("android")) {
-      link = 'docs.google.com/viewer?url=' + link;
-    }
+    openPdf(link)
   }
-  if (subSubCategory.url_kind === "external") {
+  if (subSubCategory.url_kind === "external" && !subSubCategory?.url.includes(".pdf")) {
     if (isPlatform("android")) {
       Browser.open({ url: link });
     } else {
@@ -214,6 +211,30 @@ const handleClick = async (subSubCategory: any) => {
   }
 
   selectedSubSubCategory.value = null;
+};
+
+const openPdf = async (link: any) => {
+  const agbPdfPath = link;
+  const rawPdf = await fileToBase64(agbPdfPath);
+  openPDF(rawPdf);
+};
+
+const openPDF = (rawPdf: string) => {
+  if (isPlatform("cordova")) {
+    const pdfContentBase64 = rawPdf;
+
+    Filesystem.writeFile({
+      path: "AGB.pdf",
+      data: pdfContentBase64,
+      directory: Directory.Data,
+    }).then((result) => {
+      FileOpener.open(result.uri, "application/pdf");
+    });
+  } else {
+    const file = dataURLtoFile(rawPdf, "AGB");
+    const url = URL.createObjectURL(file);
+    window.open(url);
+  }
 };
 
 onIonViewDidEnter(async () => {
