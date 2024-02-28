@@ -27,6 +27,17 @@
         >
           {{ facility.name }}
         </div>
+<div class="divider"></div>
+        <a :href="`geo:${facility.street}`">
+                <ion-icon
+                 
+                  class="icons"
+                  size="large"
+                  :src="mapIcon"
+                ></ion-icon>
+                </a
+              >
+              <div class="divider"></div>
       </div>
       <div class="general-font-size is-dark-grey">
         <div v-if="facility.kind !== 'news'">

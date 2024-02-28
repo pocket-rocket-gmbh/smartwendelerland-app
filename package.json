@@ -10,7 +10,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@awesome-cordova-plugins/core": "^6.3.0",
+    "@awesome-cordova-plugins/core": "^6.6.0",
     "@awesome-cordova-plugins/file-opener": "^6.6.0",
     "@awesome-cordova-plugins/screen-orientation": "^6.3.0",
     "@awesome-cordova-plugins/vibration": "^6.3.0",

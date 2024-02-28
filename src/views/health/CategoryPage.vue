@@ -20,7 +20,10 @@
           {{ subCategory.name }}
         </span>
       </div>
-      <div class="ion-padding-start ion-padding-end is-dark-grey hypernate" lang="de">
+      <div
+        class="ion-padding-start ion-padding-end is-dark-grey hypernate"
+        lang="de"
+      >
         <div
           class="general-font-size is-dark-grey"
           v-html="currentSubCategory?.description"
@@ -99,11 +102,16 @@ import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
 import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
-import { onIonViewDidEnter, IonLoading, IonButton, isPlatform } from "@ionic/vue";
+import {
+  onIonViewDidEnter,
+  IonLoading,
+  IonButton,
+  isPlatform,
+} from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
-import { dataURLtoFile, fileToBase64 } from '@/utils/file'
-import { Directory, Filesystem } from '@capacitor/filesystem'
-import { FileOpener } from '@awesome-cordova-plugins/file-opener'
+import { dataURLtoFile, fileToBase64 } from "@/utils/file";
+import { Directory, Filesystem } from "@capacitor/filesystem";
+import { FileOpener } from "@awesome-cordova-plugins/file-opener";
 
 const router = useRouter();
 const filterStore = useFilterStore();
@@ -155,9 +163,12 @@ const setItemsAndGo = (subCategory: any) => {
 const handleClick = async (subSubCategory: any) => {
   let link = subSubCategory.url;
   if (subSubCategory?.url.includes(".pdf")) {
-    openPdf(link)
+    openPdf(link);
   }
-  if (subSubCategory.url_kind === "external" && !subSubCategory?.url.includes(".pdf")) {
+  if (
+    subSubCategory.url_kind === "external" &&
+    !subSubCategory?.url.includes(".pdf")
+  ) {
     if (isPlatform("android")) {
       Browser.open({ url: link });
     } else {
@@ -185,7 +196,9 @@ const handleClick = async (subSubCategory: any) => {
         paramsObject[key] = value;
       });
 
-      const filter = paramsObject.filter ? JSON.parse(paramsObject.filter) : null;
+      const filter = paramsObject.filter
+        ? JSON.parse(paramsObject.filter)
+        : null;
       if (filter && filter?.currentSearchTerm) {
         filterStore.currentSearchTerm = filter?.currentSearchTerm;
       }
@@ -214,8 +227,9 @@ const handleClick = async (subSubCategory: any) => {
 };
 
 const openPdf = async (link: any) => {
-  const agbPdfPath = link;
-  const rawPdf = await fileToBase64(agbPdfPath);
+  console.log(link);
+  const pdfUrl = link;
+  const rawPdf = await fileToBase64(pdfUrl);
   openPDF(rawPdf);
 };
 
