@@ -231,7 +231,7 @@ const openPDF = (rawPdf: string) => {
       FileOpener.open(result.uri, "application/pdf");
     });
   } else {
-    const file = dataURLtoFile(rawPdf, "AGB");
+    const file = dataURLtoFile(rawPdf, "pdf");
     const url = URL.createObjectURL(file);
     window.open(url);
   }
