@@ -365,10 +365,10 @@ ion-chip
 .event-dates
   position: absolute
   left: 25px
-  padding-top: 3px
+  padding-top: 2px
   font-size: 12px
   font-weight: 600
-  margin-left: 5px
+  margin-left: 4px
 
 .two-numbers-date
   left: 22px
