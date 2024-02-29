@@ -13,7 +13,7 @@
         >
       </ion-toolbar>
     </ion-header>
-    <ion-loading :is-open="!loaded" />
+    <ion-loading :is-open="!loaded" message="PDF Datei wird geladen..." />
     <iframe
       :key="key"
       style="width: 100%; height: 100%"

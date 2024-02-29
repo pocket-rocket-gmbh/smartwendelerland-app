@@ -202,17 +202,17 @@ const pageTile = computed(() => {
 
 const countSelectedFilters = computed(() => {
   let results = 0;
-  if (filterStore.currentSearchTerm.length) {
+  if (filterStore.currentSearchTerm?.length) {
     results += 1;
   }
-  if (filterStore.currentFacilityTags.length) {
-    results += filterStore.currentFacilityTags.length;
+  if (filterStore.currentFacilityTags?.length) {
+    results += filterStore.currentFacilityTags?.length;
   }
-  if (filterStore.currentServiceTags.length) {
-    results += filterStore.currentServiceTags.length;
+  if (filterStore.currentServiceTags?.length) {
+    results += filterStore.currentServiceTags?.length;
   }
   if (filterStore.currentZips) {
-    results += filterStore.currentZips.length;
+    results += filterStore.currentZips?.length;
   }
   return results;
 });

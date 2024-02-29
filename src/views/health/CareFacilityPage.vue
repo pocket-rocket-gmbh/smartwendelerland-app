@@ -6,10 +6,7 @@
     :show-bar="false"
     :is-facility-page="isFacilityPage"
   >
-    <div
-      class="facility-page"
-      v-if="facility"
-    >
+    <div class="facility-page" v-if="facility">
       <swiper
         :slides-per-view="1"
         :space-between="20"
@@ -92,7 +89,16 @@
                   </div>
                 </div>
                 <div class="informations">
-                  <div @click.stop="openMapsApp(facility.street)">
+                  <div v-if="facility.kind === 'facility'">
+                    <div v-for="geo in facility?.geocode_address" :key="geo.id">
+                      <a
+                        :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`"
+                      >
+                        <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+                      </a>
+                    </div>
+                  </div>
+                  <div v-else>
                     <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
                   </div>
                   <div class="has-irregular-margin">
@@ -279,7 +285,8 @@
           v-for="document in facility.sanitized_documents"
           :key="document.signed_id"
           @click="handleLinkClick(document.url)"
-        >+
+        >
+          +
           <img src="@/assets/images/download.svg" min-width="24" />
           <span>{{ document.name }}.pdf</span>
         </div>

@@ -110,7 +110,7 @@ const handleSearch = async () => {
   loading.value = true;
   filterStore.currentKinds = [];
   filterStore.onlySearchInTitle = false;
-  if (filterStore.currentSearchTerm.length > 0) {
+  if (filterStore.currentSearchTerm?.length > 0) {
     await filterStore.loadAllResults();
     router.push({ path: "/health/search" });
   }
