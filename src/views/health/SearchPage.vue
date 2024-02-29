@@ -329,14 +329,11 @@ onIonViewWillEnter(() => {
 });
 
 const startSearch = async () => {
-  loading.value = true;
   filterStore.currentKinds = facilityKind.value ? [facilityKind.value] : [];
   await filterStore.loadAllResults();
-  loading.value = false;
 };
 
 const facilityKind = ref<FilterKind>();
-
 const handleSearch = () => {
   filterStore.onlySearchInTitle = false;
   filterStore.loadAllResults();

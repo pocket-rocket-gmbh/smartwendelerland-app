@@ -31,8 +31,6 @@ import {
   IonModal,
   IonToolbar,
   IonLoading,
-  onIonViewWillEnter,
-  onIonViewDidEnter,
 } from "@ionic/vue";
 import { defineEmits, defineProps, onMounted, ref } from "vue";
 
@@ -48,8 +46,7 @@ onMounted(() => {
     }
 
     key.value++;
-  }, 1000);
-  loaded.value = true;
+  }, 5000);
 });
 
 const props = defineProps({

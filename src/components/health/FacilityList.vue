@@ -29,21 +29,21 @@
       <div class="general-font-size is-dark-grey">
         <div v-if="facility.kind !== 'news'">
           <div class="informations">
-            {{ isPlatform('android') ? 'Android' : 'Apple' }}
-            <div v-if="isPlatform('android')">
-              <div v-for="geo in facility.geocode_address" :key="geo.id">
-                <a :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`">
-                  <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
-                </a>
-              </div>
-            </div>
-            <div v-else>
+            {{ isPlatform("ios") ? "Android" : "Apple" }}
+            <div v-if="isPlatform('ios')">
               <ion-icon
                 @click.stop="openMapsApp(facility.street)"
                 class="icons"
                 size="large"
                 :src="mapIcon"
               ></ion-icon>
+            </div>
+            <div v-else>
+              <div v-for="geo in facility.geocode_address" :key="geo.id">
+                <a :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`">
+                  <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+                </a>
+              </div>
             </div>
             <div class="has-irregular-margin">
               <div>
