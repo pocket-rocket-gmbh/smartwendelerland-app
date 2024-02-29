@@ -87,14 +87,15 @@ onMounted(async () => {
   useAppStateStore().setAppLoadingProgress(0.69),
     //load all filters
     await useFilterStore().loadAllFacilityFilters(),
+    useAppStateStore().setAppLoadingProgress(0.75),
     await useFilterStore().loadAllServiceFilters();
-  useFilterStore().loadFilteredFacilityMainFilters();
+  useAppStateStore().setAppLoadingProgress(0.83),
+    useFilterStore().loadFilteredFacilityMainFilters();
   useFilterStore().loadFilteredCategories();
 
-  useAppStateStore().setAppLoadingProgress(0.8),
-    useAppStateStore().setAppLoadingProgress(0.99),
-    useAppStateStore().setAppLoading(false);
+  useAppStateStore().setAppLoadingProgress(0.95), useAppStateStore().setAppLoading(false);
   console.log("App loaded - duration: " + (Date.now() - startTime) + " ms");
+  useAppStateStore().setAppLoadingProgress(0.99);
 });
 </script>
 
