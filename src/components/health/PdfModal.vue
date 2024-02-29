@@ -3,21 +3,23 @@
     <ion-header mode="md">
       <ion-toolbar>
         <ion-button
+          :key="key"
           mode="md"
           shape="round"
-          class="green-button"
+          class="green-button close-pdf"
           slot="end"
           @click="emitClose"
           >Fertig</ion-button
         >
       </ion-toolbar>
     </ion-header>
-    <ion-loading :is-open="loading" />
+    <ion-loading :is-open="!loaded" />
     <iframe
-      v-if="!loading"
-      :src="`https://docs.google.com/gview?url=${subSubCategory}&embedded=true`"
+      :key="key"
       style="width: 100%; height: 100%"
+      src="https://docs.google.com/viewer?url=https://www.kvhs-wnd.de/fileadmin/user_upload/Kursprogramm/KVHS_Programm_2023.pdf&embedded=true"
       frameborder="0"
+      @load="loaded = true"
     ></iframe>
   </ion-modal>
 </template>
@@ -29,8 +31,26 @@ import {
   IonModal,
   IonToolbar,
   IonLoading,
+  onIonViewWillEnter,
+  onIonViewDidEnter,
 } from "@ionic/vue";
-import { defineEmits, defineProps, ref } from "vue";
+import { defineEmits, defineProps, onMounted, ref } from "vue";
+
+const key = ref(1);
+const loaded = ref(false);
+
+onMounted(() => {
+  const interval = setInterval(() => {
+    if (loaded.value) {
+      clearInterval(interval);
+
+      return;
+    }
+
+    key.value++;
+  }, 1000);
+  loaded.value = true;
+});
 
 const props = defineProps({
   subSubCategory: {
@@ -44,12 +64,6 @@ const emit = defineEmits(["close"]);
 const emitClose = () => {
   emit("close");
 };
-
-const loading = ref(true);
-
-setTimeout(() => {
-  loading.value = false;
-}, 2000);
 </script>
 
 <style lang="sass" scoped>
@@ -68,4 +82,7 @@ ion-segment-button::part(indicator-background)
 ion-modal
   --width: 100%
   --height: 100%
+
+.close-pdf
+  margin-right: 10px
 </style>
