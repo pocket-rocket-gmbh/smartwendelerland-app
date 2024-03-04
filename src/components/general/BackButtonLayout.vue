@@ -172,7 +172,7 @@ ion-toolbar {
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
-  padding: 4px 10px 0px 10px;
+  padding: 9px 10px 0px 10px;
   line-height: 27px;
 }
 

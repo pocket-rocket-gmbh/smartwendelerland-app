@@ -126,6 +126,12 @@
       <div class="general-font-size" v-else>Leider keine Ergebnisse gefunden.</div>
     </div>
 
+    <div>
+      {{ getPlatforms() }}
+    </div>
+   
+   
+
     <IonIcon
       v-if="view === 'map'"
       class="back-button-icon"
