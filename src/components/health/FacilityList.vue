@@ -12,7 +12,9 @@
           class="header-facility-name"
         >
           <img class="icons" :src="facilityIcon" />
-          <span class="general-font-size">{{ facility?.user_care_facility.name }}</span>
+          <span class="general-font-size">{{
+            facility?.user_care_facility.name
+          }}</span>
         </div>
         <div v-if="facility.kind !== 'facility'" class="divider has-gap"></div>
         <div
@@ -22,18 +24,37 @@
         >
           {{ facility.name }}
         </div>
-        <div v-if="Capacitor.getPlatform() === 'ios'">
-          is ios man!
-        </div>
-        <div>
-          {{ Capacitor.getPlatform() }}
-        </div>
       </div>
       <div class="general-font-size is-dark-grey">
         <div v-if="facility.kind && facility.kind !== 'news'">
           <div class="informations">
-            <div>
+            <div
+              v-if="
+                !facility.geocode_address.length || !facility.locations.length
+              "
+            >
               <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+            </div>
+            <div v-else-if="Capacitor.getPlatform() === 'ios'">
+              <ion-icon
+                @click.stop="openMapsApp(facility.street)"
+                class="icons"
+                size="large"
+                :src="mapIcon"
+              ></ion-icon>
+            </div>
+            <div v-else>
+              <div v-for="geo in facility.geocode_address" :key="geo.id">
+                <a
+                  :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`"
+                >
+                  <ion-icon
+                    class="icons"
+                    size="large"
+                    :src="mapIcon"
+                  ></ion-icon>
+                </a>
+              </div>
             </div>
             <div class="has-irregular-margin">
               <div>
@@ -51,15 +72,27 @@
         <div>
           <div class="informations" v-if="facility.kind !== 'news'">
             <div>
-              <a class="is-dark-grey" :href="`tel:${facility.phone}`" @click.stop>
-                <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
+              <a
+                class="is-dark-grey"
+                :href="`tel:${facility.phone}`"
+                @click.stop
+              >
+                <ion-icon
+                  class="icons"
+                  :src="phoneIcon"
+                  size="large"
+                ></ion-icon>
               </a>
             </div>
             <div>
               {{ facility.phone }}
             </div>
           </div>
-          <div class="informations hypernate" lang="de" v-if="facility.kind !== 'news'">
+          <div
+            class="informations hypernate"
+            lang="de"
+            v-if="facility.kind !== 'news'"
+          >
             <a
               class="is-dark-grey centralize"
               :href="`mailto:${facility.email}`"
@@ -79,13 +112,19 @@
             <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
             <span
               class="event-dates is-health"
-              :class="[facility?.event_dates.length >= 10 ? 'two-numbers-date' : '']"
+              :class="[
+                facility?.event_dates.length >= 10 ? 'two-numbers-date' : '',
+              ]"
               >{{ facility?.event_dates.length }}</span
             >
           </div>
           <div class="event-chips" v-if="facility?.event_dates.length">
             <div class="course-dates">
-              <div class="list" v-for="event in facility.event_dates" :key="event">
+              <div
+                class="list"
+                v-for="event in facility.event_dates"
+                :key="event"
+              >
                 <div v-if="facility?.event_dates.length === 1">
                   <span>{{ getDayOfWeek(event.slice(0, 10)) + "., " }}</span>
                   <span
@@ -95,12 +134,16 @@
                 </div>
               </div>
 
-              <span v-if="facility?.event_dates.length > 1" class="next-event is-health"
+              <span
+                v-if="facility?.event_dates.length > 1"
+                class="next-event is-health"
                 >Termine anzeigen:</span
               >
               <div v-if="facility?.event_dates.length > 1">
                 <span
-                  v-if="facility.kind !== 'facility' && facility.kind !== 'news'"
+                  v-if="
+                    facility.kind !== 'facility' && facility.kind !== 'news'
+                  "
                   @click.stop="showAllEvents(facility)"
                 >
                   <ion-icon
@@ -121,7 +164,11 @@
           </div>
         </div>
         <div
-          v-if="facility?.event_dates.length && showAllEvents && facility.showAllEvents"
+          v-if="
+            facility?.event_dates.length &&
+            showAllEvents &&
+            facility.showAllEvents
+          "
           class="informations"
         >
           <div>
@@ -149,10 +196,10 @@
             class="general-font-size is-dark-grey break-text hypernate ion-margin-top"
             lang="de"
           />
-          
         </div>
         <div class="informations news-date" v-if="facility.kind === 'news'">
-          <ion-icon class="icon-news" :src="calendarIconNews"></ion-icon> {{ useDatetime().parseDate(facility.created_at) }}
+          <ion-icon class="icon-news" :src="calendarIconNews"></ion-icon>
+          {{ useDatetime().parseDate(facility.created_at) }}
         </div>
         <ion-button
           v-if="
@@ -245,7 +292,9 @@ const routeAndGo = (facility: Facility) => {
       facilityTags: JSON.stringify(filterStore.currentFacilityTags),
       communities: JSON.stringify(filterStore.currentZips),
       searchTerm: filterStore.currentSearchTerm,
-      currentKind: JSON.stringify(filterStore.currentKinds[0].replace(/"/g, '')),
+      currentKind: JSON.stringify(
+        filterStore.currentKinds[0].replace(/"/g, "")
+      ),
     },
   });
   if (router.currentRoute.value.query.kind) {

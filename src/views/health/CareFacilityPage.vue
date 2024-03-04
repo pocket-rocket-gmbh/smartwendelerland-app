@@ -90,12 +90,22 @@
                 </div>
                 <div class="informations">
                   <div v-if="facility.kind === 'facility'">
-                    <div v-for="geo in facility?.geocode_address" :key="geo.id">
-                      <a
-                        :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`"
-                      >
-                        <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
-                      </a>
+                    <div v-if="Capacitor.getPlatform() === 'ios'">
+                      <ion-icon
+                        @click.stop="openMapsApp(facility.street)"
+                        class="icons"
+                        size="large"
+                        :src="mapIcon"
+                      ></ion-icon>
+                    </div>
+                    <div v-else>
+                      <div v-for="geo in facility.geocode_address" :key="geo.id">
+                        <a
+                          :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`"
+                        >
+                          <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+                        </a>
+                      </div>
                     </div>
                   </div>
                   <div v-else>
@@ -321,7 +331,7 @@ import mapIcon from "@/assets/images/facilities/icon_address.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import { useFilterStore } from "@/stores/health/searchFilter";
-import { checkDecagramOutline } from "@/assets/images/check-decagram-outline.svg";
+import { Capacitor } from "@capacitor/core";
 
 const route = useRoute();
 const loading = ref(false);
