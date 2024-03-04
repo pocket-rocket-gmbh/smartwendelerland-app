@@ -29,7 +29,7 @@
       <div class="general-font-size is-dark-grey">
         <div v-if="facility.kind && facility.kind !== 'news'">
           <div class="informations">
-            <div v-if="facility.kind === 'facility'">
+            <div v-if="facility.kind === 'facility' && facility?.geocode_address?.length">
               <div v-for="geo in facility?.geocode_address" :key="geo.id">
                 <a :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`">
                   <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
@@ -244,6 +244,7 @@ const routeAndGo = (facility: Facility) => {
       facilityTags: JSON.stringify(filterStore.currentFacilityTags),
       communities: JSON.stringify(filterStore.currentZips),
       searchTerm: filterStore.currentSearchTerm,
+      currentKind: JSON.stringify(filterStore.currentKinds[0].replace(/"/g, '')),
     },
   });
   if (router.currentRoute.value.query.kind) {

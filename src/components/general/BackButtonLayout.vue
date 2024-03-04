@@ -119,6 +119,9 @@ const handleForceBack = computed(() => {
   if (!props.forceBack && props.isProject) {
     return "/participation/projects";
   }
+  if (router.currentRoute.value.query.currentKind) {
+    return `/health/search?kind=${(router.currentRoute.value.query.currentKind as string).replace(/"/g, '')}`;
+  }
   return props.forceBack;
 });
 
