@@ -125,13 +125,6 @@
       </div>
       <div class="general-font-size" v-else>Leider keine Ergebnisse gefunden.</div>
     </div>
-
-    <div>
-      {{ getPlatforms() }}
-    </div>
-   
-   
-
     <IonIcon
       v-if="view === 'map'"
       class="back-button-icon"
@@ -424,6 +417,8 @@ onIonViewWillLeave(() => {
   position: absolute
   z-index: 99999
   height: 65px
+  margin-top: constant(safe-area-inset-top)
+  margin-top: env(safe-area-inset-top)
 
 .map-view
   margin-top: -40px
@@ -469,6 +464,7 @@ ion-button
   margin-bottom: 15px
   border: 1px solid #636362
   z-index: 99999
+  margin-top: calc(12px + env(safe-area-inset-top))
 
 .facility-list
   padding: 10px

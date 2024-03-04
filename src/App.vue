@@ -4,7 +4,7 @@
     trigger="present-alert"
     header="Es besteht momentan keine Internetverbindung. Bitte überprüfe deine Verbindung und versuche es später erneut."
     :buttons="alertButtons"
-    @didDismiss="logResult($event)"
+    backdropDismiss="false" 
   ></ion-alert>
   <ion-app v-else>
     <div v-if="appState.isAppLoading" class="vertical-center">
@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { IonApp, IonSpinner, IonRouterOutlet, IonAlert } from "@ionic/vue";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { usePollStore } from "@/stores/poll";
 import { useAppStateStore } from "@/stores/appState";
 import { useMe } from "@/composables/user/me";
@@ -42,9 +42,11 @@ const alertButtons = ref([
   },
 ]);
 
-const logResult = (ev: CustomEvent) => {
-  console.log(`Dismissed with role: ${ev.detail.role}`);
-};
+
+watch(
+  () => online.value,
+  window.location.reload,
+);
 
 const appState = useAppStateStore();
 

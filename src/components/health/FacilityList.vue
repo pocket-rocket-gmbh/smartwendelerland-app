@@ -15,9 +15,6 @@
           <span class="general-font-size">{{ facility?.user_care_facility.name }}</span>
         </div>
         <div v-if="facility.kind !== 'facility'" class="divider has-gap"></div>
-        <div class="informations" v-if="facility.kind === 'news'">
-          {{ useDatetime().parseDate(facility.created_at) }}
-        </div>
         <div
           :class="facility.kind !== 'news' ? 'facility-name' : ''"
           class="general-font-size-subtitle is-dark-grey hypernate"
@@ -25,18 +22,17 @@
         >
           {{ facility.name }}
         </div>
+        <div v-if="Capacitor.getPlatform() === 'ios'">
+          is ios man!
+        </div>
+        <div>
+          {{ Capacitor.getPlatform() }}
+        </div>
       </div>
       <div class="general-font-size is-dark-grey">
         <div v-if="facility.kind && facility.kind !== 'news'">
           <div class="informations">
-            <div v-if="facility.kind === 'facility' && facility?.geocode_address?.length">
-              <div v-for="geo in facility?.geocode_address" :key="geo.id">
-                <a :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`">
-                  <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
-                </a>
-              </div>
-            </div>
-            <div v-else>
+            <div>
               <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
             </div>
             <div class="has-irregular-margin">
@@ -150,9 +146,13 @@
         <div class="informations" v-if="facility.kind === 'news'">
           <div
             v-html="facility.excerpt"
-            class="general-font-size is-dark-grey break-text hypernate"
+            class="general-font-size is-dark-grey break-text hypernate ion-margin-top"
             lang="de"
           />
+          
+        </div>
+        <div class="informations news-date" v-if="facility.kind === 'news'">
+          <ion-icon class="icon-news" :src="calendarIconNews"></ion-icon> {{ useDatetime().parseDate(facility.created_at) }}
         </div>
         <ion-button
           v-if="
@@ -189,6 +189,7 @@ import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import facilityIcon from "@/assets/images/facilities/facilities.svg";
 import { isPlatform, IonIcon, IonButton } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
+import { Capacitor } from "@capacitor/core";
 
 const router = useRouter();
 const filterStore = useFilterStore();
@@ -286,6 +287,11 @@ const routeAndGo = (facility: Facility) => {
   width: 25px
   margin-right: 10px
 
+.icon-news
+  height: 20px
+  width: 20px
+  margin-right: 10px
+
 .facility-name
   margin-bottom: 20px
   margin-left: 35px
@@ -353,4 +359,7 @@ ion-chip
 
 .day-of-week
   padding-right: 4px
+
+.news-date
+  justify-content: flex-end
 </style>
