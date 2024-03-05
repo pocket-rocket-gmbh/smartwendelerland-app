@@ -2,7 +2,7 @@
   <ion-alert
     v-if="!online"
     trigger="present-alert"
-    header="Es besteht momentan keine Internetverbindung. Bitte überprüfe deine Verbindung und versuche es später erneut."
+    header="Es besteht momentan keine Internetverbindung. Bitte überprüfe deine Verbindung und versuche es erneut."
     :buttons="alertButtons"
     backdropDismiss="false" 
   ></ion-alert>
