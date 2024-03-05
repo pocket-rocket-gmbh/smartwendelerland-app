@@ -85,7 +85,7 @@
                     ></ion-icon>
                   </div>
                   <div class="general-font-size">
-                    {{ facility?.user_care_facility.name }}a
+                    {{ facility?.user_care_facility.name }}
                   </div>
                 </div>
                 <div class="informations">
