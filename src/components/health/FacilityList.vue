@@ -16,9 +16,9 @@
         </div>
         <div v-if="facility.kind !== 'facility'" class="divider has-gap"></div>
         <div class="informations news-date" v-if="facility.kind === 'news'">
-            <div><ion-icon class="icon-news" :src="calendarIconNews"></ion-icon></div>
-            <div>{{ useDatetime().parseDate(facility.created_at) }}</div>
-          </div>
+          <div><ion-icon class="icon-news" :src="calendarIconNews"></ion-icon></div>
+          <div>{{ useDatetime().parseDate(facility.created_at) }}</div>
+        </div>
         <div
           :class="facility.kind !== 'news' ? 'facility-name' : ''"
           class="general-font-size-subtitle is-dark-grey hypernate"
@@ -39,8 +39,10 @@
               ></ion-icon>
             </div>
             <div v-else>
-              <div v-for="geo in facility.geocode_address" :key="geo.id">
-                <a :href="`geo:<${geo.lat}>,<${geo.lon}>?q=<${geo.lat}>,<${geo.lon}>`">
+              <div v-if="facility.geocode_address && facility.geocode_address.length > 0">
+                <a
+                  :href="`geo:<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>?q=<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>`"
+                >
                   <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
                 </a>
               </div>
