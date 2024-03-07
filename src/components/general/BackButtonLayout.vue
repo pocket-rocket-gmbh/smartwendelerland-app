@@ -2,10 +2,15 @@
   <ion-page>
     <ion-content :fullscreen="true">
       <ion-header class="no-border" mode="ios" v-if="view !== 'map'">
-        <ion-toolbar mode="md" :class="isProjectPage || isMePage ? 'is-project' : 'is-health'">
+        <ion-toolbar
+          mode="md"
+          :class="isProjectPage || isMePage ? 'is-project' : 'is-health'"
+        >
           <ion-buttons slot="start">
             <ion-nav-link
-              v-if="forceBack || isCategoryPage || hasIdeas || isMePage"
+              v-if="
+                forceBack || isCategoryPage || hasIdeas || isMePage || isProject
+              "
               :routerLink="handleForceBack"
             >
               <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
@@ -120,7 +125,9 @@ const handleForceBack = computed(() => {
     return "/participation/projects";
   }
   if (router.currentRoute.value.query.currentKind) {
-    return `/health/search?kind=${(router.currentRoute.value.query.currentKind as string).replace(/"/g, '')}`;
+    return `/health/search?kind=${(
+      router.currentRoute.value.query.currentKind as string
+    ).replace(/"/g, "")}`;
   }
   return props.forceBack;
 });
@@ -185,12 +192,17 @@ ion-toolbar {
 }
 
 .is-health {
-  --background: linear-gradient(90deg, #91a80d 0%, #bac323 46.88%, #9ea100 95.31%);
+  --background: linear-gradient(
+    90deg,
+    #91a80d 0%,
+    #bac323 46.88%,
+    #9ea100 95.31%
+  );
   color: white;
 }
 
 .is-project {
-  --background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%);
+  --background: linear-gradient(270deg, #017dc2 0.29%, #015281 100%);
   color: white;
 }
 
