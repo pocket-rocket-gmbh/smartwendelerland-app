@@ -427,6 +427,8 @@ const generateForceBackUrl = () => {
   let serviceTags = route.query?.serviceTags;
   let facilityTags = route.query?.facilityTags;
   let community = route.query?.communities;
+  let currentKind = route.query?.currentKind ? route.query?.currentKind : facility.value?.kind;
+  let kind = route.query?.kind !== null ? route.query?.kind : facility.value?.kind;
   if (serviceTags?.length) {
     baseUrl += `&serviceTags=${serviceTags}`;
   }
@@ -435,6 +437,12 @@ const generateForceBackUrl = () => {
   }
   if (community?.length) {
     baseUrl += `&communities=${community}`;
+  }
+  if (currentKind) {
+    baseUrl += `&currentKind=${currentKind}`;
+  }
+  if (kind) {
+    baseUrl += `&kind=${kind}`;
   }
   return baseUrl;
 };

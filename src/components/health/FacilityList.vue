@@ -254,7 +254,7 @@ const routeAndGo = (facility: Facility) => {
       facilityTags: JSON.stringify(filterStore.currentFacilityTags),
       communities: JSON.stringify(filterStore.currentZips),
       searchTerm: filterStore.currentSearchTerm,
-      currentKind: JSON.stringify(filterStore.currentKinds[0].replace(/"/g, "")),
+      currentKind: JSON.stringify(filterStore.currentKinds[0] ? filterStore.currentKinds[0].replace(/"/g, "") : ""),
     },
   });
   if (router.currentRoute.value.query.kind) {
