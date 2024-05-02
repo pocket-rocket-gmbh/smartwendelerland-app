@@ -2,59 +2,71 @@
   <ion-card>
     <ion-card-content>
       <div class="image-wrapper ion-padding-bottom">
-      <img :src="imageCache.cacheableImageUrl(facility.imageUrl)" />
-    </div>
-    <div class="ion-padding-start ion-padding-bottom">
-      <div class="informations general-font-size">
-        <div @click.stop="openMapsApp(facility.street)">
-          <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
-        </div>
-        <div class="has-irregular-margin">
-          <div>
-            {{ filterStore.filteredResults[0].street }}
-          </div>
-          <div>
-            {{ filterStore.filteredResults[0].zip }}
-            <span>
-              {{ filterStore.filteredResults[0].town }}
-            </span>
-          </div>
-        </div>
+        <img :src="imageCache.cacheableImageUrl(facility.imageUrl)" />
       </div>
+      <div class="ion-padding-start ion-padding-bottom">
+        <div class="informations general-font-size">
+          <div v-if="Capacitor.getPlatform() === 'ios'">
+            <ion-icon
+              @click.stop="openMapsApp(facility.street)"
+              class="icons"
+              size="large"
+              :src="mapIcon"
+            ></ion-icon>
+          </div>
+          <div v-else>
+            <div v-if="facility.geocode_address && facility.geocode_address.length > 0">
+              <a
+                :href="`geo:<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>?q=<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>`"
+              >
+                <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+              </a>
+            </div>
+          </div>
+          <div class="has-irregular-margin">
+            <div>
+              {{ filterStore.filteredResults[0].street }}
+            </div>
+            <div>
+              {{ filterStore.filteredResults[0].zip }}
+              <span>
+                {{ filterStore.filteredResults[0].town }}
+              </span>
+            </div>
+          </div>
+        </div>
 
-      <div class="informations general-font-size">
-        <div>
+        <div class="informations general-font-size">
+          <div>
+            <a
+              class="is-dark-grey"
+              :href="`tel:${filterStore.filteredResults[0].phone}`"
+              @click.stop
+            >
+              <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
+            </a>
+          </div>
+          <div>
+            {{ filterStore.filteredResults[0].phone }}
+          </div>
+        </div>
+        <div class="informations general-font-size hypernate" lang="de">
           <a
-            class="is-dark-grey"
-            :href="`tel:${filterStore.filteredResults[0].phone}`"
+            class="is-dark-grey centralize mail"
+            :href="`mailto:${filterStore.filteredResults[0].email}`"
             @click.stop
           >
-            <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
+            <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
           </a>
-        </div>
-        <div>
-          {{ filterStore.filteredResults[0].phone }}
-        </div>
-      </div>
-      <div class="informations general-font-size hypernate" lang="de">
-        <a
-          class="is-dark-grey centralize mail"
-          :href="`mailto:${filterStore.filteredResults[0].email}`"
-          @click.stop
-        >
-          <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
-        </a>
 
-        <div class="has-irregular-margin-2">
-          {{ filterStore.filteredResults[0].email }}
+          <div class="has-irregular-margin-2">
+            {{ filterStore.filteredResults[0].email }}
+          </div>
         </div>
       </div>
-    </div>
-   
     </ion-card-content>
-    <div class="footer" @click="goToFacility">Einrichtung ansehen</div>
+    <div class="footer" @click="goToFacility">Zum Anbieter</div>
   </ion-card>
-
 </template>
 
 <script setup lang="ts">
@@ -65,6 +77,7 @@ import { IonIcon, isPlatform } from "@ionic/vue";
 import mapIcon from "@/assets/images/facilities/icon_address.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
+import { Capacitor } from "@capacitor/core";
 
 const filterStore = useFilterStore();
 

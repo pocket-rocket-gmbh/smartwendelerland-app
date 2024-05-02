@@ -1,5 +1,9 @@
 <template>
-  <BackButtonLayout force-back="/participation/projects" :is-project-page="true">
+  <BackButtonLayout
+    force-back="/participation/projects"
+    :is-project-page="true"
+    :title="project?.name"
+  >
     <ion-content class="ion-padding">
       <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
@@ -20,8 +24,14 @@
               class="showroom"
             />
           </swiper-slide>
-          <swiper-slide v-for="(image, index) in project.sanitized_images" :key="index">
-            <img :src="imageCache.cacheableImageUrl(image.url)" class="showroom" />
+          <swiper-slide
+            v-for="(image, index) in project.sanitized_images"
+            :key="index"
+          >
+            <img
+              :src="imageCache.cacheableImageUrl(image.url)"
+              class="showroom"
+            />
           </swiper-slide>
           <div class="pagination" />
         </swiper>
@@ -33,7 +43,10 @@
             :project="project"
             @updateProject="reloadData()"
           />
-          <LoginHint v-else label="Bitte melde dich an, um dieses Projekt zu bewerten" />
+          <LoginHint
+            v-else
+            label="Bitte melde dich an, um dieses Projekt zu bewerten"
+          />
         </div>
         <div class="item-box ion-padding ion-margin-top">
           <PollsBox v-if="projectPoll" :is-public="false" />
@@ -51,7 +64,8 @@
               >
                 <strong v-if="project.community && project.zip && project.town">
                   <ion-icon :icon="locationOutline"></ion-icon>
-                  {{ project.community.name }} | {{ project.zip }} - {{ project.town }}
+                  {{ project.community.name }} | {{ project.zip }} -
+                  {{ project.town }}
                 </strong>
               </div>
               <div class="ion-margin-top dates">
@@ -71,7 +85,9 @@
           </ion-row>
           <ion-row>
             <ion-col>
-              <div class="ion-margin-top ion-margin-bottom"><b>Abstimmung</b></div>
+              <div class="ion-margin-top ion-margin-bottom">
+                <b>Abstimmung</b>
+              </div>
               <ProjectVotes :key="votePanelKey" :project="project" />
             </ion-col>
           </ion-row>
@@ -113,7 +129,9 @@
         class="ion-margin-top comments-wrap"
         v-else-if="project && !useUser().loggedIn()"
       >
-        <LoginHint label="Bitte melde dich an, um dieses Projekt zu kommentieren" />
+        <LoginHint
+          label="Bitte melde dich an, um dieses Projekt zu kommentieren"
+        />
       </div>
 
       <div
@@ -158,7 +176,10 @@
         </ion-infinite-scroll>
       </div>
 
-      <ion-loading :is-open="loadingInProgress" message="Projekt wird geladen..." />
+      <ion-loading
+        :is-open="loadingInProgress"
+        message="Projekt wird geladen..."
+      />
     </ion-content>
   </BackButtonLayout>
 </template>
@@ -315,7 +336,10 @@ export default defineComponent({
 
       locations.value = [];
 
-      await Promise.all([projectsApi.getItem(projectId.value), reloadComments()]);
+      await Promise.all([
+        projectsApi.getItem(projectId.value),
+        reloadComments(),
+      ]);
 
       await usePollStore().setProjectPoll(projectId.value);
       projectPoll.value = usePollStore().projectPoll;
@@ -343,8 +367,9 @@ export default defineComponent({
     };
 
     const loadComments = async (concat = true) => {
-      const sortField = filterOptions.value.find((element) => element.id === filter.value)
-        .apiField;
+      const sortField = filterOptions.value.find(
+        (element) => element.id === filter.value
+      ).apiField;
       await commentsApi.retrieveCollection({
         page: currentPage.value,
         per_page: 5,
@@ -358,13 +383,17 @@ export default defineComponent({
     };
 
     const removeComment = (commentId: string) => {
-      const foundItem = comments.value.find((comment) => comment.id === commentId);
+      const foundItem = comments.value.find(
+        (comment) => comment.id === commentId
+      );
       const index = comments.value.indexOf(foundItem);
       comments.value.splice(index, 1);
     };
 
     const setCommentReported = (commentId: string) => {
-      const foundItem = comments.value.find((comment) => comment.id === commentId);
+      const foundItem = comments.value.find(
+        (comment) => comment.id === commentId
+      );
       foundItem.has_already_reported_comment = true;
     };
 

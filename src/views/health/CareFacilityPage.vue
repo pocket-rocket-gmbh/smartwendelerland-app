@@ -6,10 +6,7 @@
     :show-bar="false"
     :is-facility-page="isFacilityPage"
   >
-    <div
-      class="facility-page"
-      v-if="facility"
-    >
+    <div class="facility-page" v-if="facility">
       <swiper
         :slides-per-view="1"
         :space-between="20"
@@ -88,11 +85,34 @@
                     ></ion-icon>
                   </div>
                   <div class="general-font-size">
-                    {{ facility?.user_care_facility.name }}a
+                    {{ facility?.user_care_facility.name }}
                   </div>
                 </div>
                 <div class="informations">
-                  <div @click.stop="openMapsApp(facility.street)">
+                  <div v-if="facility.kind === 'facility'">
+                    <div v-if="Capacitor.getPlatform() === 'ios'">
+                      <ion-icon
+                        @click.stop="openMapsApp(facility.street)"
+                        class="icons"
+                        size="large"
+                        :src="mapIcon"
+                      ></ion-icon>
+                    </div>
+                    <div v-else>
+                      <div
+                        v-if="
+                          facility.geocode_address && facility.geocode_address.length > 0
+                        "
+                      >
+                        <a
+                          :href="`geo:<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>?q=<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>`"
+                        >
+                          <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else>
                     <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
                   </div>
                   <div class="has-irregular-margin">
@@ -279,7 +299,8 @@
           v-for="document in facility.sanitized_documents"
           :key="document.signed_id"
           @click="handleLinkClick(document.url)"
-        >+
+        >
+          +
           <img src="@/assets/images/download.svg" min-width="24" />
           <span>{{ document.name }}.pdf</span>
         </div>
@@ -314,7 +335,7 @@ import mapIcon from "@/assets/images/facilities/icon_address.svg";
 import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import { useFilterStore } from "@/stores/health/searchFilter";
-import { checkDecagramOutline } from "@/assets/images/check-decagram-outline.svg";
+import { Capacitor } from "@capacitor/core";
 
 const route = useRoute();
 const loading = ref(false);
@@ -403,13 +424,25 @@ const generateForceBackUrl = () => {
     return (filterStore.currentSearchTerm = route.query?.searchTerm as string);
   }
   let baseUrl = `/health/search?kind=${facility.value?.kind}`;
-  let tags = route.query?.tags;
-  let community = route.query?.community;
-  if (tags) {
-    baseUrl += `&tags=${tags}`;
+  let serviceTags = route.query?.serviceTags;
+  let facilityTags = route.query?.facilityTags;
+  let community = route.query?.communities;
+  let currentKind = route.query?.currentKind ? route.query?.currentKind : facility.value?.kind;
+  let kind = route.query?.kind !== null ? route.query?.kind : facility.value?.kind;
+  if (serviceTags?.length) {
+    baseUrl += `&serviceTags=${serviceTags}`;
   }
-  if (community) {
-    baseUrl += `&community=${community}`;
+  if (facilityTags?.length) {
+    baseUrl += `&facilityTags=${facilityTags}`;
+  }
+  if (community?.length) {
+    baseUrl += `&communities=${community}`;
+  }
+  if (currentKind) {
+    baseUrl += `&currentKind=${currentKind}`;
+  }
+  if (kind) {
+    baseUrl += `&kind=${kind}`;
   }
   return baseUrl;
 };

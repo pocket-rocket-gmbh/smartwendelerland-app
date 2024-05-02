@@ -57,7 +57,13 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from "@ionic/vue";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonIcon,
+  IonContent,
+} from "@ionic/vue";
 import { useRouter } from "vue-router";
 import { logInOutline, logInSharp } from "ionicons/icons";
 import UserProfile from "@/components/UserProfile.vue";
@@ -73,7 +79,7 @@ const router = useRouter();
 const route = router.currentRoute;
 
 watch(router.currentRoute, () => {
-  showSearchBar.value = false
+  showSearchBar.value = false;
 });
 
 const loading = ref(false);
@@ -104,7 +110,7 @@ const handleSearch = async () => {
   loading.value = true;
   filterStore.currentKinds = [];
   filterStore.onlySearchInTitle = false;
-  if (filterStore.currentSearchTerm.length > 0) {
+  if (filterStore.currentSearchTerm?.length > 0) {
     await filterStore.loadAllResults();
     router.push({ path: "/health/search" });
   }
@@ -135,7 +141,6 @@ const checkRoute = () => {
   }
   return false;
 };
-
 </script>
 
 <style lang="sass">
