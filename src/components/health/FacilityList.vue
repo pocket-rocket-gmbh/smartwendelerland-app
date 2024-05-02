@@ -15,26 +15,37 @@
           <span class="general-font-size">{{ facility?.user_care_facility.name }}</span>
         </div>
         <div v-if="facility.kind !== 'facility'" class="divider has-gap"></div>
-        <div class="informations" v-if="facility.kind === 'news'">
-          {{ useDatetime().parseDate(facility.created_at) }}
+        <div class="informations news-date" v-if="facility.kind === 'news'">
+          <div><ion-icon class="icon-news" :src="calendarIconNews"></ion-icon></div>
+          <div>{{ useDatetime().parseDate(facility.created_at) }}</div>
         </div>
         <div
-          class="general-font-size-subtitle is-dark-grey facility-name hypernate"
+          :class="facility.kind !== 'news' ? 'facility-name' : ''"
+          class="general-font-size-subtitle is-dark-grey hypernate"
           lang="de"
         >
           {{ facility.name }}
         </div>
       </div>
       <div class="general-font-size is-dark-grey">
-        <div v-if="facility.kind !== 'news'">
+        <div v-if="facility.kind && facility.kind !== 'news'">
           <div class="informations">
-            <div>
+            <div v-if="Capacitor.getPlatform() === 'ios'">
               <ion-icon
                 @click.stop="openMapsApp(facility.street)"
                 class="icons"
                 size="large"
                 :src="mapIcon"
               ></ion-icon>
+            </div>
+            <div v-else>
+              <div v-if="facility.geocode_address && facility.geocode_address.length > 0">
+                <a
+                  :href="`geo:<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>?q=<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>`"
+                >
+                  <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+                </a>
+              </div>
             </div>
             <div class="has-irregular-margin">
               <div>
@@ -79,7 +90,6 @@
           <div>
             <ion-icon class="icons" :src="calendarIcon" size="large"></ion-icon>
             <span
-            
               class="event-dates is-health"
               :class="[facility?.event_dates.length >= 10 ? 'two-numbers-date' : '']"
               >{{ facility?.event_dates.length }}</span
@@ -89,9 +99,9 @@
             <div class="course-dates">
               <div class="list" v-for="event in facility.event_dates" :key="event">
                 <div v-if="facility?.event_dates.length === 1">
-                  <span>{{ getDayOfWeek(event.slice(0, 10)) }}, &nbsp;</span>
+                  <span>{{ getDayOfWeek(event.slice(0, 10)) + "., " }}</span>
                   <span
-                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
+                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + " " }} um
                     {{ event.slice(11) }} Uhr</span
                   >
                 </div>
@@ -133,9 +143,11 @@
             <span v-for="event in displayedEvents(facility)" :key="event.index">
               <div class="informations">
                 <div class="dates list">
-                  <span>{{ getDayOfWeek(event.slice(0, 10)) }},&nbsp;</span>
+                  <span class="day-of-week">{{
+                    getDayOfWeek(event.slice(0, 10)) + "., "
+                  }}</span>
                   <span
-                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + "," }}
+                    >{{ event.slice(0, 5) }}.{{ event.slice(8, 10) + " " }}um
                     {{ event.slice(11) }} Uhr</span
                   >
                 </div>
@@ -146,17 +158,18 @@
         <div class="informations" v-if="facility.kind === 'news'">
           <div
             v-html="facility.excerpt"
-            class="general-font-size is-dark-grey break-text hypernate"
+            class="general-font-size is-dark-grey break-text hypernate ion-margin-top"
             lang="de"
           />
         </div>
+
         <ion-button
           v-if="
             !router.currentRoute.value.query.kind ||
             facility.kind === 'course' ||
             facility.kind === 'event' ||
             facility.kind === 'news' ||
-            facility.kind !== 'facility'
+            facility.kind === 'facility'
           "
           mode="md"
           shape="round"
@@ -165,17 +178,6 @@
           @click="routeAndGo(facility)"
           >{{ getFacilityKind(facility) }}</ion-button
         >
-
-        <ion-button
-          v-else-if="router.currentRoute.value.query.kind"
-          mode="md"
-          shape="round"
-          expand="block"
-          class="green-button ion-margin-top"
-          @click="routeAndGo(facility)"
-        >
-          Details ansehen
-        </ion-button>
       </div>
     </div>
   </div>
@@ -195,6 +197,8 @@ import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import facilityIcon from "@/assets/images/facilities/facilities.svg";
 import { isPlatform, IonIcon, IonButton } from "@ionic/vue";
+import { Browser } from "@capacitor/browser";
+import { Capacitor } from "@capacitor/core";
 
 const router = useRouter();
 const filterStore = useFilterStore();
@@ -212,8 +216,8 @@ const displayedEvents = computed(
 );
 
 const getFacilityKind = (facility: any) => {
-  if (facility && facility.kind === "facility" && router.currentRoute.value.query.kind !== "facility") {
-    return "Zur Einrichtung";
+  if (facility && facility.kind === "facility") {
+    return "Zum Anbieter";
   } else if (facility && facility.kind === "event") {
     return "Zur Veranstaltung";
   } else if (facility && facility.kind === "course") {
@@ -234,9 +238,9 @@ const getDayOfWeek = (event: string) => {
 
 defineProps(["facilityKind"]);
 
-const openMapsApp = (location: any) => {
+const openMapsApp = async (location: any) => {
   if (isPlatform("android")) {
-    window.location.href = `https://maps.google.com/?q=${location}`;
+    await Browser.open({ url: `maps.google.com/?q=${location}` });
   } else {
     window.location.href = `maps://maps.apple.com/?q=${location}`;
   }
@@ -246,9 +250,11 @@ const routeAndGo = (facility: Facility) => {
   router.push({
     path: `/health/care_facilities/${facility.id}`,
     query: {
-      tags: JSON.stringify(filterStore.currentTags),
-      community: filterStore.currentZip,
+      serviceTags: JSON.stringify(filterStore.currentServiceTags),
+      facilityTags: JSON.stringify(filterStore.currentFacilityTags),
+      communities: JSON.stringify(filterStore.currentZips),
       searchTerm: filterStore.currentSearchTerm,
+      currentKind: JSON.stringify(filterStore.currentKinds[0] ? filterStore.currentKinds[0].replace(/"/g, "") : ""),
     },
   });
   if (router.currentRoute.value.query.kind) {
@@ -288,6 +294,11 @@ const routeAndGo = (facility: Facility) => {
 .icons
   height: 25px
   width: 25px
+  margin-right: 10px
+
+.icon-news
+  height: 20px
+  width: 20px
   margin-right: 10px
 
 .facility-name
@@ -344,14 +355,23 @@ ion-chip
 .event-dates
   position: absolute
   left: 25px
-  padding-top: 3px
+  padding-top: 2px
   font-size: 12px
   font-weight: 600
-  margin-left: 5px 
+  margin-left: 4px
 
 .two-numbers-date
   left: 22px
 
 .mail
   text-transform: lowercase
+
+.day-of-week
+  padding-right: 4px
+
+.news-date
+  justify-content: flex-end
+  display: flex
+  flex-wrap: wrap
+  align-items: flex-start
 </style>

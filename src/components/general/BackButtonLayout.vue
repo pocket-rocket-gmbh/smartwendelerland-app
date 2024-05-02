@@ -1,62 +1,45 @@
 <template>
   <ion-page>
-    <ion-header v-if="projekRoute && showBar">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-nav-link v-if="forceBack" :routerLink="forceBack">
-            <IonIcon :icon="arrowBackOutline" />
-           
-          </ion-nav-link>
-          <ion-back-button
-            v-else
-            text=""
-            default-href="/"
-            :icon="arrowBackOutline"
-          />
-        </ion-buttons>
-        <ion-icon
-          v-if="!useUser().loggedIn() && showLogin"
-          @click="router.push('/login')"
-          router-link="/login"
-          :ios="logInOutline"
-          :md="logInSharp"
-          slot="end"
-        ></ion-icon>
-        <div
-          v-else-if="showLogin"
-          @click="router.push('/me')"
-          router-link="/me"
-          slot="end"
-        >
-          <UserProfile :user="useUser().currentUser()" />
-        </div>
-      </ion-toolbar>
-    </ion-header>
-
     <ion-content :fullscreen="true">
-      
-      <ion-header
-        class="no-border"
-        mode="ios"
-        v-if="view !== 'map' && !isProjectPage"
-      >
-        <ion-toolbar mode="md" :color="isProject ? 'pinboard' : 'health'">
-          
+      <ion-header class="no-border" mode="ios" v-if="view !== 'map'">
+        <ion-toolbar
+          mode="md"
+          :class="isProjectPage || isMePage ? 'is-project' : 'is-health'"
+        >
           <ion-buttons slot="start">
             <ion-nav-link
-              v-if="(forceBack && !showBar) || isCategoryPage || isProject || hasIdeas"
+              v-if="
+                forceBack || isCategoryPage || hasIdeas || isMePage || isProject
+              "
               :routerLink="handleForceBack"
             >
               <IonIcon class="back-button-icon" :icon="arrowBackOutline" />
             </ion-nav-link>
           </ion-buttons>
-          <ion-label mode="md" >
+          <ion-label mode="md">
             <div class="page-title">
               <span v-if="title" class="is-white">
                 {{ title }}
               </span>
             </div>
           </ion-label>
+          <ion-icon
+            v-if="!useUser().loggedIn() && showLogin"
+            @click="router.push('/login')"
+            router-link="/login"
+            :ios="logInOutline"
+            :md="logInSharp"
+            slot="end"
+            class="login-in-icon"
+          ></ion-icon>
+          <div
+            v-else-if="showLogin"
+            @click="router.push('/me')"
+            router-link="/me"
+            slot="end"
+          >
+            <UserProfile :user="useUser().currentUser()" />
+          </div>
         </ion-toolbar>
       </ion-header>
 
@@ -64,7 +47,6 @@
     </ion-content>
   </ion-page>
 </template>
-/* */
 <script setup lang="ts">
 import { defineProps, computed } from "vue";
 import {
@@ -142,11 +124,23 @@ const handleForceBack = computed(() => {
   if (!props.forceBack && props.isProject) {
     return "/participation/projects";
   }
+  if (router.currentRoute.value.query.currentKind) {
+    return `/health/search?kind=${(
+      router.currentRoute.value.query.currentKind as string
+    ).replace(/"/g, "")}`;
+  }
   return props.forceBack;
 });
 
 const projekRoute = computed(() => {
   if (route.value.path.includes("participation")) {
+    return true;
+  }
+  return false;
+});
+
+const isMePage = computed(() => {
+  if (route.value.path.includes("me")) {
     return true;
   }
   return false;
@@ -165,6 +159,7 @@ ion-icon {
 
 .back-button-icon {
   font-size: 12px;
+  color: #636362;
   padding: 10px;
   border-radius: 50%;
   background: white;
@@ -179,18 +174,39 @@ ion-toolbar {
   --border-width: 0px;
   padding-bottom: 5px;
   margin-bottom: -10px;
-  background: linear-gradient(
-    90deg,
-    #91a80d 0%,
-    #bac323 46.88%,
-    #9ea100 95.31%
-  );
   /* background: linear-gradient(66deg, red, green, blue); */
 }
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
-  padding: 4px 10px 0px 10px;
+  padding: 9px 10px 0px 10px;
   line-height: 27px;
+}
+
+.page-title-project {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0 10px 0px 10px;
+  line-height: 27px;
+  margin-top: -5px;
+}
+
+.is-health {
+  --background: linear-gradient(
+    90deg,
+    #91a80d 0%,
+    #bac323 46.88%,
+    #9ea100 95.31%
+  );
+  color: white;
+}
+
+.is-project {
+  --background: linear-gradient(270deg, #017dc2 0.29%, #015281 100%);
+  color: white;
+}
+
+.login-in-icon {
+  margin-top: 5px;
 }
 </style>

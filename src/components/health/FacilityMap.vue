@@ -33,36 +33,38 @@
       />
     </div>
   </div>
-  <ion-modal :is-open="!!clickedLocation" :onDidDismiss="dismiss">
-    <ion-header class="no-border" mode="ios">
-      <ion-toolbar mode="md">
-        <ion-buttons slot="start" class="back-button">
-          <IonIcon
-            @click="clickedLocation = null"
-            class="back-button-icon"
-            :icon="arrowBackOutline"
+  <div class="modal-content">
+    <ion-modal :is-open="!!clickedLocation" :onDidDismiss="dismiss">
+      <ion-header class="no-border" mode="ios">
+        <ion-toolbar mode="md">
+          <ion-buttons slot="start" class="back-button">
+            <IonIcon
+              @click="clickedLocation = null"
+              class="back-button-icon"
+              :icon="arrowBackOutline"
+            />
+          </ion-buttons>
+          <ion-label mode="md" v-if="clickedLocation?.name">
+            <div class="page-title">
+              <span class="is-dark-grey general-font-size">
+                {{ clickedLocation?.name }}
+              </span>
+            </div>
+          </ion-label>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content id="projectList">
+        <div class="ion-margin-top">
+          <FacilityPanel
+            v-if="clickedLocation"
+            :facility="clickedLocation"
+            @goToFacility="navigateToFacility"
+            :id="clickedLocation.id"
           />
-        </ion-buttons>
-        <ion-label mode="md" v-if="clickedLocation?.name">
-          <div class="page-title">
-            <span class="is-dark-grey general-font-size">
-              {{ clickedLocation?.name }}
-            </span>
-          </div>
-        </ion-label>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content id="projectList">
-      <div class="ion-margin-top">
-        <FacilityPanel
-          v-if="clickedLocation"
-          :facility="clickedLocation"
-          @goToFacility="navigateToFacility"
-          :id="clickedLocation.id"
-        />
-      </div>
-    </ion-content>
-  </ion-modal>
+        </div>
+      </ion-content>
+    </ion-modal>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -70,7 +72,16 @@ import MapWidget from "@/components/MapWidget.vue";
 import ParticipationProjectListPanel from "@/components/participation/ProjectListPanel.vue";
 import { useFilterStore } from "@/stores/health/searchFilter";
 import { MapLocation } from "@/types/MapLocation";
-import { IonContent, IonModal, onIonViewDidEnter, IonIcon, IonButtons, IonLabel, IonToolbar, IonHeader } from "@ionic/vue";
+import {
+  IonContent,
+  IonModal,
+  onIonViewDidEnter,
+  IonIcon,
+  IonButtons,
+  IonLabel,
+  IonToolbar,
+  IonHeader,
+} from "@ionic/vue";
 import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import FacilityPanel from "./FacilityPanel.vue";
@@ -143,7 +154,9 @@ const updateLocations = () => {
 
 const mapMarkerClick = (marker: MapLocation) => {
   if (!marker.id) return;
-  clickedLocation.value = locations.value.find((location) => location.id === marker.id);
+  clickedLocation.value = locations.value.find(
+    (location) => location.id === marker.id
+  );
 };
 
 onMounted(() => {
@@ -155,7 +168,7 @@ onIonViewDidEnter(() => {
 });
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 .facility-box
   padding: 10px
   border-radius: 10px
@@ -208,13 +221,6 @@ onIonViewDidEnter(() => {
   margin-right: 10px
   margin-bottom: 5px
   border: 1px solid #636362
-
-ion-toolbar
-  --min-height: 70px
-
-ion-modal
-  --width: 90%
-  --height: 75vh
 
 .page-title
   font-size: 1.5rem

@@ -62,7 +62,7 @@
         </div>
       </ion-col>
       <ion-col
-        v-for="category in categories"
+        v-for="category in filterStore.mainCategories"
         :key="category.id"
         size-xs="12"
         size-sm="6"
@@ -121,46 +121,17 @@
     </div>
   </div> -->
 
-  <ion-loading class="is-dark-grey" mode="md" :is-open="loading" message="Kategorien werden geladen..." />
+ 
 </template>
 
 <script setup lang="ts">
-import { IonGrid, IonRow, IonCol, IonLoading } from "@ionic/vue";
-import { ref } from "vue";
-import { useCollectionApi } from "@/composables/api/collectionApi";
-import { usePublicApi } from "@/composables/api/public";
-import { onMounted } from "vue";
+import { IonGrid, IonRow, IonCol } from "@ionic/vue";
 import { useRouter } from "vue-router";
 import { useFilterStore } from "@/stores/health/searchFilter";
 
 const filterStore = useFilterStore();
 
 const router = useRouter();
-const loading = ref(false);
-const categories = ref([]);
-const categoriesApi = useCollectionApi();
-categoriesApi.setBaseApi(usePublicApi("health"));
-
-const getCategories = async () => {
-  loading.value = true;
-  categoriesApi.setEndpoint(`categories`);
-  const options = {
-    page: 1,
-    per_page: 25,
-    sort_by: "menu_order",
-    sort_order: "ASC",
-    searchQuery: null,
-    concat: false,
-    filters: [],
-  };
-  await categoriesApi.retrieveCollection(options);
-  categories.value = categoriesApi.items.value;
-  loading.value = false;
-};
-
-onMounted(() => {
-  getCategories();
-});
 
 const setRouteAndGo = (route: string) => {
   router.push({ path: `/health/categories/${route}` });

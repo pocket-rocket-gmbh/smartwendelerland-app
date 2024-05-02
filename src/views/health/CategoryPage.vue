@@ -20,14 +20,17 @@
           {{ subCategory.name }}
         </span>
       </div>
-      <div class="ion-padding-start ion-padding-end is-dark-grey hypernate" lang="de">
+      <div
+        class="ion-padding-start ion-padding-end is-dark-grey hypernate"
+        lang="de"
+      >
         <div
           class="general-font-size is-dark-grey"
           v-html="currentSubCategory?.description"
         />
       </div>
       <div
-        v-for="subSubCategory in category.sub_sub_categories"
+        v-for="subSubCategory in subSubCategories"
         :key="subSubCategory.id"
         class="health-sub-category-box"
       >
@@ -56,7 +59,6 @@
               {{ subSubCategory.description }}
             </span>
           </div>
-
           <div class="show-more">
             <ion-button
               mode="md"
@@ -88,6 +90,11 @@
       :is-open="loading"
       message="Wird geladen..."
     />
+    <PdfModal
+      v-if="detailModalOpen"
+      :subSubCategory="subSubCategoryLink"
+      @close="detailModalOpen = false"
+    />
   </BackButtonLayout>
 </template>
 
@@ -99,12 +106,15 @@ import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
 import { useRoute } from "vue-router";
 import { useCollectionApi } from "@/composables/api/collectionApi";
 import { usePublicApi } from "@/composables/api/public";
+import PdfModal from "@/components/health/PdfModal.vue";
 import {
   onIonViewDidEnter,
   IonLoading,
   IonButton,
+  isPlatform,
 } from "@ionic/vue";
 import { Browser } from "@capacitor/browser";
+
 const router = useRouter();
 const filterStore = useFilterStore();
 const route = useRoute();
@@ -120,20 +130,55 @@ const selectedSubSubCategory = ref(null) as any;
 categoryApi.setBaseApi(usePublicApi("health"));
 
 const getCategory = async () => {
-  loading.value = true;
   categoryApi.setEndpoint(`categories`);
   await categoryApi.getItem(categoryId.value);
   category.value = categoryApi.item.value;
-  loading.value = false;
+  currentSubCategory.value = category.value.sub_categories[0];
+};
+
+const categoriesApi = useCollectionApi();
+categoriesApi.setBaseApi(usePublicApi("health"));
+const subSubCategories = ref(null);
+const listApi = useCollectionApi();
+listApi.setBaseApi(usePublicApi("health"));
+
+const getSubSubCategories = async () => {
+  listApi.setEndpoint(
+    `categories/${categoryId.value}/sub_categories/${currentSubCategory.value.id}/sub_sub_categories`
+  );
+  const options = {
+    page: 1,
+    per_page: 1000,
+    sort_by: "menu_order",
+    sort_order: "ASC",
+    concat: false,
+  };
+  await listApi.retrieveCollection(options);
+  subSubCategories.value = listApi.items.value as any;
 };
 
 const setItemsAndGo = (subCategory: any) => {
   currentSubCategory.value = subCategory;
+  getSubSubCategories();
 };
 
+const subSubCategoryLink = ref("");
+
 const handleClick = async (subSubCategory: any) => {
-  if (subSubCategory.url_kind === "external") {
-    await Browser.open({ url: subSubCategory.url });
+  let link = subSubCategory.url;
+  if (subSubCategory?.url.includes(".pdf")) {
+    subSubCategoryLink.value = subSubCategory.url;
+    detailModalOpen.value = true;
+  }
+  if (
+    subSubCategory.url_kind === "external" &&
+    !subSubCategory?.url.includes(".pdf")
+  ) {
+    if (isPlatform("android")) {
+      Browser.open({ url: link });
+    } else {
+      await Browser.open({ url: link });
+    }
   } else {
     if (subSubCategory.url.includes("https://gesundes-wnd.de/public/search")) {
       let searchUrl = subSubCategory.url.split("/");
@@ -156,15 +201,20 @@ const handleClick = async (subSubCategory: any) => {
         paramsObject[key] = value;
       });
 
-      const filter = paramsObject.filter ? JSON.parse(paramsObject.filter) : null;
+      const filter = paramsObject.filter
+        ? JSON.parse(paramsObject.filter)
+        : null;
       if (filter && filter?.currentSearchTerm) {
         filterStore.currentSearchTerm = filter?.currentSearchTerm;
       }
       if (filter && filter?.currentTags) {
-        filterStore.currentTags = filter?.currentTags;
+        filterStore.currentFacilityTags = filter?.currentFacilityTags;
       }
-      if (filter && filter?.currentZip) {
-        filterStore.currentZip = filter?.currentZip;
+      if (filter && filter?.currentServiceTags) {
+        filterStore.currentServiceTags = filter?.currentServiceTags;
+      }
+      if (filter && filter?.currentZips) {
+        filterStore.currentZips = filter?.currentZips;
       }
 
       router.push({
@@ -181,8 +231,11 @@ const handleClick = async (subSubCategory: any) => {
   selectedSubSubCategory.value = null;
 };
 
-onIonViewDidEnter(() => {
-  getCategory();
+onIonViewDidEnter(async () => {
+  loading.value = true;
+  await getCategory();
+  await getSubSubCategories();
+  loading.value = false;
 });
 </script>
 
