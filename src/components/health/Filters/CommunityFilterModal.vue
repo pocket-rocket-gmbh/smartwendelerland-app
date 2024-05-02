@@ -1,6 +1,6 @@
 <template>
   <div class="divider"></div>
-  <ion-content class="ion-padding-top">
+  <ion-content class="ion-padding-top" overflow-scroll="true">
     <div class="filter-options communities content-wrap">
       <label
         :for="community.id"

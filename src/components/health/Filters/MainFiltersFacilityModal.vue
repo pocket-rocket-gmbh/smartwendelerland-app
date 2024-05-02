@@ -1,6 +1,6 @@
 <template>
   <div class="divider"></div>
-  <ion-content>
+  <ion-content overflow-scroll="true">
     <div class="filter-options">
       <div
         v-for="filter in filterStore.filteredFacilityMainFilters"

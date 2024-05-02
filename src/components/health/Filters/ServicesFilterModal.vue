@@ -1,6 +1,6 @@
 <template>
   <div class="divider"></div>
-  <ion-content class="ion-padding-top">
+  <ion-content class="ion-padding-top" overflow-scroll="true">
     <div class="filter-options content-wrap">
       <div
         v-for="filter in availableItemsForServiceList"

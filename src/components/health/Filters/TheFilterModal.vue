@@ -1,10 +1,13 @@
 <template>
-  <ion-modal :is-open="true" :can-dismiss="true" :onDidDismiss="emitClose">
+  <ion-modal
+    :is-open="true"
+    :can-dismiss="true"
+    :onDidDismiss="emitClose"
+    class="filter-modal"
+  >
     <ion-header mode="md">
       <ion-toolbar>
-        <ion-title
-          class="general-font-size is-dark-grey modal-title"
-          slot="start"
+        <ion-title class="general-font-size is-dark-grey modal-title" slot="start"
           >Verfeinere hier deine Suche!</ion-title
         >
         <ion-button
@@ -19,10 +22,7 @@
     </ion-header>
     <ion-header>
       <ion-segment value="types" mode="md">
-        <ion-segment-button
-          @click.prevent="changeCurrentStep('types')"
-          value="types"
-        >
+        <ion-segment-button @click.prevent="changeCurrentStep('types')" value="types">
           <ion-label class="general-font-size"
             ><span v-if="filterKind === 'course'">Themengebiet</span
             ><span v-else>Branche</span></ion-label
@@ -34,10 +34,7 @@
         >
           <ion-label class="general-font-size">Gemeinde</ion-label>
         </ion-segment-button>
-        <ion-segment-button
-          @click.prevent="changeCurrentStep('filter')"
-          value="filter"
-        >
+        <ion-segment-button @click.prevent="changeCurrentStep('filter')" value="filter">
           <ion-label class="general-font-size">Leistung</ion-label>
         </ion-segment-button>
       </ion-segment>
@@ -123,10 +120,8 @@ watch(
 
     filterStore.handleStartedAt("facilities");
 
-    if (filterStore.startedAt !== "services")
-      filterStore.loadAllServiceFilters();
-    if (filterStore.startedAt !== "communities")
-      filterStore.loadFilteredCommunities();
+    if (filterStore.startedAt !== "services") filterStore.loadAllServiceFilters();
+    if (filterStore.startedAt !== "communities") filterStore.loadFilteredCommunities();
   },
 
   {
@@ -141,8 +136,7 @@ watch(
 
     filterStore.handleStartedAt("communities");
 
-    if (filterStore.startedAt !== "services")
-      filterStore.loadAllServiceFilters();
+    if (filterStore.startedAt !== "services") filterStore.loadAllServiceFilters();
     if (filterStore.startedAt !== "facilities")
       filterStore.loadFilteredFacilityMainFilters();
   },
@@ -158,8 +152,7 @@ watch(
 
     filterStore.handleStartedAt("services");
 
-    if (filterStore.startedAt !== "communities")
-      filterStore.loadFilteredCommunities();
+    if (filterStore.startedAt !== "communities") filterStore.loadFilteredCommunities();
     if (filterStore.startedAt !== "facilities")
       filterStore.loadFilteredFacilityMainFilters();
   },
@@ -198,5 +191,4 @@ ion-segment-button::part(indicator-background)
 
 ion-modal
   --width: 100%
-  --height: 100%
 </style>
