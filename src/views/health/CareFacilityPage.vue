@@ -181,6 +181,7 @@
                     Kontakt aufnehmen
                   </a>
                 </div>
+                <Inprintinformations v-if="facility" :careFacility="facility"/>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -336,6 +337,7 @@ import mailIcon from "@/assets/images/facilities/icon_mail.svg";
 import phoneIcon from "@/assets/images/facilities/icon_phone.svg";
 import { useFilterStore } from "@/stores/health/searchFilter";
 import { Capacitor } from "@capacitor/core";
+import Inprintinformations from "@/views/health/InprintInformations.vue";
 
 const route = useRoute();
 const loading = ref(false);
