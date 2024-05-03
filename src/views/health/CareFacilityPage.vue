@@ -272,12 +272,6 @@
         class="general-font-size is-dark-grey hypernate"
         lang="de"
       />
-      <div class="ion-margin-bottom general-font-size is-dark-grey">
-        <i
-          >Inhaltlich verantwortlich: {{ facility?.user?.name }} -
-          {{ facility?.user_care_facility?.name }}</i
-        >
-      </div>
       <div
         v-if="facility.name_responsible_person && facility?.kind === 'news'"
         class="ion-margin-bottom general-font-size is-dark-grey"
@@ -307,7 +301,7 @@
         </div>
       </div>
     </div>
-
+    <Inprintinformations v-if="facility && facility?.kind === 'news'" :careFacility="facility" :kind="facility?.kind"/>
     <ion-loading
       class="is-dark-grey"
       mode="md"
