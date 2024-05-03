@@ -2,8 +2,8 @@
   <ion-button
     mode="md"
     shape="round"
-    expand="block"
-    class="green-button ion-margin-top ion-margin-bottom"
+    :expand="kind !== 'news' ? 'block' : ''"
+    class="green-button ion-margin-top ion-margin-bottom is-tablet"
     @click="showImprint = !showImprint"
     >Impressumsangaben der Einrichtung</ion-button
   >
@@ -113,6 +113,9 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  kind: {
+    type: String,
+  },
 });
 
 const showImprint = ref(false);
@@ -155,4 +158,8 @@ const transformProfessionalRegulations = (text: string): string => {
 .inprint-divider
   margin-top: 10px
   margin-bottom: 10px
+
+.is-tablet
+  @media (min-width: 768px)
+    width: 300px
 </style>
