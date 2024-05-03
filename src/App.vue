@@ -62,7 +62,6 @@ const toggleEnv = () => {
 onMounted(async () => {
   console.log("Loading App...");
   const startTime = Date.now();
-  console.log(online.value);
   // Participation
   await useMe().fetchMyUser(),
     useAppStateStore().setAppLoadingProgress(0.3),
