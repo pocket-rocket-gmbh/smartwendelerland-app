@@ -25,7 +25,7 @@ export default defineComponent({
 <style lang="sass" scoped>
 ion-content
   //--background: linear-gradient(270deg, #017DC2 0.29%, #015281 100%)
-  --background: no-repeat center/100% url('@/assets/images/login-background.png')
+  --background: no-repeat center center / cover url('@/assets/images/login-background.png')
 ion-card
   margin-top: 100px
 </style>

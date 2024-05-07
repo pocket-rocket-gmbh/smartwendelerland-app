@@ -1,6 +1,6 @@
 <template>
-  <BackButtonLayout v-if="useUser().currentUser()">
-    <ion-accordion-group>
+  <BackButtonLayout v-if="useUser().currentUser()" :is-project="true" title="Mein Konto" force-back="/participation/projects/">
+    <ion-accordion-group class="ion-margin-top">
       <ion-accordion value="first">
         <ion-item slot="header" color="light">
           <ion-icon :icon="person" slot="start"></ion-icon>

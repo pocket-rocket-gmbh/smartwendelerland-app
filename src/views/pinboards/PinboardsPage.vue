@@ -1,5 +1,5 @@
 <template>
-  <BackButtonLayout>
+  <BackButtonLayout :is-project="true" title="Ideenpinnwände">
     <PublicPinboards />
   </BackButtonLayout>
 </template>
