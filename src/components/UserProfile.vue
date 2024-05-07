@@ -1,7 +1,7 @@
 <template>
   <div>
-    <img :class="['is-rounded', size]" v-if="user && user.image_url" :src="imageCache.cacheableImageUrl(user.image_url)"  />
-    <img src="@/assets/images/user-standard.svg" v-else />
+    <!-- <img :class="['is-rounded', size]" v-if="user && user.image_url" :src="imageCache.cacheableImageUrl(user.image_url)"  />-->
+    <img class="user-image" src="@/assets/user-standard.png" /> 
   </div>
 </template>
 
@@ -31,4 +31,8 @@ export default defineComponent({
 .medium
   width: 42px
   height: 42px
+
+.user-image
+  margin-top: 5px
+  margin-right: 10px
 </style>

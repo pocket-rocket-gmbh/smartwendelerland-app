@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content>
-      <div class="has-font-face-meta-pro-normal is-narrow narrow-lineheight">
+      <div class="has-font-face-meta-pro-normal is-narrow narrow-lineheight content-wrap">
         <h1>Allgemeine Nutzungsbedingungen der Online-Projektplattform unser.smartwendelerland.de</h1>
 
         <h2>Allgemeines</h2> 
@@ -115,4 +115,8 @@ export default defineComponent({
 });
 </script>
 <style lang="sass">
+
+.content-wrap
+  margin-bottom: 80px
+  padding: 0 20px
 </style>

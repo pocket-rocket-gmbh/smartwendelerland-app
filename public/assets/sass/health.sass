@@ -1,0 +1,220 @@
+.health-panel
+  border-radius: 10px
+  background: linear-gradient(74deg, #91A80D 0%, #BAC323 38.19%, #9EA100 95.31%)
+  display: flex
+  flex-direction: column
+
+.health-category-box
+  border-radius: 10px
+  background: #FFF
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25)
+  padding: 15px
+  height: 200px
+  display: flex
+  flex-wrap: wrap
+  flex-direction: column
+  align-content: center
+  justify-content: center
+  .headline
+    color: #636362
+    text-align: center
+    font-style: normal
+    font-weight: 600
+    line-height: 22px
+    min-height: 50px
+    display: grid
+    place-items: center
+    word-break: break-all
+
+.health-sub-category-box
+  border-radius: 10px
+  background: #F5F5F5
+  display: grid
+  grid-template-columns: 250px auto
+  margin: 20px 10px
+  overflow: hidden
+  @media (max-width: 768px)
+    display: flex
+  .content-right
+    padding: 10px
+    color: #636362
+    min-height: 250px
+    height: auto
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+
+    .headline
+      font-weight: bold
+      display: flex
+      flex-direction: column
+    .cta
+      font-weight: bold
+      font-size: 12px
+      margin-top: 10px
+
+.health-top-panel
+  background: linear-gradient(90deg, #91A80D 0%, #BAC323 46.88%, #9EA100 95.31%)
+  padding: 5px 10px
+  .headline
+    color: #FFF
+    font-style: normal
+    font-weight: 600
+    line-height: normal
+    text-transform: uppercase
+  
+.health-category-tags
+  width: 93%
+  overflow-x: auto
+  white-space: nowrap
+  display: flex
+  margin-left: 10px
+  gap: 15px
+  .health-category-tag
+    padding: 10px 20px
+    border: 1px solid #636362
+    border-radius: 20px
+    color: #636362
+    text-align: center
+    font-size: 14px
+    font-style: normal
+    font-weight: 600
+    line-height: 22px
+    &.is-active
+      background: #636362
+      color: white
+
+
+
+ion-button.transparent
+  --background: none
+  color: white
+  border: 1px solid white
+  border-radius: 30px
+ion-button.white
+  --background: white
+  --background: white
+  color: black
+  --background: white 
+  color: black
+  --border-radius: 30px
+  &.has-border
+    border: 1px solid #636362
+    border-radius: 30px
+  &.is-active
+    --background: #636362
+    color: white
+
+
+.has-background-health
+  background-color: var(--ion-color-health)
+
+.is-dark-grey
+  color: #636362
+
+.is-white
+  color: white
+
+.filter-name
+  margin: 20px 0 10px
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  gap: 20px
+.filters
+  display: flex
+  flex-direction: column
+  margin-left: 10px
+  margin-bottom: 100px
+
+  .filter-options
+    display: flex
+    flex-wrap: wrap
+    align-content: center
+    align-items: center
+    margin: -10px
+    margin-right: 5px
+
+    .option-label
+      cursor: pointer
+      display: flex
+      align-items: center
+
+
+
+.is-selected
+  background-color: #8ab61d !important
+  color: white !important
+
+.options-select
+  display: flex
+  align-items: center
+  cursor: pointer
+  padding: 10px
+  margin: 10px
+  margin-bottom: 0.5rem
+  color: #636362
+  background: white
+  box-shadow: 0 3px 1px -2px var(--v-shadow-key-umbra-opacity,rgba(0,0,0,.2)),0 2px 2px 0 var(--v-shadow-key-penumbra-opacity,rgba(0,0,0,.14)),0 1px 5px 0 var(--v-shadow-key-penumbra-opacity,rgba(0,0,0,.12))
+  border-radius: 10px
+
+.is-disabled
+  cursor: none
+  color: rgba(0, 0, 0, 0.15)
+
+.communities
+  display: flex
+  flex-wrap: wrap
+  align-content: center
+  align-items: center
+   
+.divider
+  border-bottom: 1px solid rgba(99, 99, 98, 0.354)
+
+.break-text
+  word-break: break-word
+  overflow: hidden
+  display: -webkit-box
+  -webkit-line-clamp: 4
+  line-clamp: 4
+  -webkit-box-orient: vertical
+
+.break-title
+  word-break: break-word
+  overflow: hidden
+  display: -webkit-box
+  -webkit-line-clamp: 1
+  line-clamp: 1
+  -webkit-box-orient: vertical
+
+.green-button
+  --background: #8ab61d
+  --color: white
+  text-transform: uppercase
+
+
+.green-button-plus
+  --background: #9E9E9E
+  --color: white
+  text-transform: uppercase
+
+.hypernate
+  word-break: break-word
+  -webkit-hyphens: auto
+  -ms-hyphens: auto
+  hyphens: auto
+
+.has-gap
+  margin: 0 0 .5rem 0
+
+.is-health
+  color: var(--ion-color-health)
+
+a
+  color: #636362
+
+.has-bg-health
+  background-color: var(--ion-color-health)
+
+.has-bg-darken-grey
+  background-color: #636362

@@ -9,6 +9,7 @@
         <span :class="['toggle-button', {'is-active' : view === 'map'}]">Karte</span>
       </ion-nav-link>
     </ion-toolbar>
+  
     <ion-content :fullscreen="true">
       <div class="gap-1" />
       <div class="gap-1" />

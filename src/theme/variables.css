@@ -8,7 +8,11 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+  --ion-color-health: #8AB61D;
+  --ion-color-project: #4CC2F1;
   --ion-font-family: "remora-sans-w1", sans-serif;
+  --ion-text-color-health: #636362;
+  --ioncolor-pinboard: linear-gradient(96.86deg, #ABC711 21.73%, #C9CF03 35.08%, #187628 84.5%);
   /** primary **/
   --ion-color-primary: #015281;
   --ion-color-primary-rgb: 56, 128, 255;

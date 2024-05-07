@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content>
-      <div class="has-font-face-meta-pro-normal is-narrow narrow-lineheight">
+      <div class="has-font-face-meta-pro-normal is-narrow narrow-lineheight content-wrap">
         <h1>Datenschutzerklärung</h1>
 
         <h2>1. Allgemeine Hinweise</h2> 
@@ -157,4 +157,9 @@ export default defineComponent({
 });
 </script>
 <style lang="sass">
+
+.content-wrap
+  margin-bottom: 80px
+  padding: 0 20px
+
 </style>
