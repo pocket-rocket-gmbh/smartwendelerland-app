@@ -63,8 +63,8 @@
             class="green-button ion-margin-top"
             @click="toogleForm"
           >
-            <span v-if="showForm">Zurück<ion-icon :md="chevronUpOutline"></ion-icon></span>
-            <span v-else>Weiter<ion-icon :md="chevronDownOutline"></ion-icon></span>
+            <span v-if="showForm">Zurück</span>
+            <span v-else>Weiter</span>
           </ion-button>
         </div>
         <div
