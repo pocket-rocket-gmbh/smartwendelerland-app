@@ -6,7 +6,18 @@
     :show-bar="false"
     :is-facility-page="isFacilityPage"
   >
-    <div class="facility-page" v-if="facility">
+    <ComplaintModal
+      v-if="complaintModalOpen"
+      @close="complaintModalOpen = false"
+      :title="facility?.name"
+      :kind="facility?.kind"
+      :facility-id="facility?.id"
+      :user-id="facility?.user?.id"
+    />
+    <div
+      class="facility-page"
+      v-if="facility"
+    >
       <swiper
         :slides-per-view="1"
         :space-between="20"
@@ -22,17 +33,25 @@
             :src="imageCache.cacheableImageUrl(facility.image_url)"
             class="showroom"
           />
-          <img v-if="facility.logo_url" :src="facility.logo_url" class="logo" />
+          <img
+            v-if="facility.logo_url"
+            :src="facility.logo_url"
+            class="logo"
+          />
         </swiper-slide>
-        <swiper-slide v-for="(image, index) in facility.sanitized_images" :key="index">
-          <img :src="imageCache.cacheableImageUrl(image.url)" class="showroom" />
+        <swiper-slide
+          v-for="(image, index) in facility.sanitized_images"
+          :key="index"
+        >
+          <img
+            :src="imageCache.cacheableImageUrl(image.url)"
+            class="showroom"
+          />
         </swiper-slide>
         <div class="pagination" />
       </swiper>
 
-      <div
-        class="general-font-size-subtitle is-dark-grey ion-margin-top ion-margin-bottom"
-      >
+      <div class="general-font-size-subtitle is-dark-grey ion-margin-top ion-margin-bottom">
         <img
           src="@/assets/images/check-decagram-outline.svg"
           class="insurance-logo"
@@ -40,7 +59,10 @@
         />
       </div>
 
-      <div class="tag-chips" v-if="facility.tags.length">
+      <div
+        class="tag-chips"
+        v-if="facility.tags.length"
+      >
         <ion-button
           mode="md"
           shape="round"
@@ -63,10 +85,22 @@
         </ion-button>
       </div>
 
-      <div v-if="facility.kind !== 'news'" class="more-infos ion-padding">
+      <div
+        v-if="facility.kind !== 'news'"
+        class="more-infos ion-padding"
+      >
         <div>
-          <div class="has-text-health headline is-uppercase informations">
-            Kontakt und Infos
+          <div class="facility-headline">
+            <div class="has-text-health headline is-uppercase informations">Kontakt und Infos</div>
+            <div>
+              <div
+                v-if="facility.website"
+                class="button-complaint is-uppercase"
+                @click="complaintModalOpen = true"
+              >
+                Inhalt melden
+              </div>
+            </div>
           </div>
           <ion-grid class="ion-no-padding ion-padding-top">
             <ion-row>
@@ -75,7 +109,10 @@
                 size-md="6"
                 class="general-font-size is-dark-grey ion-no-padding"
               >
-                <div class="informations" v-if="facility.kind !== 'facility'">
+                <div
+                  class="informations"
+                  v-if="facility.kind !== 'facility'"
+                >
                   <div>
                     <ion-icon
                       @click.stop="routeAndGo(facility?.user_care_facility)"
@@ -99,21 +136,25 @@
                       ></ion-icon>
                     </div>
                     <div v-else>
-                      <div
-                        v-if="
-                          facility.geocode_address && facility.geocode_address.length > 0
-                        "
-                      >
+                      <div v-if="facility.geocode_address && facility.geocode_address.length > 0">
                         <a
                           :href="`geo:<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>?q=<${facility.geocode_address[0].lat}>,<${facility.geocode_address[0].lon}>`"
                         >
-                          <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+                          <ion-icon
+                            class="icons"
+                            size="large"
+                            :src="mapIcon"
+                          ></ion-icon>
                         </a>
                       </div>
                     </div>
                   </div>
                   <div v-else>
-                    <ion-icon class="icons" size="large" :src="mapIcon"></ion-icon>
+                    <ion-icon
+                      class="icons"
+                      size="large"
+                      :src="mapIcon"
+                    ></ion-icon>
                   </div>
                   <div class="has-irregular-margin">
                     <div>
@@ -129,21 +170,36 @@
                 </div>
                 <div class="informations">
                   <div>
-                    <a class="is-dark-grey" :href="`tel:${facility.phone}`" @click.stop>
-                      <ion-icon class="icons" :src="phoneIcon" size="large"></ion-icon>
+                    <a
+                      class="is-dark-grey"
+                      :href="`tel:${facility.phone}`"
+                      @click.stop
+                    >
+                      <ion-icon
+                        class="icons"
+                        :src="phoneIcon"
+                        size="large"
+                      ></ion-icon>
                     </a>
                   </div>
                   <div>
                     {{ facility.phone }}
                   </div>
                 </div>
-                <div class="informations hypernate" lang="de">
+                <div
+                  class="informations hypernate"
+                  lang="de"
+                >
                   <a
                     class="is-dark-grey centralize"
                     :href="`mailto:${facility.email}`"
                     @click.stop
                   >
-                    <ion-icon class="icons" :src="mailIcon" size="large"></ion-icon>
+                    <ion-icon
+                      class="icons"
+                      :src="mailIcon"
+                      size="large"
+                    ></ion-icon>
                   </a>
 
                   <div class="has-irregular-margin-2 mail">
@@ -152,14 +208,10 @@
                 </div>
 
                 <div v-if="facility.name_instructor">
-                  <div
-                    class="has-text-health is-uppercase ion-margin-bottom ion-margin-top instructor"
-                  >
+                  <div class="has-text-health is-uppercase ion-margin-bottom ion-margin-top instructor">
                     <span>Veranstalter</span>
                   </div>
-                  <div
-                    class="general-font-size is-dark-grey ion-margin-bottom ion-margin-top"
-                  >
+                  <div class="general-font-size is-dark-grey ion-margin-bottom ion-margin-top">
                     {{ facility.name_instructor }}
                   </div>
                 </div>
@@ -181,36 +233,43 @@
                     Kontakt aufnehmen
                   </a>
                 </div>
-                <Inprintinformations v-if="facility" :careFacility="facility"/>
+                <Inprintinformations
+                  v-if="facility"
+                  :careFacility="facility"
+                />
               </ion-col>
             </ion-row>
           </ion-grid>
 
           <div
-            v-if="
-              facility.opening_hours.length > 0 &&
-              openingHoursFilled(facility.opening_hours)
-            "
+            v-if="facility.opening_hours.length > 0 && openingHoursFilled(facility.opening_hours)"
             class="opening-hours"
           >
-            <div
-              class="has-text-health is-uppercase ion-margin-top headline ion-margin-bottom"
-            >
-              Öffnungszeiten
-            </div>
+            <div class="has-text-health is-uppercase ion-margin-top headline ion-margin-bottom">Öffnungszeiten</div>
 
             <table class="table-hours is-dark-grey general-font-size">
               <tbody>
-                <tr v-for="opening in facility.opening_hours" :key="opening.day">
+                <tr
+                  v-for="opening in facility.opening_hours"
+                  :key="opening.day"
+                >
                   <td class="divider">
                     <span v-if="showHide">{{ opening.day }}</span>
                     <span v-else>{{ opening.day.slice(0, 2) }}</span>
                   </td>
 
-                  <td class="divider" v-if="opening.hours.length">
+                  <td
+                    class="divider"
+                    v-if="opening.hours.length"
+                  >
                     {{ opening.hours }}
                   </td>
-                  <td v-else class="divider">Keine Angabe</td>
+                  <td
+                    v-else
+                    class="divider"
+                  >
+                    Keine Angabe
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -222,14 +281,9 @@
         class="more-infos ion-margin-top ion-padding"
         v-if="facility.event_dates.length > 0"
       >
-        <div class="has-text-health general-font-size is-uppercase ion-margin-bottom">
-          Termine
-        </div>
+        <div class="has-text-health general-font-size is-uppercase ion-margin-bottom">Termine</div>
         <div class="ion-margin-bottom general-font-size is-dark-grey">
-          {{ facility.event_dates.length }} Termin<span
-            v-if="facility.event_dates.length > 1"
-            >e</span
-          >
+          {{ facility.event_dates.length }} Termin<span v-if="facility.event_dates.length > 1">e</span>
           gefunden
         </div>
 
@@ -240,22 +294,33 @@
             <th>Uhrzeit</th>
           </thead>
           <tbody>
-            <tr v-for="(date, index) in mapDates(facility.event_dates)" :key="index">
-              <td class="divider" v-if="showHide">
+            <tr
+              v-for="(date, index) in mapDates(facility.event_dates)"
+              :key="index"
+            >
+              <td
+                class="divider"
+                v-if="showHide"
+              >
                 {{ date.toLocaleDateString("de-DE", { weekday: "long" }) }}
               </td>
-              <td class="divider" v-else>
+              <td
+                class="divider"
+                v-else
+              >
                 {{ date.toLocaleDateString("de-DE", { weekday: "short" }) }}
               </td>
-              <td class="divider" v-if="showHide">
-                {{ padZero(date.getDate()) }}.{{
-                  formattedDateString(date.getMonth() + 1)
-                }}.{{ date.getFullYear() }}
+              <td
+                class="divider"
+                v-if="showHide"
+              >
+                {{ padZero(date.getDate()) }}.{{ formattedDateString(date.getMonth() + 1) }}.{{ date.getFullYear() }}
               </td>
-              <td class="divider" v-else>
-                {{ padZero(date.getDate()) }}.{{
-                  formattedDateString(date.getMonth() + 1)
-                }}.{{ date.toLocaleDateString("de-DE", { year: "2-digit" }) }}
+              <td
+                class="divider"
+                v-else
+              >
+                {{ padZero(date.getDate()) }}.{{ formattedDateString(date.getMonth() + 1) }}.{{ date.toLocaleDateString("de-DE", { year: "2-digit" }) }}
               </td>
 
               <td class="divider">
@@ -285,9 +350,7 @@
         class="more-infos ion-margin-bottom ion-margin-top ion-padding"
         v-if="facility.sanitized_documents.length > 0"
       >
-        <div class="has-text-health is-uppercase general-font-size ion-margin-bottom">
-          Dokumente
-        </div>
+        <div class="has-text-health is-uppercase general-font-size ion-margin-bottom">Dokumente</div>
 
         <div
           class="general-font-size is-dark-grey ion-margin-bottom documents"
@@ -296,12 +359,19 @@
           @click="handleLinkClick(document.url)"
         >
           +
-          <img src="@/assets/images/download.svg" min-width="24" />
+          <img
+            src="@/assets/images/download.svg"
+            min-width="24"
+          />
           <span>{{ document.name }}.pdf</span>
         </div>
       </div>
     </div>
-    <Inprintinformations v-if="facility && facility?.kind === 'news'" :careFacility="facility" :kind="facility?.kind"/>
+    <Inprintinformations
+      v-if="facility && facility?.kind === 'news'"
+      :careFacility="facility"
+      :kind="facility?.kind"
+    />
     <ion-loading
       class="is-dark-grey"
       mode="md"
@@ -318,9 +388,10 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { computed, ref } from "vue";
 import BackButtonLayout from "@/components/general/BackButtonLayout.vue";
+import ComplaintModal from "@/views/health/ComplaintModal.vue";
 import { usePublicApi } from "@/composables/api/public";
 import { useCollectionApi } from "@/composables/api/collectionApi";
-import { onIonViewDidEnter, IonIcon, getPlatforms, isPlatform } from "@ionic/vue";
+import { onIonViewDidEnter, IonIcon, getPlatforms, isPlatform, IonModal, IonHeader } from "@ionic/vue";
 import { useRoute } from "vue-router";
 import { Browser } from "@capacitor/browser";
 import { useImageCache } from "@/composables/ui/imageCache";
@@ -336,6 +407,8 @@ import Inprintinformations from "@/views/health/InprintInformations.vue";
 const route = useRoute();
 const loading = ref(false);
 const imageCache = useImageCache();
+
+const complaintModalOpen = ref(false);
 
 const filterStore = useFilterStore();
 
@@ -371,9 +444,7 @@ const routeAndGo = (facility: any) => {
 
 const formatDescription = computed(() => {
   if (facility.value) {
-    const cleanedDescription = facility.value?.description
-      .replace(/(<br>\s*)+/g, "")
-      .replace(/(<p>&nbsp;<\/p>\s*)+/g, "<p>&nbsp;</p>");
+    const cleanedDescription = facility.value?.description.replace(/(<br>\s*)+/g, "").replace(/(<p>&nbsp;<\/p>\s*)+/g, "<p>&nbsp;</p>");
     return cleanedDescription;
   }
   return "";
@@ -390,11 +461,9 @@ const openMapsApp = (location: any) => {
   }
 };
 
-const displayedTags = computed(
-  () => (facility: { showAllTags: any; tags: string | any[] }) => {
-    return facility.showAllTags ? facility.tags : facility.tags.slice(0, 3);
-  }
-);
+const displayedTags = computed(() => (facility: { showAllTags: any; tags: string | any[] }) => {
+  return facility.showAllTags ? facility.tags : facility.tags.slice(0, 3);
+});
 
 const getItem = async () => {
   showApi.setBaseApi(usePublicApi("health"));
@@ -565,6 +634,17 @@ const modules = [Pagination];
   @media (min-width: 768px)
     width: 300px
 
+.button-complaint
+  color: var(--ion-color-warning)
+  text-decoration: none
+  border: 1px solid var(--ion-color-warning)
+  padding: 8px 15px
+  border-radius: 20px
+  display: inline-block
+  text-align: center
+  font-size: 0.8rem
+
+
 .table
   td
     padding: 5px 20px
@@ -616,7 +696,6 @@ ion-chip
   display: flex
   flex-wrap: nowrap
   align-items: start
-  margin-bottom: 10px
 
 .icons
   height: 25px
@@ -643,4 +722,10 @@ ion-button
   --padding-bottom: 10px
   --padding-start: 10px
   --padding-end: 10px
+
+.facility-headline
+  display: flex
+  justify-content: space-between
+  align-items: center
+  flex-wrap: wrap
 </style>
