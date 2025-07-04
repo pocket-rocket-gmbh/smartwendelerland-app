@@ -3,5 +3,14 @@
 	"appName": "Smart Wendeler Land",
 	"webDir": "dist",
 	"bundledWebRuntime": false,
-	"overrideUserAgent": "Smart Wendeler Land App"
+	"overrideUserAgent": "Smart Wendeler Land App",
+	"packageClassList": [
+		"AppPlugin",
+		"CAPBrowserPlugin",
+		"FilesystemPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"StatusBarPlugin",
+		"CDVPlugin"
+	]
 }
