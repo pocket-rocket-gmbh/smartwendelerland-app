@@ -83,6 +83,7 @@ import {
   isPlatform,
 } from "@ionic/vue";
 import { useSessionStorage } from "@vueuse/core";
+import { Capacitor } from "@capacitor/core";
 import { computed } from "vue";
 
 const isOpen = useSessionStorage("meinWndHintOpen", true);
@@ -106,8 +107,20 @@ const isIOSDevice = computed(() => {
 const isAndroidDevice = computed(() => {
   if (isPlatform("android")) return true;
 
-  const userAgent = navigator.userAgent || navigator.vendor;
-  return /android/i.test(userAgent);
+  const userAgent = navigator.userAgent || navigator.vendor || "";
+  if (/android/i.test(userAgent)) return true;
+
+  if (navigator.platform && /android/i.test(navigator.platform)) return true;
+
+  if (/linux/i.test(userAgent) && /mobile/i.test(userAgent)) return true;
+
+  try {
+    if (Capacitor.getPlatform() === "android") return true;
+  } catch (e) {
+    // Capacitor not available, continue with other methods
+  }
+
+  return false;
 });
 </script>
 
