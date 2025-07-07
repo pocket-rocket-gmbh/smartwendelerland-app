@@ -10,12 +10,47 @@
     </IonHeader>
     <IonContent class="ion-padding">
       <div id="hint">
+        <h2>🔄 Wir entwickeln uns weiter!</h2>
+        <p>Liebe Nutzerinnen und Nutzer,</p>
         <p>
-          Diese App wird bald aus den AppStores entfernt und durch die neue App
-          meinWND ersetzt.
+          wir freuen uns, Ihnen mitteilen zu können, dass wir kontinuierlich
+          daran arbeiten, Ihre Erfahrung mit unserer App zu verbessern.
+        </p>
+        <p>
+          <strong
+            >Diese Version der App wird in Kürze durch unsere neue, verbesserte
+            App "meinWND" ersetzt.</strong
+          >
         </p>
 
-        <footer class="ion-padding">
+        <h2>✨ Was bedeutet das für Sie?</h2>
+        <ul>
+          <li>Diese aktuelle App wird bald aus den App Stores entfernt</li>
+          <li>
+            Die neue App <strong>meinWND</strong> bietet Ihnen alle gewohnten
+            Funktionen und noch mehr
+          </li>
+          <li>
+            Wir haben das Design überarbeitet und die Benutzerfreundlichkeit
+            optimiert
+          </li>
+          <li>Neue Features und Verbesserungen warten auf Sie</li>
+        </ul>
+
+        <h2>📱 Nächste Schritte</h2>
+        <p>
+          Um auch weiterhin von unserem Service zu profitieren, laden Sie bitte
+          rechtzeitig die neue App <strong>meinWND</strong> aus dem App Store
+          herunter.
+        </p>
+
+        <p>
+          <strong>Suchen Sie einfach nach "meinWND" in Ihrem App Store.</strong>
+        </p>
+
+        <p><em>Ihr meinWND-Team</em></p>
+
+        <footer>
           <IonButton
             href="https://apps.apple.com/de/app/meinwnd/id6741873749"
             v-if="isIOSDevice"
@@ -76,13 +111,8 @@ const isAndroidDevice = computed(() => {
 });
 </script>
 
-<style lang="css">
-footer {
-  position: fixed;
-
-  left: 0;
-  right: 0;
-  bottom: 2vh;
-  width: 100%;
+<style lang="css" scopen>
+#hint {
+  padding-bottom: 20vh;
 }
 </style>
