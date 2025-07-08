@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'smartwendel.pocketrocket.io'
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "smartwendel.pocketrocket.io"
