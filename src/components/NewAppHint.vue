@@ -10,62 +10,55 @@
     </IonHeader>
     <IonContent class="ion-padding">
       <div id="hint">
-        <h2>🔄 Wir entwickeln uns weiter!</h2>
-        <p>Liebe Nutzerinnen und Nutzer,</p>
-        <p>
-          wir freuen uns, Ihnen mitteilen zu können, dass wir kontinuierlich
-          daran arbeiten, Ihre Erfahrung mit unserer App zu verbessern.
-        </p>
-        <p>
-          <strong
-            >Diese Version der App wird in Kürze durch unsere neue, verbesserte
-            App "meinWND" ersetzt.</strong
-          >
-        </p>
+        <h2>Liebe Nutzer,</h2>
 
-        <h2>✨ Was bedeutet das für Sie?</h2>
-        <ul>
-          <li>Diese aktuelle App wird bald aus den App Stores entfernt</li>
-          <li>
-            Die neue App <strong>meinWND</strong> bietet Ihnen alle gewohnten
-            Funktionen und noch mehr
-          </li>
-          <li>
-            Wir haben das Design überarbeitet und die Benutzerfreundlichkeit
-            optimiert
-          </li>
-          <li>Neue Features und Verbesserungen warten auf Sie</li>
-        </ul>
-
-        <h2>📱 Nächste Schritte</h2>
         <p>
-          Um auch weiterhin von unserem Service zu profitieren, laden Sie bitte
-          rechtzeitig die neue App <strong>meinWND</strong> aus dem App Store
-          herunter.
+          Wir arbeiten kontinuierlich daran, unsere App für Sie zu verbessern.
+          Deshalb haben wir eine neue Version entwickelt, die noch informativer,
+          interaktiver und benutzerfreundlicher ist.
         </p>
 
         <p>
-          <strong>Suchen Sie einfach nach "meinWND" in Ihrem App Store.</strong>
+          Diese Version der App wird in Kürze durch unsere neue, verbesserte App
+          <strong>meinWND</strong> ersetzt.
         </p>
 
-        <p><em>Ihr meinWND-Team</em></p>
+        <p>
+          <strong>
+            Hier klicken und die neue Landkreis App meinWND direkt
+            herunterladen!
+          </strong>
+        </p>
 
-        <footer>
-          <IonButton
-            href="https://apps.apple.com/de/app/meinwnd/id6741873749"
-            v-if="isIOSDevice"
-            expand="full"
-          >
-            meinWND im AppStore
-          </IonButton>
-          <IonButton
-            href="https://play.google.com/store/apps/details?id=smawela.pocketrocket.io"
-            v-if="isAndroidDevice"
-            expand="full"
-          >
-            meinWND im PlayStore
-          </IonButton>
-        </footer>
+        <IonButton
+          href="https://apps.apple.com/de/app/meinwnd/id6741873749"
+          v-if="isIOSDevice"
+          expand="full"
+        >
+          meinWND im AppStore
+        </IonButton>
+        <IonButton
+          href="https://play.google.com/store/apps/details?id=smawela.pocketrocket.io"
+          v-if="isAndroidDevice"
+          expand="full"
+        >
+          meinWND im PlayStore
+        </IonButton>
+
+        <p>
+          <strong>meinWND</strong> ist die neue App für den ganzen Landkreis
+          Sankt Wendel.
+        </p>
+
+        <p>
+          Neben den bekannten Funktionen warten zahlreiche neue Features auf
+          Sie. Darunter Informationen zu Veranstaltungen, Restaurants,
+          Freizeitangeboten, Abfallkalender und vieles mehr.
+        </p>
+
+        <p><strong>Viel Spaß beim Ausprobieren!</strong></p>
+
+        <p>Ihr meinWND-Team</p>
       </div>
     </IonContent>
   </IonModal>
