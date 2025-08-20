@@ -5,6 +5,7 @@
 	"bundledWebRuntime": false,
 	"overrideUserAgent": "Smart Wendeler Land App",
 	"packageClassList": [
+		"SafeAreaPlugin",
 		"AppPlugin",
 		"CAPBrowserPlugin",
 		"DevicePlugin",

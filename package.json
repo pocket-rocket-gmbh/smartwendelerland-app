@@ -10,6 +10,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@aashu-dubey/capacitor-statusbar-safe-area": "^4.0.0",
     "@awesome-cordova-plugins/core": "^8.0.2",
     "@awesome-cordova-plugins/screen-orientation": "^8.0.2",
     "@awesome-cordova-plugins/vibration": "^8.0.2",
