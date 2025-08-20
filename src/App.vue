@@ -4,7 +4,7 @@
     trigger="present-alert"
     header="Es besteht momentan keine Internetverbindung. Bitte überprüfe deine Verbindung und versuche es erneut."
     :buttons="alertButtons"
-    backdropDismiss="false" 
+    backdropDismiss="false"
   ></ion-alert>
   <ion-app v-else>
     <div v-if="appState.isAppLoading" class="vertical-center">
@@ -21,7 +21,13 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonSpinner, IonRouterOutlet, IonAlert } from "@ionic/vue";
+import {
+  IonApp,
+  IonSpinner,
+  IonRouterOutlet,
+  IonAlert,
+  getPlatforms,
+} from "@ionic/vue";
 import { computed, onMounted, ref, watch } from "vue";
 import { usePollStore } from "@/stores/poll";
 import { useAppStateStore } from "@/stores/appState";
@@ -29,6 +35,8 @@ import { useMe } from "@/composables/user/me";
 import { useEnvStore } from "./stores/env";
 import { useFilterStore } from "@/stores/health/searchFilter";
 import { useOnline } from "@vueuse/core";
+import { Device } from "@capacitor/device";
+import { SafeArea } from "@aashu-dubey/capacitor-statusbar-safe-area";
 
 const online = useOnline();
 
@@ -42,11 +50,7 @@ const alertButtons = ref([
   },
 ]);
 
-
-watch(
-  () => online.value,
-  window.location.reload,
-);
+watch(() => online.value, window.location.reload);
 
 const appState = useAppStateStore();
 
@@ -59,7 +63,30 @@ const toggleEnv = () => {
   window.location.reload();
 };
 
+const isNativeApp = async () => {
+  try {
+    const device = await Device.getInfo();
+    return device.platform !== "web";
+  } catch {
+    return false;
+  }
+};
+
+const fixStatusBarHeight = async () => {
+  const [platform] = getPlatforms();
+
+  // Android, pretty please, with sugar on top
+  if (platform !== "ios") {
+    const { height } = await SafeArea.getStatusBarHeight();
+    document.documentElement.style.setProperty(
+      "--ion-safe-area-top",
+      `${height}px`
+    );
+  }
+};
+
 onMounted(async () => {
+  await fixStatusBarHeight();
   console.log("Loading App...");
   const startTime = Date.now();
   // Participation
@@ -94,7 +121,8 @@ onMounted(async () => {
     useFilterStore().loadFilteredFacilityMainFilters();
   useFilterStore().loadFilteredCategories();
 
-  useAppStateStore().setAppLoadingProgress(0.95), useAppStateStore().setAppLoading(false);
+  useAppStateStore().setAppLoadingProgress(0.95),
+    useAppStateStore().setAppLoading(false);
   console.log("App loaded - duration: " + (Date.now() - startTime) + " ms");
   useAppStateStore().setAppLoadingProgress(0.99);
 });
