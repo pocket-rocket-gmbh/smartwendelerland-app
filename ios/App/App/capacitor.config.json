@@ -7,6 +7,7 @@
 	"packageClassList": [
 		"AppPlugin",
 		"CAPBrowserPlugin",
+		"DevicePlugin",
 		"FilesystemPlugin",
 		"HapticsPlugin",
 		"KeyboardPlugin",
