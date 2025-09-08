@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'smartwendel.pocketrocket.io'
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "smartwendel.pocketrocket.io"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1045
-        versionName "1.1.12"
+        versionCode 1049
+        versionName "1.1.18"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

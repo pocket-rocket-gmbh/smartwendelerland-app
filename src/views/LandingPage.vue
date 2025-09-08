@@ -1,5 +1,7 @@
 <template>
   <BaseLayout>
+    <NewAppHint />
+    <SurveyModal :isOpen="surveyModalOpen" @update:isOpen="surveyModalOpen = $event" />
     <ion-grid class="main-page">
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="12" size-md="12" size-lg="12">
@@ -14,7 +16,7 @@
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="12" size-md="12" size-lg="12">
           <ion-nav-link routerLink="/landing/health">
-            <div class="pile has-background-health" align="center">
+            <div class="pile has-background-health" align="center" @click="openSurveyModal">
               <img src="@/assets/images/panel_health.svg" alt="health" />
               <div class="headline">gesundesWND</div>
             </div>
@@ -26,32 +28,39 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from "vue";
 
-import { IonGrid, IonRow, IonCol, IonNavLink } from '@ionic/vue'
-import BaseLayout from '@/components/general/BaseLayout.vue'
-import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation'
-import { useRouter } from 'vue-router'
+import { IonGrid, IonRow, IonCol, IonNavLink } from "@ionic/vue";
+import BaseLayout from "@/components/general/BaseLayout.vue";
+import { ScreenOrientation } from "@awesome-cordova-plugins/screen-orientation";
+import NewAppHint from "@/components/NewAppHint.vue";
+import SurveyModal from "@/components/SurveyModal.vue";
 
-const windowwidth = ref(window.innerWidth)
-const isLandscape = ref(false)
-const router = useRouter()
+const windowwidth = ref(window.innerWidth);
+const isLandscape = ref(false);
+const surveyModalOpen = ref(false);
+
+const openSurveyModal = () => {
+  surveyModalOpen.value = true;
+};
 
 const updateOrientation = () => {
-  isLandscape.value = ScreenOrientation.type == ScreenOrientation.ORIENTATIONS.LANDSCAPE || ScreenOrientation.type == ScreenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY
-}
+  isLandscape.value =
+    ScreenOrientation.type == ScreenOrientation.ORIENTATIONS.LANDSCAPE ||
+    ScreenOrientation.type == ScreenOrientation.ORIENTATIONS.LANDSCAPE_PRIMARY;
+};
 
 onMounted(() => {
-  updateOrientation()
+  updateOrientation();
 
   ScreenOrientation.onChange().subscribe(() => {
-    updateOrientation()
-  })
+    updateOrientation();
+  });
 
   window.onresize = () => {
-    windowwidth.value = window.innerWidth
-  }
-})
+    windowwidth.value = window.innerWidth;
+  };
+});
 </script>
 
 <style lang="sass" scoped>
@@ -84,6 +93,4 @@ onMounted(() => {
   align-content: center
   height: 100%
   gap: 5%
-
-
 </style>

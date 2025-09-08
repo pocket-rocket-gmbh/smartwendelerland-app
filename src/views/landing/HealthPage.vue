@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
 import IntroTutorial from "@/components/health/IntroTutorial.vue";
 import BaseLayout from "@/components/general/BaseLayout.vue";
 import { onIonViewDidEnter } from "@ionic/vue";
